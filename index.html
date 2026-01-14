@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شركة نايف للأغذية - نظام صرف البونص الشهري</title>
+    <link rel="icon" href="https://i.postimg.cc/NM2zJWZD/NAIF-LOGO.jpg" type="image/jpeg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #dc3545; /* أحمر للشريط */
+            --secondary-color: #0d6efd;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --background-color: #e3f2fd; /* أزرق فاتح للخلفية */
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            border-radius: 50%; /* دائري */
+            border: 2px solid white;
+            object-fit: cover;
+        }
+        
+        .card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0b5ed7;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        
+        .btn-pdf {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .btn-pdf:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+            color: white;
+        }
+        
+        .btn-danger-clear {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .btn-danger-clear:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            color: white;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background-color: white;
+            transition: all 0.3s;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 250px;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--secondary-color);
+            background-color: #f8f9fa;
+            transform: translateY(-5px);
+        }
+        
+        .file-upload-area i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .file-input {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        table {
+            font-size: 0.9rem;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px 8px !important;
+            border: none;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 10px 8px !important;
+            vertical-align: middle;
+            border-color: #dee2e6;
+            text-align: center;
+        }
+        
+        .restaurant-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: right;
+        }
+        
+        .target-met {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+        }
+        
+        .target-not-met {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+        .achievement-90 { background-color: rgba(255, 193, 7, 0.2); }
+        .achievement-95 { background-color: rgba(13, 110, 253, 0.2); }
+        .achievement-100 { background-color: rgba(25, 135, 84, 0.2); }
+        .achievement-105 { background-color: rgba(111, 66, 193, 0.2); }
+        .achievement-110 { background-color: rgba(32, 201, 151, 0.2); }
+        
+        .page-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+        }
+        
+        .main-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .section-divider {
+            border-top: 2px dashed #dee2e6;
+            margin: 30px 0;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            border-radius: 25px;
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            height: 100%;
+            border-top: 4px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        
+        .bonus-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--success-color);
+        }
+        
+        .nav-link {
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .tab-content {
+            padding-top: 10px;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        /* قالب PDF مخفي */
+        .pdf-template {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            width: 794px;
+            height: 1123px;
+            background: white;
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: -1000;
+            font-size: 12px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* توضيح طريقة الحساب */
+        .calculation-explanation {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-right: 4px solid var(--primary-color);
+        }
+        
+        .calculation-explanation h5 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .calculation-explanation ul {
+            margin-bottom: 0;
+        }
+        
+        .calculation-explanation li {
+            margin-bottom: 8px;
+        }
+
+        /* إعدادات النسب */
+        .settings-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .settings-row {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .settings-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+            
+            .main-container {
+                padding: 15px;
+            }
+            
+            .file-upload-area {
+                padding: 20px;
+                min-height: 200px;
+            }
+            
+            .btn-primary, .btn-success, .btn-pdf, .btn-danger-clear {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 8px 5px !important;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://i.postimg.cc/NM2zJWZD/NAIF-LOGO.jpg" alt="شعار نايف" class="logo-img">
+                <span>شركة نايف للأغذية - نظام البونص</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="main-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-tab="upload-targets-tab">
+                            <i class="fas fa-bullseye me-1"></i>تحميل الأهداف
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-tab="upload-results-tab">
+                            <i class="fas fa-chart-line me-1"></i>تحميل النتائج
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-tab="targets-tab">
+                            <i class="fas fa-table me-1"></i>عرض الأهداف
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-tab="results-tab">
+                            <i class="fas fa-award me-1"></i>تقييم البونص
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-tab="settings-tab">
+                            <i class="fas fa-cog me-1"></i>الإعدادات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-tab="reports-tab">
+                            <i class="fas fa-file-pdf me-1"></i>التقارير
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container-fluid">
+        <!-- تبويب تحميل الأهداف -->
+        <div class="tab-pane active" id="upload-targets-tab">
+            <div class="main-container">
+                <h2 class="page-title"><i class="fas fa-bullseye me-2"></i>تحميل بيانات الأهداف (أول الشهر)</h2>
+                <p class="text-muted mb-4">قم بتحميل ملفات Excel الخاصة بأهداف المطاعم للشهر الحالي</p>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="file-upload-area" id="target-file1-area">
+                            <i class="fas fa-file-excel"></i>
+                            <h5>ملف بيانات المطاعم (POS)</h5>
+                            <p class="text-muted">يحتوي على بيانات المبيعات وعدد العملاء ومتوسط الفاتورة (ملف SalesSummaryByServiceChannel)</p>
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="document.getElementById('target-file1').click()">
+                                    <i class="fas fa-upload me-2"></i>اختر ملف Excel
+                                </button>
+                                <input type="file" id="target-file1" class="file-input" accept=".xlsx, .xls" data-file-type="target1">
+                            </div>
+                            <div class="mt-3" id="target-file1-status">
+                                <span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="file-upload-area" id="target-file2-area">
+                            <i class="fas fa-file-excel"></i>
+                            <h5>ملف بيانات التكاليف والأرباح</h5>
+                            <p class="text-muted">يحتوي على بيانات الربح والتكلفة والرواتب والاضافي والشكاوى</p>
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="document.getElementById('target-file2').click()">
+                                    <i class="fas fa-upload me-2"></i>اختر ملف Excel
+                                </button>
+                                <input type="file" id="target-file2" class="file-input" accept=".xlsx, .xls" data-file-type="target2">
+                            </div>
+                            <div class="mt-3" id="target-file2-status">
+                                <span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>ملاحظة هامة:</strong> يجب أن يكون ملف POS بنفس هيكل الملف المرفق (ملف 1.xlsx) ويحتوي على عمود POS مع ثلاث أعمدة فرعية: عدد العملاء، المبيعات، متوسط الفاتورة
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <button id="process-targets-btn" class="btn btn-primary btn-lg w-100" disabled>
+                            <i class="fas fa-calculator me-2"></i>معالجة بيانات الأهداف
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- إحصائيات سريعة -->
+                <div class="row mt-4">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="stat-value" id="stat-restaurants">0</div>
+                            <div class="stat-label">عدد المطاعم</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <div class="stat-value" id="stat-targets">0</div>
+                            <div class="stat-label">الأهداف المحددة</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-import"></i>
+                            </div>
+                            <div class="stat-value" id="stat-files-loaded">0/2</div>
+                            <div class="stat-label">الملفات المحملة</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-value" id="stat-month">يناير</div>
+                            <div class="stat-label">الشهر الحالي</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تبويب تحميل النتائج -->
+        <div class="tab-pane" id="upload-results-tab">
+            <div class="main-container">
+                <h2 class="page-title"><i class="fas fa-chart-line me-2"></i>تحميل بيانات النتائج (آخر الشهر)</h2>
+                <p class="text-muted mb-4">قم بتحميل ملفات Excel الخاصة بنتائج المطاعم الفعلية</p>
+                
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    يجب أن تكون بنية ملفات النتائج مشابهة لملفات الأهداف التي تم تحميلها مسبقاً
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="file-upload-area" id="result-file1-area">
+                            <i class="fas fa-file-excel"></i>
+                            <h5>ملف النتائج الفعلية (POS)</h5>
+                            <p class="text-muted">بيانات المبيعات الفعلية وعدد العملاء ومتوسط الفاتورة</p>
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="document.getElementById('result-file1').click()">
+                                    <i class="fas fa-upload me-2"></i>اختر ملف Excel
+                                </button>
+                                <input type="file" id="result-file1" class="file-input" accept=".xlsx, .xls" data-file-type="result1">
+                            </div>
+                            <div class="mt-3" id="result-file1-status">
+                                <span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="file-upload-area" id="result-file2-area">
+                            <i class="fas fa-file-excel"></i>
+                            <h5>ملف النتائج الفعلية للتكاليف</h5>
+                            <p class="text-muted">بيانات الربح والتكلفة الفعلية للشهر المنتهي</p>
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="document.getElementById('result-file2').click()">
+                                    <i class="fas fa-upload me-2"></i>اختر ملف Excel
+                                </button>
+                                <input type="file" id="result-file2" class="file-input" accept=".xlsx, .xls" data-file-type="result2">
+                            </div>
+                            <div class="mt-3" id="result-file2-status">
+                                <span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <button id="process-results-btn" class="btn btn-success btn-lg w-100" disabled>
+                            <i class="fas fa-chart-bar me-2"></i>معالجة بيانات النتائج
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- إحصائيات سريعة -->
+                <div class="row mt-4">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-value" id="stat-results-loaded">0/2</div>
+                            <div class="stat-label">ملفات النتائج</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-value" id="stat-total-bonus">0</div>
+                            <div class="stat-label">إجمالي البونص</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-value" id="stat-achieved">0%</div>
+                            <div class="stat-label">متوسط التحقيق</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-value" id="stat-last-update">--</div>
+                            <div class="stat-label">آخر تحديث</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تبويب عرض الأهداف -->
+        <div class="tab-pane" id="targets-tab">
+            <div class="main-container">
+                <h2 class="page-title"><i class="fas fa-table me-2"></i>الأهداف المطلوبة للمطاعم</h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="search-box">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" id="search-targets" class="form-control" placeholder="ابحث عن مطعم بالاسم العربي أو الإنجليزي...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-start">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportTargetsToExcel()">
+                                <i class="fas fa-file-excel me-2"></i>تصدير إلى Excel
+                            </button>
+                            <button class="btn btn-pdf" onclick="exportTableToPDF('targets-table', 'أهداف المطاعم')">
+                                <i class="fas fa-file-pdf me-2"></i>تصدير PDF
+                            </button>
+                            <button class="btn btn-danger-clear" onclick="clearData()" title="مسح جميع البيانات المحفوظة">
+                                <i class="fas fa-trash-alt me-2"></i>مسح البيانات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mb-4">
+                    <h6><i class="fas fa-info-circle me-2"></i>ملاحظة هامة:</h6>
+                    <p class="mb-0">البيانات المعروضة هي <strong>بيانات حقيقية</strong> من الملفات التي قمت بتحميلها.</p>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="targets-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المطعم</th>
+                                <th>المبيعات</th>
+                                <th>التكلفة</th>
+                                <th>الرواتب</th>
+                                <th>الاضافي</th>
+                                <th>الربح</th>
+                                <th>عدد العملاء</th>
+                                <th>متوسط الفاتورة</th>
+                                <th>عدد الشكاوى</th>
+                            </tr>
+                        </thead>
+                        <tbody id="targets-tbody">
+                            <tr>
+                                <td colspan="9" class="text-center">لم يتم تحميل بيانات الأهداف بعد</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تبويب تقييم البونص -->
+        <div class="tab-pane" id="results-tab">
+            <div class="main-container">
+                <h2 class="page-title"><i class="fas fa-award me-2"></i>نتائج المطاعم وتوزيع البونص</h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="search-box">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" id="search-results" class="form-control" placeholder="ابحث عن مطعم أو مدير...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                            <select class="form-select" id="report-month">
+                                <option value="يناير">يناير</option>
+                                <option value="فبراير">فبراير</option>
+                                <option value="مارس">مارس</option>
+                                <option value="أبريل">أبريل</option>
+                                <option value="مايو">مايو</option>
+                                <option value="يونيو">يونيو</option>
+                                <option value="يوليو">يوليو</option>
+                                <option value="أغسطس">أغسطس</option>
+                                <option value="سبتمبر">سبتمبر</option>
+                                <option value="أكتوبر">أكتوبر</option>
+                                <option value="نوفمبر">نوفمبر</option>
+                                <option value="ديسمبر">ديسمبر</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-start">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="exportResultsToExcel()">
+                                <i class="fas fa-file-excel me-2"></i>تصدير Excel
+                            </button>
+                            <button class="btn btn-pdf" onclick="exportEvaluationToPDF()">
+                                <i class="fas fa-file-pdf me-2"></i>تصدير PDF
+                            </button>
+                            <button class="btn btn-danger-clear" onclick="clearData()" title="مسح جميع البيانات المحفوظة">
+                                <i class="fas fa-trash-alt me-2"></i>مسح البيانات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- توضيح طريقة الحساب -->
+                <div class="calculation-explanation">
+                    <h5><i class="fas fa-calculator me-2"></i>طريقة حساب تحقيق الأهداف وتوزيع البونص:</h5>
+                    <ul>
+                        <li><strong>نسبة المبيعات:</strong> (المبيعات الفعلية ÷ الهدف المحدد) × 100</li>
+                        <li><strong>نسبة الربح:</strong> (الربح الفعلي ÷ الهدف المحدد) × 100</li>
+                        <li><strong>نسبة العملاء:</strong> (عدد العملاء الفعلي ÷ الهدف المحدد) × 100</li>
+                        <li><strong>النسبة الإجمالية:</strong> (<span id="sales-weight-display">40</span>% × نسبة المبيعات) + (<span id="profit-weight-display">40</span>% × نسبة الربح) + (<span id="customers-weight-display">20</span>% × نسبة العملاء)</li>
+                        <li><strong>تأثير الشكاوى:</strong> يتم خصم <span id="complaint-penalty-display">5</span>% من البونص لكل شكوى فوق الهدف المحدد</li>
+                        <li><strong>البونص الأساسي:</strong> <span id="base-bonus-display">50</span> دينار لكل مطعم</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-info mb-4">
+                    <h5><i class="fas fa-info-circle me-2"></i>شرائح البونص الشهرية:</h5>
+                    <div class="row mt-2">
+                        <div class="col-md-2 col-sm-4 mb-2">
+                            <span class="badge achievement-90 p-2 w-100">90% - 94.99%: 50% من البونص</span>
+                        </div>
+                        <div class="col-md-2 col-sm-4 mb-2">
+                            <span class="badge achievement-95 p-2 w-100">95% - 99.99%: 75% من البونص</span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 mb-2">
+                            <span class="badge achievement-100 p-2 w-100">100% - 104.99%: 100% من البونص</span>
+                        </div>
+                        <div class="col-md-3 col-sm-4 mb-2">
+                            <span class="badge achievement-105 p-2 w-100">105% - 109.99%: 110% من البونص</span>
+                        </div>
+                        <div class="col-md-2 col-sm-4 mb-2">
+                            <span class="badge achievement-110 p-2 w-100">110%+ : 120% من البونص</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="evaluation-table">
+                        <thead>
+                            <tr>
+                                <th>اسم المطعم</th>
+                                <th>المدير</th>
+                                <th>نسبة المبيعات %</th>
+                                <th>نسبة الربح %</th>
+                                <th>نسبة العملاء %</th>
+                                <th>الشكاوى</th>
+                                <th>النسبة الإجمالية %</th>
+                                <th>شريحة البونص</th>
+                                <th>مبلغ البونص</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evaluation-tbody">
+                            <tr>
+                                <td colspan="10" class="text-center">لم يتم معالجة بيانات النتائج بعد</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="evaluation-tfoot">
+                            <tr class="table-dark">
+                                <td colspan="7"><strong>الإجماليات</strong></td>
+                                <td><strong>---</strong></td>
+                                <td id="total-bonus-cell"><strong>0</strong></td>
+                                <td id="achieved-count-cell"><strong>0/0 محقق</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تبويب الإعدادات -->
+        <div class="tab-pane" id="settings-tab">
+            <div class="main-container">
+                <h2 class="page-title"><i class="fas fa-cog me-2"></i>إعدادات النظام والنسب</h2>
+                
+                <div class="settings-container">
+                    <h4 class="mb-4" style="color: var(--primary-color);"><i class="fas fa-percentage me-2"></i>إعدادات النسب والأوزان</h4>
+                    
+                    <div class="settings-row">
+                        <div class="settings-label">نسب الوزن للتقييم:</div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">نسبة المبيعات:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="sales-weight" min="0" max="100" value="40">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <small class="text-muted">النسبة المئوية للمبيعات في التقييم الإجمالي</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">نسبة الربح:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="profit-weight" min="0" max="100" value="40">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <small class="text-muted">النسبة المئوية للربح في التقييم الإجمالي</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">نسبة العملاء:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="customers-weight" min="0" max="100" value="20">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <small class="text-muted">النسبة المئوية للعملاء في التقييم الإجمالي</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-label">إعدادات البونص:</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">مبلغ البونص الأساسي:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="base-bonus" min="1" max="1000" value="50">
+                                    <span class="input-group-text">دينار</span>
+                                </div>
+                                <small class="text-muted">المبلغ الأساسي للبونص لكل مطعم</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">نسبة خصم الشكاوى:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="complaint-penalty" min="0" max="100" value="5" step="0.1">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <small class="text-muted">نسبة الخصم من البونص لكل شكوى فوق الهدف</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-label">شرائح البونص:</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الشريحة 1 (90% - 94.99%):</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="tier-1" min="0" max="100" value="50" step="0.1">
+                                    <span class="input-group-text">% من البونص</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الشريحة 2 (95% - 99.99%):</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="tier-2" min="0" max="100" value="75" step="0.1">
+                                    <span class="input-group-text">% من البونص</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الشريحة 3 (100% - 104.99%):</label>
+                                <div class="input-group">
+                                    <input type="number" class="file-upload-area" id="tier-3" min="0" max="200" value="100" step="0.1">
+                                    <span class="input-group-text">% من البونص</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الشريحة 4 (105% - 109.99%):</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="tier-4" min="0" max="200" value="110" step="0.1">
+                                    <span class="input-group-text">% من البونص</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الشريحة 5 (110%+):</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="tier-5" min="0" max="200" value="120" step="0.1">
+                                    <span class="input-group-text">% من البونص</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <button class="btn btn-success btn-lg w-100" onclick="saveSettings()">
+                                <i class="fas fa-save me-2"></i>حفظ الإعدادات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <h5><i class="fas fa-info-circle me-2"></i>توضيح الإعدادات:</h5>
+                    <ul class="mb-0">
+                        <li><strong>نسب الوزن:</strong> تحدد أهمية كل مؤشر في التقييم النهائي (يجب أن يكون مجموعها 100%)</li>
+                        <li><strong>مبلغ البونص الأساسي:</strong> المبلغ الذي يحصل عليه المطعم عند تحقيق 100% من الهدف</li>
+                        <li><strong>نسبة خصم الشكاوى:</strong> نسبة الخصم من البونص لكل شكوى تتجاوز العدد المسموح به</li>
+                        <li><strong>شرائح البونص:</strong> تحدد نسبة البونص المستحق حسب مستوى تحقيق الأهداف</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تبويب التقارير -->
+        <div class="tab-pane" id="reports-tab">
+            <div class="main-container">
+                <h2 class="page-title"><i class="fas fa-file-pdf me-2"></i>التقارير والإحصائيات</h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-chart-pie me-2"></i>تقرير البونص الشهري
+                            </div>
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                                <h5>تقرير كامل</h5>
+                                <p class="text-muted">تقرير مفصل بجميع المطاعم ونسب التحقيق</p>
+                                <button class="btn btn-danger w-100" onclick="generateMonthlyReport()">
+                                    <i class="fas fa-download me-2"></i>تحميل التقرير PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-users me-2"></i>تقرير المديرين
+                            </div>
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-tie fa-4x text-primary mb-3"></i>
+                                <h5>تقرير أداء المديرين</h5>
+                                <p class="text-muted">تقرير بتوزيع البونص حسب المديرين</p>
+                                <button class="btn btn-primary w-100" onclick="generateManagersReport()">
+                                    <i class="fas fa-download me-2"></i>تحميل التقرير PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-store me-2"></i>تقرير المطعم الفردي
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">اختر مطعم:</label>
+                                    <div class="input-group">
+                                        <input type="text" id="restaurant-search" class="form-control" placeholder="اكتب اسم المطعم للبحث...">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="searchRestaurant()">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                    <div id="restaurant-suggestions" class="mt-2" style="max-height: 150px; overflow-y: auto; display: none;">
+                                        <!-- سيتم ملؤه بالاقتراحات -->
+                                    </div>
+                                </div>
+                                <button id="generate-restaurant-report" class="btn btn-success w-100" disabled onclick="generateRestaurantReport()">
+                                    <i class="fas fa-download me-2"></i>تحميل تقرير المطعم
+                                </button>
+                                <button class="btn btn-danger-clear w-100 mt-2" onclick="clearData()">
+                                    <i class="fas fa-trash-alt me-2"></i>مسح جميع البيانات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- قالب PDF مخفي -->
+    <div id="pdf-template" class="pdf-template" style="display: none;">
+        <div class="pdf-header" style="padding: 5px; margin-bottom: 10px; padding-left: 30px;">
+            <div class="pdf-header-row" style="text-align: center;">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img src="https://i.postimg.cc/NM2zJWZD/NAIF-LOGO.jpg" alt="شعار الشركة" 
+                         style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #dc3545; margin-bottom: 5px; margin: 0 auto 5px; display: block;">
+                    <h2 style="color: #dc3545; margin: 0; font-size: 18px;">
+                        شركة نايف للأغذية
+                    </h2>
+                </div>
+                <h3 style="color: #dc3545; margin: 0 0 8px 0; font-size: 16px;" id="pdf-report-title">تقرير البونص الشهري</h3>
+                <div style="margin-bottom: 8px; text-align: center;">
+                    <div style="font-size: 14px; font-weight: bold; display: inline-block;">
+                        <span id="pdf-subtitle"></span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px;">
+                    <div>الشهر: <span id="pdf-month"></span></div>
+                    <div>تاريخ الطباعة: <span id="pdf-print-date"></span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="pdf-table-container">
+            <!-- سيتم إضافة الجدول هنا ديناميكيًا -->
+        </div>
+    </div>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // البيانات المخزنة
+        let targetsData = {};
+        let actualData = {};
+        let restaurantMapping = {};
+        let evaluationResults = [];
+        let selectedRestaurantForReport = null;
+        
+        // الإعدادات
+        let settings = {
+            salesWeight: 40,
+            profitWeight: 40,
+            customersWeight: 20,
+            baseBonus: 50,
+            complaintPenalty: 5,
+            tiers: {
+                "90% - 94.99%": 0.5,
+                "95% - 99.99%": 0.75,
+                "100% - 104.99%": 1.0,
+                "105% - 109.99%": 1.1,
+                "110%+": 1.2
+            }
+        };
+        
+        // بيانات المطاعم الكاملة
+        const restaurantsData = {
+            "Jabriya 2 - Jabriya BD": { 
+                arabicName: "الجابرية بنت الديك", 
+                englishName: "Jabriya 2 - Jabriya BD",
+                manager: "مختار", 
+                opManager: "هاني عبدالله",
+                altNames: ["جابرية بنت الديك", "الجابريه بنت الديك", "بنت الديك"]
+            },
+            "Avenues": { 
+                arabicName: "الافينيوز", 
+                englishName: "Avenues",
+                manager: "طارق", 
+                opManager: "طارق بيومي",
+                altNames: ["الافينوز", "أفينيوز", "افينيوز"]
+            },
+            "Jabriya 1 - Jabriya Tikka": { 
+                arabicName: "الجابرية تكا و فرايد", 
+                englishName: "Jabriya 1 - Jabriya Tikka",
+                manager: "مختار", 
+                opManager: "هاني عبدالله",
+                altNames: ["جابرية تكا", "الجابرية تكا", "تكا و فرايد"]
+            },
+            "Jahra1-Duwaik": { 
+                arabicName: "الجهراء الزويخ", 
+                englishName: "Jahra1-Duwaik",
+                manager: "وليد", 
+                opManager: "هاني عبدالله",
+                altNames: ["الجهراء", "الجهراء الدويك", "الزويخ"]
+            },
+            "Jahra 2 - Jahra Ind": { 
+                arabicName: "الجهراء الصناعية", 
+                englishName: "Jahra 2 - Jahra Ind",
+                manager: "وليد", 
+                opManager: "هاني عبدالله",
+                altNames: ["الجهراء الصناعية", "الجهراء اند", "الصناعية"]
+            }
+        };
+        
+        // تهيئة الصفحة
+        $(document).ready(function() {
+            // تحميل بيانات المطاعم
+            loadRestaurantData();
+            
+            // تهيئة التنقل
+            initializeNavigation();
+            
+            // تهيئة أحداث الملفات
+            initializeFileEvents();
+            
+            // تهيئة البحث
+            initializeSearch();
+            
+            // تحميل البيانات المحفوظة
+            loadSavedData();
+            
+            // تحميل الإعدادات
+            loadSettings();
+            
+            // تحديث الإحصائيات
+            updateStatistics();
+        });
+        
+        // تحميل بيانات المطاعم
+        function loadRestaurantData() {
+            restaurantMapping = restaurantsData;
+        }
+        
+        // تهيئة التنقل بين الصفحات
+        function initializeNavigation() {
+            // إضافة حدث النقر على عناصر القائمة
+            $('#main-nav .nav-link').click(function(e) {
+                e.preventDefault();
+                
+                // إزالة النشاط من جميع العناصر
+                $('#main-nav .nav-link').removeClass('active');
+                
+                // إضافة النشاط للعنصر الحالي
+                $(this).addClass('active');
+                
+                // إخفاء جميع التبويبات
+                $('.tab-pane').removeClass('active');
+                
+                // إظهار التبويب المحدد
+                const tabId = $(this).data('tab');
+                $(`#${tabId}`).addClass('active');
+                
+                // تحديث عنوان URL
+                history.pushState(null, '', `#${tabId}`);
+            });
+            
+            // التحقق من التبويب في عنوان URL
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                $(`#main-nav .nav-link[data-tab="${hash}"]`).click();
+            }
+        }
+        
+        // تهيئة أحداث الملفات
+        function initializeFileEvents() {
+            // أحداث ملفات الأهداف
+            $('#target-file1').change(function(e) {
+                handleFileUpload(e, 'target-file1-status', 'target');
+            });
+            
+            $('#target-file2').change(function(e) {
+                handleFileUpload(e, 'target-file2-status', 'target');
+            });
+            
+            // أحداث ملفات النتائج
+            $('#result-file1').change(function(e) {
+                handleFileUpload(e, 'result-file1-status', 'result');
+            });
+            
+            $('#result-file2').change(function(e) {
+                handleFileUpload(e, 'result-file2-status', 'result');
+            });
+            
+            // أحداث الأزرار
+            $('#process-targets-btn').click(processTargets);
+            $('#process-results-btn').click(processResults);
+        }
+        
+        // معالجة رفع الملف
+        function handleFileUpload(event, statusElementId, fileType) {
+            if (event.target.files.length > 0) {
+                const file = event.target.files[0];
+                const fileName = file.name;
+                const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB
+                
+                $(`#${statusElementId}`).html(`
+                    <span class="badge bg-success">
+                        <i class="fas fa-check me-1"></i>
+                        ${fileName} (${fileSize} MB)
+                    </span>
+                `);
+                
+                // تحديث حالة الأزرار
+                updateProcessButtons();
+            }
+        }
+        
+        // تحديث أزرار المعالجة
+        function updateProcessButtons() {
+            // التحقق من ملفات الأهداف
+            const targetFile1 = $('#target-file1')[0].files.length > 0;
+            const targetFile2 = $('#target-file2')[0].files.length > 0;
+            $('#process-targets-btn').prop('disabled', !(targetFile1 && targetFile2));
+            
+            // التحقق من ملفات النتائج
+            const resultFile1 = $('#result-file1')[0].files.length > 0;
+            const resultFile2 = $('#result-file2')[0].files.length > 0;
+            $('#process-results-btn').prop('disabled', !(resultFile1 && resultFile2));
+            
+            // تحديث الإحصائيات
+            updateFileStatistics();
+        }
+        
+        // تحديث إحصائيات الملفات
+        function updateFileStatistics() {
+            const targetFiles = ($('#target-file1')[0].files.length > 0 ? 1 : 0) + 
+                               ($('#target-file2')[0].files.length > 0 ? 1 : 0);
+            const resultFiles = ($('#result-file1')[0].files.length > 0 ? 1 : 0) + 
+                               ($('#result-file2')[0].files.length > 0 ? 1 : 0);
+            
+            $('#stat-files-loaded').text(`${targetFiles}/2`);
+            $('#stat-results-loaded').text(`${resultFiles}/2`);
+        }
+        
+        // تهيئة البحث
+        function initializeSearch() {
+            // بحث في الأهداف
+            $('#search-targets').on('input', function() {
+                searchTable('targets-tbody', $(this).val());
+            });
+            
+            // بحث في النتائج
+            $('#search-results').on('input', function() {
+                searchTable('evaluation-tbody', $(this).val());
+            });
+            
+            // بحث في المطاعم للتقارير
+            $('#restaurant-search').on('input', function() {
+                showRestaurantSuggestions($(this).val());
+            });
+        }
+        
+        // عرض اقتراحات المطاعم
+        function showRestaurantSuggestions(query) {
+            const suggestionsDiv = $('#restaurant-suggestions');
+            
+            if (!query || query.length < 1) {
+                suggestionsDiv.hide().empty();
+                return;
+            }
+            
+            const matches = [];
+            query = query.toLowerCase();
+            
+            // البحث في المطاعم (بالاسم العربي والإنجليزي والبدائل)
+            Object.keys(restaurantMapping).forEach(key => {
+                const restaurant = restaurantMapping[key];
+                
+                // البحث بالاسم العربي
+                if (restaurant.arabicName.toLowerCase().includes(query)) {
+                    matches.push({
+                        key: key,
+                        displayName: restaurant.arabicName,
+                        manager: restaurant.manager
+                    });
+                }
+                // البحث بالاسم الإنجليزي
+                else if (restaurant.englishName.toLowerCase().includes(query)) {
+                    matches.push({
+                        key: key,
+                        displayName: restaurant.arabicName,
+                        manager: restaurant.manager
+                    });
+                }
+                // البحث بالأسماء البديلة
+                else if (restaurant.altNames) {
+                    for (let altName of restaurant.altNames) {
+                        if (altName.toLowerCase().includes(query)) {
+                            matches.push({
+                                key: key,
+                                displayName: restaurant.arabicName,
+                                manager: restaurant.manager
+                            });
+                            break;
+                        }
+                    }
+                }
+                // البحث باسم المدير
+                else if (restaurant.manager.toLowerCase().includes(query)) {
+                    matches.push({
+                        key: key,
+                        displayName: restaurant.arabicName,
+                        manager: restaurant.manager
+                    });
+                }
+            });
+            
+            suggestionsDiv.empty();
+            
+            if (matches.length > 0) {
+                matches.forEach(match => {
+                    const item = $(`
+                        <div class="suggestion-item p-2 border-bottom" 
+                             data-key="${match.key}"
+                             style="cursor: pointer; transition: background-color 0.2s;">
+                            <strong>${match.displayName}</strong>
+                            <br>
+                            <small class="text-muted">${match.manager} - ${restaurantMapping[match.key].englishName}</small>
+                        </div>
+                    `);
+                    
+                    item.hover(
+                        function() { $(this).css('background-color', '#f8f9fa'); },
+                        function() { $(this).css('background-color', ''); }
+                    );
+                    
+                    item.click(function() {
+                        selectRestaurantForReport(match.key, match.displayName);
+                    });
+                    
+                    suggestionsDiv.append(item);
+                });
+                
+                suggestionsDiv.show();
+            } else {
+                suggestionsDiv.hide();
+            }
+        }
+        
+        // اختيار مطعم للتقرير
+        function selectRestaurantForReport(key, arabicName) {
+            selectedRestaurantForReport = key;
+            $('#restaurant-search').val(arabicName);
+            $('#restaurant-suggestions').hide().empty();
+            $('#generate-restaurant-report').prop('disabled', false);
+        }
+        
+        // بحث في الجدول
+        function searchTable(tbodyId, query) {
+            const rows = $(`#${tbodyId} tr`);
+            query = query.toLowerCase();
+            
+            rows.each(function() {
+                const row = $(this);
+                const text = row.text().toLowerCase();
+                
+                if (text.includes(query)) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        }
+        
+        // تحميل البيانات المحفوظة
+        function loadSavedData() {
+            try {
+                const savedTargets = localStorage.getItem('naif_targetsData');
+                const savedResults = localStorage.getItem('naif_evaluationResults');
+                
+                if (savedTargets) {
+                    targetsData = JSON.parse(savedTargets);
+                    displayTargetsTable();
+                }
+                
+                if (savedResults) {
+                    evaluationResults = JSON.parse(savedResults);
+                    displayEvaluationTable();
+                }
+                
+                updateStatistics();
+            } catch (e) {
+                console.log("لا توجد بيانات محفوظة مسبقاً");
+            }
+        }
+        
+        // تحميل الإعدادات
+        function loadSettings() {
+            try {
+                const savedSettings = localStorage.getItem('naif_settings');
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                    
+                    // تحديث واجهة الإعدادات
+                    $('#sales-weight').val(settings.salesWeight);
+                    $('#profit-weight').val(settings.profitWeight);
+                    $('#customers-weight').val(settings.customersWeight);
+                    $('#base-bonus').val(settings.baseBonus);
+                    $('#complaint-penalty').val(settings.complaintPenalty);
+                    
+                    // تحديث الشرائح
+                    $('#tier-1').val(settings.tiers["90% - 94.99%"] * 100);
+                    $('#tier-2').val(settings.tiers["95% - 99.99%"] * 100);
+                    $('#tier-3').val(settings.tiers["100% - 104.99%"] * 100);
+                    $('#tier-4').val(settings.tiers["105% - 109.99%"] * 100);
+                    $('#tier-5').val(settings.tiers["110%+"] * 100);
+                    
+                    // تحديث العرض
+                    updateSettingsDisplay();
+                }
+            } catch (e) {
+                console.log("لا توجد إعدادات محفوظة مسبقاً");
+            }
+        }
+        
+        // حفظ الإعدادات
+        function saveSettings() {
+            // التحقق من أن مجموع النسب = 100%
+            const salesWeight = parseInt($('#sales-weight').val());
+            const profitWeight = parseInt($('#profit-weight').val());
+            const customersWeight = parseInt($('#customers-weight').val());
+            
+            const totalWeight = salesWeight + profitWeight + customersWeight;
+            
+            if (totalWeight !== 100) {
+                alert(`مجموع نسب الوزن يجب أن يكون 100%. المجموع الحالي: ${totalWeight}%`);
+                return;
+            }
+            
+            // حفظ الإعدادات
+            settings = {
+                salesWeight: salesWeight,
+                profitWeight: profitWeight,
+                customersWeight: customersWeight,
+                baseBonus: parseInt($('#base-bonus').val()),
+                complaintPenalty: parseFloat($('#complaint-penalty').val()),
+                tiers: {
+                    "90% - 94.99%": parseFloat($('#tier-1').val()) / 100,
+                    "95% - 99.99%": parseFloat($('#tier-2').val()) / 100,
+                    "100% - 104.99%": parseFloat($('#tier-3').val()) / 100,
+                    "105% - 109.99%": parseFloat($('#tier-4').val()) / 100,
+                    "110%+": parseFloat($('#tier-5').val()) / 100
+                }
+            };
+            
+            localStorage.setItem('naif_settings', JSON.stringify(settings));
+            
+            // تحديث العرض
+            updateSettingsDisplay();
+            
+            // إذا كانت هناك نتائج، إعادة حسابها
+            if (evaluationResults.length > 0) {
+                evaluatePerformance();
+            }
+            
+            alert('تم حفظ الإعدادات بنجاح');
+        }
+        
+        // تحديث عرض الإعدادات
+        function updateSettingsDisplay() {
+            $('#sales-weight-display').text(settings.salesWeight);
+            $('#profit-weight-display').text(settings.profitWeight);
+            $('#customers-weight-display').text(settings.customersWeight);
+            $('#base-bonus-display').text(settings.baseBonus);
+            $('#complaint-penalty-display').text(settings.complaintPenalty);
+        }
+        
+        // قراءة ملف Excel
+        async function readExcelFile(file, fileType) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        if (fileType === 'target1') {
+                            // قراءة ملف POS (الملف 1.xlsx)
+                            resolve(parsePOSFile(workbook));
+                        } else if (fileType === 'target2') {
+                            // قراءة ملف التكاليف (الملف 2.XLSX)
+                            resolve(parseCostsFile(workbook));
+                        } else if (fileType === 'result1') {
+                            // قراءة ملف النتائج POS (نفس هيكل target1)
+                            resolve(parsePOSFile(workbook));
+                        } else if (fileType === 'result2') {
+                            // قراءة ملف النتائج التكاليف (نفس هيكل target2)
+                            resolve(parseCostsFile(workbook));
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = function(error) {
+                    reject(error);
+                };
+                
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        // تحليل ملف POS (الملف 1.xlsx)
+        function parsePOSFile(workbook) {
+            const posData = {};
+            
+            try {
+                // الحصول على الورقة الأولى
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                
+                // تحويل الورقة إلى JSON
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                // البحث عن صف العناوين
+                let headerRowIndex = -1;
+                let posColIndex = -1;
+                
+                for (let i = 0; i < jsonData.length; i++) {
+                    const row = jsonData[i];
+                    if (row && row.includes('Site Name')) {
+                        headerRowIndex = i;
+                        break;
+                    }
+                }
+                
+                if (headerRowIndex === -1) {
+                    throw new Error('لم يتم العثور على صف العناوين في الملف');
+                }
+                
+                // البحث عن عمود POS
+                const headers = jsonData[headerRowIndex];
+                for (let j = 0; j < headers.length; j++) {
+                    if (headers[j] === 'POS') {
+                        posColIndex = j;
+                        break;
+                    }
+                }
+                
+                if (posColIndex === -1) {
+                    throw new Error('لم يتم العثور على عمود POS في الملف');
+                }
+                
+                // قراءة بيانات المطاعم (من الصف 13 فما فوق بناءً على الملف المرفق)
+                for (let i = headerRowIndex + 1; i < jsonData.length; i++) {
+                    const row = jsonData[i];
+                    if (!row || row.length === 0) continue;
+                    
+                    const siteName = row[0]; // عمود A - Site Name
+                    
+                    if (!siteName || siteName === 'Total') continue;
+                    
+                    // العثور على المطعم في قاعدة بيانات المطاعم
+                    let restaurantKey = null;
+                    for (const key in restaurantMapping) {
+                        if (siteName.includes(key) || key.includes(siteName)) {
+                            restaurantKey = key;
+                            break;
+                        }
+                    }
+                    
+                    // إذا لم يتم العثور على مطابق دقيق، ابحث عن أفضل مطابقة
+                    if (!restaurantKey) {
+                        for (const key in restaurantMapping) {
+                            const englishName = restaurantMapping[key].englishName;
+                            if (siteName && englishName && 
+                                (siteName.toLowerCase().includes(englishName.toLowerCase()) || 
+                                 englishName.toLowerCase().includes(siteName.toLowerCase()))) {
+                                restaurantKey = key;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (restaurantKey) {
+                        // قراءة بيانات POS (ثلاث خلايا تحت عمود POS)
+                        // بناءً على الملف المرفق: 
+                        // - الخلية الأولى تحت POS: عدد العملاء (عمود AE)
+                        // - الخلية الثانية: المبيعات (عمود AF)
+                        // - الخلية الثالثة: متوسط الفاتورة (عمود AG)
+                        
+                        // في الملف المرفق، بيانات POS تبدأ من العمود AE (عدد العملاء)، AF (المبيعات)، AG (متوسط الفاتورة)
+                        const customers = parseFloat(row[30]) || 0; // العمود AE (العمود 30)
+                        const sales = parseFloat(row[31]) || 0;    // العمود AF (العمود 31)
+                        const avgBill = parseFloat(row[32]) || 0;  // العمود AG (العمود 32)
+                        
+                        posData[restaurantKey] = {
+                            siteName: siteName,
+                            customers: customers,
+                            sales: sales,
+                            avgBill: avgBill,
+                            restaurantKey: restaurantKey
+                        };
+                    }
+                }
+                
+                console.log('بيانات POS التي تم تحليلها:', posData);
+                return posData;
+                
+            } catch (error) {
+                console.error('خطأ في تحليل ملف POS:', error);
+                throw error;
+            }
+        }
+        
+        // تحليل ملف التكاليف (الملف 2.XLSX)
+        function parseCostsFile(workbook) {
+            const costsData = {};
+            
+            try {
+                // الحصول على الورقة الأولى
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                
+                // تحويل الورقة إلى JSON
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                // البحث عن صف العناوين
+                let headerRowIndex = -1;
+                
+                for (let i = 0; i < jsonData.length; i++) {
+                    const row = jsonData[i];
+                    if (row && row.includes('اسم المطعم')) {
+                        headerRowIndex = i;
+                        break;
+                    }
+                }
+                
+                if (headerRowIndex === -1) {
+                    throw new Error('لم يتم العثور على صف العناوين في الملف');
+                }
+                
+                // قراءة بيانات المطاعم
+                for (let i = headerRowIndex + 1; i < jsonData.length; i++) {
+                    const row = jsonData[i];
+                    if (!row || row.length === 0) continue;
+                    
+                    const arabicName = row[0]; // عمود A - اسم المطعم
+                    
+                    if (!arabicName) continue;
+                    
+                    // البحث عن المطعم بناءً على الاسم العربي
+                    let restaurantKey = null;
+                    for (const key in restaurantMapping) {
+                        if (restaurantMapping[key].arabicName === arabicName) {
+                            restaurantKey = key;
+                            break;
+                        }
+                    }
+                    
+                    // إذا لم يتم العثور، حاول البحث عن مطابقة جزئية
+                    if (!restaurantKey) {
+                        for (const key in restaurantMapping) {
+                            if (arabicName.includes(restaurantMapping[key].arabicName) || 
+                                restaurantMapping[key].arabicName.includes(arabicName)) {
+                                restaurantKey = key;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (restaurantKey) {
+                        const profit = parseFloat(row[1]) || 0;      // عمود B - الربح
+                        const cost = parseFloat(row[2]) || 0;        // عمود C - التكلفة
+                        const salaries = parseFloat(row[3]) || 0;    // عمود D - الرواتب
+                        const extra = parseFloat(row[4]) || 0;       // عمود E - الاضافي
+                        const complaints = parseFloat(row[5]) || 0;  // عمود F - عدد الشكاوى
+                        
+                        costsData[restaurantKey] = {
+                            arabicName: arabicName,
+                            profit: profit,
+                            cost: cost,
+                            salaries: salaries,
+                            extra: extra,
+                            complaints: complaints,
+                            restaurantKey: restaurantKey
+                        };
+                    }
+                }
+                
+                console.log('بيانات التكاليف التي تم تحليلها:', costsData);
+                return costsData;
+                
+            } catch (error) {
+                console.error('خطأ في تحليل ملف التكاليف:', error);
+                throw error;
+            }
+        }
+        
+        // معالجة بيانات الأهداف
+        async function processTargets() {
+            try {
+                $('#process-targets-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>جاري المعالجة...');
+                
+                const targetFile1 = $('#target-file1')[0].files[0];
+                const targetFile2 = $('#target-file2')[0].files[0];
+                
+                if (!targetFile1 || !targetFile2) {
+                    throw new Error('يرجى تحميل الملفين المطلوبين');
+                }
+                
+                // قراءة ملف POS
+                const posData = await readExcelFile(targetFile1, 'target1');
+                
+                // قراءة ملف التكاليف
+                const costsData = await readExcelFile(targetFile2, 'target2');
+                
+                // دمج البيانات
+                targetsData = {};
+                
+                Object.keys(restaurantMapping).forEach(restaurantKey => {
+                    const restaurant = restaurantMapping[restaurantKey];
+                    const pos = posData[restaurantKey];
+                    const costs = costsData[restaurantKey];
+                    
+                    if (pos && costs) {
+                        targetsData[restaurantKey] = {
+                            restaurantName: restaurantKey,
+                            arabicName: restaurant.arabicName,
+                            englishName: restaurant.englishName,
+                            manager: restaurant.manager,
+                            opManager: restaurant.opManager,
+                            sales: pos.sales || 0,
+                            customers: pos.customers || 0,
+                            avgBill: pos.avgBill || 0,
+                            profit: costs.profit || 0,
+                            cost: costs.cost || 0,
+                            salaries: costs.salaries || 0,
+                            extra: costs.extra || 0,
+                            complaints: costs.complaints || 0
+                        };
+                    } else {
+                        console.warn(`بيانات غير مكتملة للمطعم: ${restaurantKey}`);
+                    }
+                });
+                
+                // عرض البيانات
+                displayTargetsTable();
+                
+                // حفظ البيانات
+                localStorage.setItem('naif_targetsData', JSON.stringify(targetsData));
+                
+                $('#process-targets-btn').html('<i class="fas fa-check me-2"></i>تمت المعالجة بنجاح');
+                
+                // تحديث الإحصائيات
+                updateStatistics();
+                
+                // الانتقال إلى تبويب الأهداف
+                setTimeout(() => {
+                    $(`#main-nav .nav-link[data-tab="targets-tab"]`).click();
+                }, 500);
+                
+            } catch (error) {
+                console.error("Error processing targets:", error);
+                alert("حدث خطأ في معالجة البيانات: " + error.message);
+                $('#process-targets-btn').prop('disabled', false).html('<i class="fas fa-calculator me-2"></i>معالجة بيانات الأهداف');
+            }
+        }
+        
+        // معالجة بيانات النتائج
+        async function processResults() {
+            try {
+                $('#process-results-btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>جاري المعالجة...');
+                
+                const resultFile1 = $('#result-file1')[0].files[0];
+                const resultFile2 = $('#result-file2')[0].files[0];
+                
+                if (!resultFile1 || !resultFile2) {
+                    throw new Error('يرجى تحميل الملفين المطلوبين');
+                }
+                
+                // قراءة ملف POS للنتائج
+                const posData = await readExcelFile(resultFile1, 'result1');
+                
+                // قراءة ملف التكاليف للنتائج
+                const costsData = await readExcelFile(resultFile2, 'result2');
+                
+                // دمج البيانات
+                actualData = {};
+                
+                Object.keys(restaurantMapping).forEach(restaurantKey => {
+                    const restaurant = restaurantMapping[restaurantKey];
+                    const pos = posData[restaurantKey];
+                    const costs = costsData[restaurantKey];
+                    
+                    if (pos && costs) {
+                        actualData[restaurantKey] = {
+                            restaurantName: restaurantKey,
+                            arabicName: restaurant.arabicName,
+                            englishName: restaurant.englishName,
+                            manager: restaurant.manager,
+                            opManager: restaurant.opManager,
+                            sales: pos.sales || 0,
+                            customers: pos.customers || 0,
+                            avgBill: pos.avgBill || 0,
+                            profit: costs.profit || 0,
+                            cost: costs.cost || 0,
+                            salaries: costs.salaries || 0,
+                            extra: costs.extra || 0,
+                            complaints: costs.complaints || 0
+                        };
+                    } else {
+                        console.warn(`بيانات غير مكتملة للمطعم: ${restaurantKey}`);
+                    }
+                });
+                
+                // تقييم الأداء
+                evaluatePerformance();
+                
+                // حفظ البيانات
+                localStorage.setItem('naif_actualData', JSON.stringify(actualData));
+                localStorage.setItem('naif_evaluationResults', JSON.stringify(evaluationResults));
+                
+                $('#process-results-btn').html('<i class="fas fa-check me-2"></i>تمت المعالجة بنجاح');
+                
+                // تحديث الإحصائيات
+                updateStatistics();
+                
+                // الانتقال إلى تبويب النتائج
+                setTimeout(() => {
+                    $(`#main-nav .nav-link[data-tab="results-tab"]`).click();
+                }, 500);
+                
+            } catch (error) {
+                console.error("Error processing results:", error);
+                alert("حدث خطأ في معالجة البيانات: " + error.message);
+                $('#process-results-btn').prop('disabled', false).html('<i class="fas fa-chart-bar me-2"></i>معالجة بيانات النتائج');
+            }
+        }
+        
+        // تقييم الأداء
+        function evaluatePerformance() {
+            evaluationResults = [];
+            
+            Object.keys(actualData).forEach(restaurantKey => {
+                const actual = actualData[restaurantKey];
+                const target = targetsData[restaurantKey];
+                
+                if (!target || !actual) return;
+                
+                // حساب نسب التحقيق
+                const salesAchievement = target.sales > 0 ? (actual.sales / target.sales) * 100 : 100;
+                const profitAchievement = target.profit > 0 ? (actual.profit / target.profit) * 100 : 100;
+                const customersAchievement = target.customers > 0 ? (actual.customers / target.customers) * 100 : 100;
+                
+                // النسبة الإجمالية (المتوسط المرجح)
+                const overallAchievement = (salesAchievement * (settings.salesWeight/100) + 
+                                           profitAchievement * (settings.profitWeight/100) + 
+                                           customersAchievement * (settings.customersWeight/100));
+                
+                // تحديد شريحة البونص
+                const bonusTier = getBonusTier(overallAchievement);
+                const bonusAmount = calculateBonusAmount(bonusTier);
+                
+                // تأثير الشكاوى (خصم نسبة محددة لكل شكوى فوق الهدف)
+                const complaintsPenalty = Math.max(0, actual.complaints - target.complaints) * (settings.complaintPenalty/100);
+                const finalBonus = Math.max(0, bonusAmount * (1 - complaintsPenalty));
+                
+                // حالة المطعم
+                const status = overallAchievement >= 90 ? 'محقق' : 'غير محقق';
+                
+                evaluationResults.push({
+                    restaurantKey: restaurantKey,
+                    arabicName: actual.arabicName,
+                    englishName: actual.englishName,
+                    manager: actual.manager,
+                    salesAchievement: salesAchievement,
+                    profitAchievement: profitAchievement,
+                    customersAchievement: customersAchievement,
+                    overallAchievement: overallAchievement,
+                    bonusTier: bonusTier,
+                    bonusAmount: finalBonus,
+                    status: status,
+                    complaints: actual.complaints,
+                    targetSales: target.sales,
+                    actualSales: actual.sales,
+                    targetProfit: target.profit,
+                    actualProfit: actual.profit,
+                    targetCustomers: target.customers,
+                    actualCustomers: actual.customers
+                });
+            });
+            
+            // فرز النتائج حسب النسبة الإجمالية من الأعلى للأصغر (للمطاعم المحققة فقط)
+            const achievedResults = evaluationResults.filter(r => r.status === 'محقق');
+            const notAchievedResults = evaluationResults.filter(r => r.status !== 'محقق');
+            
+            achievedResults.sort((a, b) => b.overallAchievement - a.overallAchievement);
+            notAchievedResults.sort((a, b) => b.overallAchievement - a.overallAchievement);
+            
+            evaluationResults = [...achievedResults, ...notAchievedResults];
+            
+            displayEvaluationTable();
+        }
+        
+        // عرض بيانات الأهداف
+        function displayTargetsTable() {
+            const tbody = $('#targets-tbody');
+            tbody.empty();
+            
+            if (Object.keys(targetsData).length === 0) {
+                tbody.append('<tr><td colspan="9" class="text-center">لم يتم تحميل بيانات الأهداف بعد</td></tr>');
+                return;
+            }
+            
+            // تحويل البيانات إلى مصفوفة وفرزها بالاسم العربي
+            const sortedRestaurants = Object.values(targetsData).sort((a, b) => {
+                return a.arabicName.localeCompare(b.arabicName, 'ar');
+            });
+            
+            sortedRestaurants.forEach(restaurant => {
+                const row = `
+                    <tr>
+                        <td class="restaurant-name">${restaurant.arabicName}</td>
+                        <td>${formatNumber(restaurant.sales)}</td>
+                        <td>${formatNumber(restaurant.cost)}</td>
+                        <td>${formatNumber(restaurant.salaries)}</td>
+                        <td>${formatNumber(restaurant.extra)}</td>
+                        <td>${formatNumber(restaurant.profit)}</td>
+                        <td>${formatNumber(restaurant.customers)}</td>
+                        <td>${formatNumber(restaurant.avgBill, 2)}</td>
+                        <td>${restaurant.complaints}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+        
+        // عرض جدول التقييم
+        function displayEvaluationTable() {
+            const tbody = $('#evaluation-tbody');
+            tbody.empty();
+            
+            if (evaluationResults.length === 0) {
+                tbody.append('<tr><td colspan="10" class="text-center">لم يتم معالجة بيانات النتائج بعد</td></tr>');
+                return;
+            }
+            
+            let totalBonus = 0;
+            let achievedCount = 0;
+            
+            evaluationResults.forEach(result => {
+                const rowClass = getAchievementClass(result.overallAchievement);
+                const statusBadge = result.status === 'محقق' ? 
+                    '<span class="badge bg-success">محقق</span>' : 
+                    '<span class="badge bg-danger">غير محقق</span>';
+                
+                const row = `
+                    <tr class="${rowClass}">
+                        <td class="restaurant-name">${result.arabicName}</td>
+                        <td>${result.manager}</td>
+                        <td>${formatNumber(result.salesAchievement, 1)}%</td>
+                        <td>${formatNumber(result.profitAchievement, 1)}%</td>
+                        <td>${formatNumber(result.customersAchievement, 1)}%</td>
+                        <td>${result.complaints}</td>
+                        <td><strong>${formatNumber(result.overallAchievement, 1)}%</strong></td>
+                        <td><span class="badge ${getTierBadgeClass(result.bonusTier)}">${result.bonusTier}</span></td>
+                        <td class="bonus-amount">${formatNumber(result.bonusAmount, 0)}</td>
+                        <td>${statusBadge}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+                
+                totalBonus += result.bonusAmount;
+                if (result.status === 'محقق') achievedCount++;
+            });
+            
+            // تحديث التذييل
+            $('#total-bonus-cell').html(`<strong>${formatNumber(totalBonus, 0)}</strong>`);
+            $('#achieved-count-cell').html(`<strong>${achievedCount}/${evaluationResults.length} محقق</strong>`);
+            
+            // تحديث الإحصائيات
+            updateStatistics();
+        }
+        
+        // تحديد شريحة البونص
+        function getBonusTier(achievement) {
+            if (achievement >= 110) return "110%+";
+            if (achievement >= 105) return "105% - 109.99%";
+            if (achievement >= 100) return "100% - 104.99%";
+            if (achievement >= 95) return "95% - 99.99%";
+            if (achievement >= 90) return "90% - 94.99%";
+            return "أقل من 90%";
+        }
+        
+        // حساب مبلغ البونص
+        function calculateBonusAmount(tier) {
+            const tierPercentage = settings.tiers[tier] || 0;
+            return settings.baseBonus * tierPercentage;
+        }
+        
+        // فئة الإنجاز
+        function getAchievementClass(achievement) {
+            if (achievement >= 110) return "achievement-110";
+            if (achievement >= 105) return "achievement-105";
+            if (achievement >= 100) return "achievement-100";
+            if (achievement >= 95) return "achievement-95";
+            if (achievement >= 90) return "achievement-90";
+            return "";
+        }
+        
+        // فئة شارة الشريحة
+        function getTierBadgeClass(tier) {
+            switch(tier) {
+                case "110%+": return "achievement-110";
+                case "105% - 109.99%": return "achievement-105";
+                case "100% - 104.99%": return "achievement-100";
+                case "95% - 99.99%": return "achievement-95";
+                case "90% - 94.99%": return "achievement-90";
+                default: return "bg-secondary";
+            }
+        }
+        
+        // تحديث الإحصائيات
+        function updateStatistics() {
+            const restaurantCount = Object.keys(restaurantMapping).length;
+            const targetsCount = Object.keys(targetsData).length;
+            const totalBonus = evaluationResults.reduce((sum, r) => sum + r.bonusAmount, 0) || 0;
+            const avgAchievement = evaluationResults.length > 0 ? 
+                evaluationResults.reduce((sum, r) => sum + r.overallAchievement, 0) / evaluationResults.length : 0;
+            
+            $('#stat-restaurants').text(restaurantCount);
+            $('#stat-targets').text(targetsCount);
+            $('#stat-total-bonus').text(formatNumber(totalBonus, 0));
+            $('#stat-achieved').text(formatNumber(avgAchievement, 1) + '%');
+            
+            // تحديث الشهر
+            const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                              'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const now = new Date();
+            $('#stat-month').text(monthNames[now.getMonth()]);
+            $('#stat-last-update').text(formatDate(now));
+        }
+        
+        // ============================================
+        // وظائف تصدير الجداول إلى PDF
+        // ============================================
+        
+        // دالة لتصدير أي جدول إلى PDF
+        async function exportTableToPDF(tableId, reportTitle) {
+            const table = document.getElementById(tableId);
+            if (!table) {
+                alert('الجدول غير موجود');
+                return;
+            }
+            
+            // استخراج البيانات من الجدول
+            const headers = [];
+            const rows = [];
+            
+            // استخراج العناوين
+            const headerRow = table.querySelector('thead tr');
+            const thElements = headerRow.querySelectorAll('th');
+            thElements.forEach(th => {
+                headers.push(th.textContent.trim());
+            });
+            
+            // استخراج الصفوف
+            const tableRows = table.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                const rowData = [];
+                const tdElements = row.querySelectorAll('td');
+                tdElements.forEach(td => {
+                    rowData.push(td.textContent.trim());
+                });
+                // تجاهل الصفوف الفارغة
+                if (rowData.length > 0 && !(rowData.length === 1 && rowData[0].includes("لم يتم"))) {
+                    rows.push(rowData);
+                }
+            });
+            
+            if (rows.length === 0) {
+                alert('لا توجد بيانات لتصديرها');
+                return;
+            }
+            
+            try {
+                // تحديث قالب PDF بالبيانات
+                updatePDFTemplate(headers, rows, reportTitle);
+                
+                // إنشاء PDF
+                await generatePDFFromTemplate(reportTitle);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
+            }
+        }
+        
+        // تصدير تقييم البونص إلى PDF
+        async function exportEvaluationToPDF() {
+            if (evaluationResults.length === 0) {
+                alert('لا توجد بيانات لتصديرها');
+                return;
+            }
+            
+            const headers = ['اسم المطعم', 'المدير', 'نسبة المبيعات %', 'نسبة الربح %', 'نسبة العملاء %', 'الشكاوى', 'النسبة الإجمالية %', 'شريحة البونص', 'مبلغ البونص', 'الحالة'];
+            
+            const rows = evaluationResults.map(result => [
+                result.arabicName,
+                result.manager,
+                formatNumber(result.salesAchievement, 1) + '%',
+                formatNumber(result.profitAchievement, 1) + '%',
+                formatNumber(result.customersAchievement, 1) + '%',
+                result.complaints,
+                formatNumber(result.overallAchievement, 1) + '%',
+                result.bonusTier,
+                formatNumber(result.bonusAmount, 0),
+                result.status
+            ]);
+            
+            const month = $('#report-month').val();
+            const reportTitle = `تقرير البونص الشهري - ${month}`;
+            
+            try {
+                // تحديث قالب PDF بالبيانات
+                updatePDFTemplate(headers, rows, reportTitle, month);
+                
+                // إنشاء PDF
+                await generatePDFFromTemplate(reportTitle);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
+            }
+        }
+        
+        // تحديث قالب PDF بالبيانات
+        function updatePDFTemplate(headers, rows, reportTitle, month = null) {
+            // تحديث معلومات التقرير
+            const now = new Date();
+            
+            $('#pdf-report-title').text(reportTitle);
+            $('#pdf-subtitle').text(`عدد السجلات: ${rows.length}`);
+            
+            if (month) {
+                $('#pdf-month').text(month);
+            } else {
+                const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                                  'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+                $('#pdf-month').text(monthNames[now.getMonth()]);
+            }
+            
+            $('#pdf-print-date').text(formatDate(now));
+            
+            // إنشاء الجدول في قالب PDF
+            const tableContainer = $('#pdf-table-container');
+            tableContainer.empty();
+            
+            let tableHTML = `
+                <table style="font-size: 8px; border-collapse: collapse; width: 100%; margin-top: 20px; line-height: 1.1;">
+                    <thead>
+                        <tr style="background-color: #dc3545; color: white; height: 12px;">
+            `;
+            
+            // إضافة العناوين
+            headers.forEach(header => {
+                tableHTML += `<th style="padding: 2px; border: 1px solid #000; text-align: center; font-size: 9px; font-weight: bold;">${header}</th>`;
+            });
+            
+            tableHTML += `</tr></thead><tbody>`;
+            
+            // إضافة الصفوف
+            rows.forEach((row, rowIndex) => {
+                const bgColor = rowIndex % 2 === 0 ? '#f8f9fa' : '#ffffff';
+                tableHTML += `<tr style="background-color: ${bgColor}; height: 11px;">`;
+                
+                row.forEach(cell => {
+                    // زيادة حجم خط الأرقام بنسبة 30%
+                    const cellStyle = /\d/.test(cell) ? 'font-size: 10.4px;' : 'font-size: 9px;';
+                    tableHTML += `<td style="padding: 2px; border: 1px solid #ddd; text-align: center; ${cellStyle}">${cell}</td>`;
+                });
+                
+                tableHTML += `</tr>`;
+            });
+            
+            tableHTML += `</tbody></table>`;
+            
+            tableContainer.html(tableHTML);
+        }
+        
+        // دالة حفظ PDF من القالب
+        async function generatePDFFromTemplate(fileName) {
+            if (!window.jspdf) {
+                alert('مكتبة PDF غير محملة. يرجى تحديث الصفحة.');
+                return;
+            }
+            
+            try {
+                const element = document.getElementById('pdf-template');
+                
+                // إظهار العنصر مؤقتاً لالتقاط الصورة
+                const originalDisplay = element.style.display;
+                const originalPosition = element.style.position;
+                const originalLeft = element.style.left;
+                const originalTop = element.style.top;
+                const originalWidth = element.style.width;
+                const originalHeight = element.style.height;
+                const originalZIndex = element.style.zIndex;
+                
+                element.style.display = 'block';
+                element.style.position = 'fixed';
+                element.style.left = '0';
+                element.style.top = '0';
+                element.style.width = '794px';
+                element.style.height = '1123px';
+                element.style.zIndex = '10000';
+                element.style.background = 'white';
+                element.style.padding = '5px';
+                
+                // استخدام html2canvas لالتقاط الصورة
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#FFFFFF',
+                    width: 794,
+                    height: 1123,
+                    windowWidth: 794,
+                    windowHeight: 1123
+                });
+                
+                // إعادة العنصر إلى وضعه الأصلي
+                element.style.display = originalDisplay;
+                element.style.position = originalPosition;
+                element.style.left = originalLeft;
+                element.style.top = originalTop;
+                element.style.width = originalWidth;
+                element.style.height = originalHeight;
+                element.style.zIndex = originalZIndex;
+                
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4');
+                
+                const imgWidth = pdf.internal.pageSize.getWidth();
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // إضافة الصورة إلى PDF
+                pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                
+                // تنظيف اسم الملف
+                const cleanFileName = fileName.replace(/[^\w\u0600-\u06FF\s]/g, '');
+                const finalFileName = `${cleanFileName}_${formatDate(new Date(), '_')}.pdf`;
+                
+                pdf.save(finalFileName);
+                
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
+            }
+        }
+        
+        // توليد تقرير شهري PDF
+        async function generateMonthlyReport() {
+            if (evaluationResults.length === 0) {
+                alert('لا توجد بيانات لتوليد التقرير');
+                return;
+            }
+            
+            const month = $('#report-month').val();
+            const reportTitle = `تقرير البونص الشهري - ${month}`;
+            
+            // استخدام نفس دالة تصدير تقييم البونص
+            await exportEvaluationToPDF();
+        }
+        
+        // توليد تقرير المديرين
+        async function generateManagersReport() {
+            if (evaluationResults.length === 0) {
+                alert('لا توجد بيانات لتوليد التقرير');
+                return;
+            }
+            
+            // تجميع البيانات حسب المدير
+            const managers = {};
+            evaluationResults.forEach(result => {
+                if (!managers[result.manager]) {
+                    managers[result.manager] = {
+                        restaurants: [],
+                        totalBonus: 0,
+                        avgAchievement: 0,
+                        restaurantCount: 0
+                    };
+                }
+                
+                managers[result.manager].restaurants.push(result.arabicName);
+                managers[result.manager].totalBonus += result.bonusAmount;
+                managers[result.manager].restaurantCount++;
+            });
+            
+            // حساب المتوسط لكل مدير
+            Object.keys(managers).forEach(manager => {
+                const managerResults = evaluationResults.filter(r => r.manager === manager);
+                const avg = managerResults.reduce((sum, r) => sum + r.overallAchievement, 0) / managerResults.length;
+                managers[manager].avgAchievement = avg;
+            });
+            
+            const headers = ['المدير', 'عدد المطاعم', 'متوسط التحقيق %', 'إجمالي البونص'];
+            
+            const rows = Object.keys(managers).map(manager => {
+                const data = managers[manager];
+                return [
+                    manager,
+                    data.restaurantCount,
+                    formatNumber(data.avgAchievement, 1) + '%',
+                    formatNumber(data.totalBonus, 0)
+                ];
+            });
+            
+            const month = $('#report-month').val();
+            const reportTitle = `تقرير أداء المديرين - ${month}`;
+            
+            try {
+                // تحديث قالب PDF بالبيانات
+                updatePDFTemplate(headers, rows, reportTitle, month);
+                
+                // إنشاء PDF
+                await generatePDFFromTemplate(reportTitle);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
+            }
+        }
+        
+        // توليد تقرير مطعم فردي
+        async function generateRestaurantReport() {
+            if (!selectedRestaurantForReport || !evaluationResults.length) {
+                alert('يرجى اختيار مطعم أولاً');
+                return;
+            }
+            
+            const result = evaluationResults.find(r => r.restaurantKey === selectedRestaurantForReport);
+            if (!result) {
+                alert('لم يتم العثور على بيانات للمطعم المحدد');
+                return;
+            }
+            
+            const target = targetsData[selectedRestaurantForReport];
+            const actual = actualData[selectedRestaurantForReport];
+            
+            const headers = ['البند', 'الهدف', 'الفعلي', 'النسبة %'];
+            
+            const rows = [
+                ['المبيعات', formatNumber(target.sales), formatNumber(actual.sales), formatNumber(result.salesAchievement, 1) + '%'],
+                ['الربح', formatNumber(target.profit), formatNumber(actual.profit), formatNumber(result.profitAchievement, 1) + '%'],
+                ['عدد العملاء', formatNumber(target.customers), formatNumber(actual.customers), formatNumber(result.customersAchievement, 1) + '%'],
+                ['الشكاوى', target.complaints, actual.complaints, ''],
+                ['', '', '', ''],
+                ['النسبة الإجمالية', '', '', formatNumber(result.overallAchievement, 1) + '%'],
+                ['شريحة البونص', '', '', result.bonusTier],
+                ['مبلغ البونص', '', '', formatNumber(result.bonusAmount, 0)],
+                ['الحالة', '', '', result.status]
+            ];
+            
+            const month = $('#report-month').val();
+            const reportTitle = `تقرير أداء ${result.arabicName} - ${month}`;
+            
+            try {
+                // تحديث قالب PDF بالبيانات
+                updatePDFTemplate(headers, rows, reportTitle, month);
+                
+                // إنشاء PDF
+                await generatePDFFromTemplate(reportTitle);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
+            }
+        }
+        
+        // مسح جميع البيانات
+        function clearData() {
+            if (confirm('هل أنت متأكد من رغبتك في مسح جميع البيانات المحفوظة؟\n\nهذا الإجراء لا يمكن التراجع عنه.')) {
+                // مسح البيانات من localStorage
+                localStorage.removeItem('naif_targetsData');
+                localStorage.removeItem('naif_actualData');
+                localStorage.removeItem('naif_evaluationResults');
+                
+                // مسح البيانات من الذاكرة
+                targetsData = {};
+                actualData = {};
+                evaluationResults = [];
+                
+                // إعادة تعيين الملفات
+                $('#target-file1').val('');
+                $('#target-file2').val('');
+                $('#result-file1').val('');
+                $('#result-file2').val('');
+                
+                $('#target-file1-status').html('<span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>');
+                $('#target-file2-status').html('<span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>');
+                $('#result-file1-status').html('<span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>');
+                $('#result-file2-status').html('<span class="badge bg-secondary">لم يتم رفع أي ملف بعد</span>');
+                
+                // إعادة تعيين الأزرار
+                $('#process-targets-btn').prop('disabled', true);
+                $('#process-results-btn').prop('disabled', true);
+                
+                // إعادة تعيين الجداول
+                $('#targets-tbody').html('<tr><td colspan="9" class="text-center">لم يتم تحميل بيانات الأهداف بعد</td></tr>');
+                $('#evaluation-tbody').html('<tr><td colspan="10" class="text-center">لم يتم معالجة بيانات النتائج بعد</td></tr>');
+                
+                // إعادة تعيين الإحصائيات
+                updateStatistics();
+                
+                // إعادة تعيين البحث عن المطاعم
+                selectedRestaurantForReport = null;
+                $('#restaurant-search').val('');
+                $('#restaurant-suggestions').hide().empty();
+                $('#generate-restaurant-report').prop('disabled', true);
+                
+                alert('تم مسح جميع البيانات بنجاح');
+            }
+        }
+        
+        // تصدير الأهداف إلى Excel
+        function exportTargetsToExcel() {
+            if (Object.keys(targetsData).length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            const data = Object.values(targetsData).map(r => [
+                r.arabicName,
+                r.sales,
+                r.cost,
+                r.salaries,
+                r.extra,
+                r.profit,
+                r.customers,
+                r.avgBill,
+                r.complaints
+            ]);
+            
+            const ws = XLSX.utils.aoa_to_sheet([
+                ['اسم المطعم', 'المبيعات', 'التكلفة', 'الرواتب', 'الاضافي', 'الربح', 'عدد العملاء', 'متوسط الفاتورة', 'عدد الشكاوى'],
+                ...data
+            ]);
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "الأهداف");
+            
+            const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                              'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const now = new Date();
+            const fileName = `أهداف_المطاعم_${monthNames[now.getMonth()]}_${now.getFullYear()}.xlsx`;
+            
+            XLSX.writeFile(wb, fileName);
+        }
+        
+        // تصدير النتائج إلى Excel
+        function exportResultsToExcel() {
+            if (evaluationResults.length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            const data = evaluationResults.map(r => [
+                r.arabicName,
+                r.manager,
+                formatNumber(r.salesAchievement, 1) + '%',
+                formatNumber(r.profitAchievement, 1) + '%',
+                formatNumber(r.customersAchievement, 1) + '%',
+                r.complaints,
+                formatNumber(r.overallAchievement, 1) + '%',
+                r.bonusTier,
+                formatNumber(r.bonusAmount, 0),
+                r.status
+            ]);
+            
+            const ws = XLSX.utils.aoa_to_sheet([
+                ['اسم المطعم', 'المدير', 'نسبة المبيعات', 'نسبة الربح', 'نسبة العملاء', 'الشكاوى', 'النسبة الإجمالية', 'شريحة البونص', 'مبلغ البونص', 'الحالة'],
+                ...data
+            ]);
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "النتائج");
+            
+            const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                              'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const now = new Date();
+            const fileName = `نتائج_البونص_${monthNames[now.getMonth()]}_${now.getFullYear()}.xlsx`;
+            
+            XLSX.writeFile(wb, fileName);
+        }
+        
+        // تنسيق الأرقام
+        function formatNumber(num, decimals = 0) {
+            if (isNaN(num)) return "0";
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+        }
+        
+        // تنسيق التاريخ
+        function formatDate(date, separator = '/') {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}${separator}${month}${separator}${year}`;
+        }
+        
+        // دالة مساعدة للبحث عن مطعم
+        function searchRestaurant() {
+            const query = $('#restaurant-search').val();
+            showRestaurantSuggestions(query);
+        }
+    </script>
+</body>
+</html>
