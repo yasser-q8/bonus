@@ -337,6 +337,7 @@
             display: flex;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--gray-medium);
+            flex-wrap: wrap;
         }
         
         .tab {
@@ -346,6 +347,7 @@
             color: var(--text-light);
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
         
         .tab:hover {
@@ -498,6 +500,15 @@
             font-family: 'Times New Roman', serif;
         }
         
+        .pdf-page {
+            page-break-after: always;
+            margin-bottom: 20px;
+        }
+        
+        .pdf-page:last-child {
+            page-break-after: avoid;
+        }
+        
         /* تخصيص لأجهزة المحمول */
         @media (max-width: 768px) {
             .navbar {
@@ -538,6 +549,11 @@
             
             .signature-card:hover { 
                 transform: none; 
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
             }
         }
         
@@ -909,18 +925,18 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="export-incentives-pdf">
-                    <i class="fas fa-file-pdf"></i> تصدير جدول الحوافز PDF
-                </button>
-                <button class="btn btn-secondary" id="export-targets-pdf">
-                    <i class="fas fa-file-pdf"></i> تصدير جدول الأهداف PDF
-                </button>
-                <button class="btn btn-success" id="export-results-pdf">
-                    <i class="fas fa-file-pdf"></i> تصدير جدول النتائج PDF
-                </button>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="export-incentives-pdf">
+                        <i class="fas fa-file-pdf"></i> تصدير جدول الحوافز PDF
+                    </button>
+                    <button class="btn btn-secondary" id="export-targets-pdf">
+                        <i class="fas fa-file-pdf"></i> تصدير جدول الأهداف PDF
+                    </button>
+                    <button class="btn btn-success" id="export-results-pdf">
+                        <i class="fas fa-file-pdf"></i> تصدير جدول النتائج PDF
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -929,26 +945,62 @@
             <h1 class="page-title">الرسوم البيانية 📊</h1>
             
             <div class="tabs">
-                <div class="tab active" data-chart="sales">أعلى 10 أفرع في المبيعات</div>
-                <div class="tab" data-chart="costs">أعلى 10 أفرع في تخفيض التكاليف</div>
-                <div class="tab" data-chart="customers">أعلى 10 أفرع في زيادة العملاء والقيمة</div>
+                <div class="tab active" data-chart="sales">أعلى 10 في تحقيق المبيعات</div>
+                <div class="tab" data-chart="costs">أعلى 10 في تخفيض التكلفة</div>
+                <div class="tab" data-chart="salaries">أعلى 10 في تخفيض الرواتب</div>
+                <div class="tab" data-chart="extra">أعلى 10 في تخفيض الإضافي</div>
+                <div class="tab" data-chart="total-costs">أعلى 10 في تخفيض التكاليف مجتمعة</div>
+                <div class="tab" data-chart="bill">أعلى 10 في ارتفاع قيمة الفاتورة</div>
+                <div class="tab" data-chart="customers">أعلى 10 في ارتفاع العملاء</div>
+                <div class="tab" data-chart="complaints">أعلى 10 في تخفيض الشكاوى</div>
             </div>
             
             <div class="charts-container">
                 <div class="chart-card">
-                    <h3 class="chart-title" id="chart1-title">أعلى 10 أفرع في المبيعات</h3>
+                    <h3 class="chart-title" id="chart1-title">أعلى 10 أفرع في تحقيق مبيعات الهدف</h3>
                     <canvas id="sales-chart"></canvas>
                 </div>
                 
                 <div class="chart-card">
-                    <h3 class="chart-title" id="chart2-title">أعلى 10 أفرع في تخفيض التكاليف</h3>
+                    <h3 class="chart-title" id="chart2-title">أعلى 10 أفرع في تخفيض نسبة التكلفة</h3>
                     <canvas id="costs-chart"></canvas>
                 </div>
                 
                 <div class="chart-card">
-                    <h3 class="chart-title" id="chart3-title">أعلى 10 أفرع في زيادة العملاء والقيمة</h3>
+                    <h3 class="chart-title" id="chart3-title">أعلى 10 أفرع في تخفيض الرواتب</h3>
+                    <canvas id="salaries-chart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title" id="chart4-title">أعلى 10 أفرع في تخفيض الإضافي</h3>
+                    <canvas id="extra-chart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title" id="chart5-title">أعلى 10 أفرع في تخفيض التكاليف مجتمعة</h3>
+                    <canvas id="total-costs-chart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title" id="chart6-title">أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة</h3>
+                    <canvas id="bill-chart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title" id="chart7-title">أعلى 10 أفرع في ارتفاع عدد العملاء</h3>
                     <canvas id="customers-chart"></canvas>
                 </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title" id="chart8-title">أعلى 10 أفرع في تخفيض عدد الشكاوى</h3>
+                    <canvas id="complaints-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="export-charts-pdf">
+                    <i class="fas fa-file-pdf"></i> تصدير جميع الرسوم البيانية PDF
+                </button>
             </div>
         </div>
         
@@ -1037,43 +1089,9 @@
     
     <!-- قالب PDF مخفي -->
     <div id="pdf-template" class="pdf-template">
-        <div class="pdf-header" style="padding: 5px; margin-bottom: 10px; padding-left: 30px;">
-            <div class="pdf-header-row" style="text-align: center;">
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <img src="https://i.postimg.cc/NM2zJWZD/NAIF-LOGO.jpg" alt="شعار الشركة" 
-                         style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a90e2; margin-bottom: 5px; margin: 0 auto 5px; display: block;">
-                    <h2 style="color: #4a90e2; margin: 0; font-size: 18px;">
-                        شركة نايف للأغذية
-                    </h2>
-                </div>
-                <h3 style="color: #4a90e2; margin: 0 0 8px 0; font-size: 16px;" id="pdf-title">تقرير الحوافز</h3>
-                <div style="margin-bottom: 8px; text-align: center;">
-                    <div style="font-size: 14px; font-weight: bold; display: inline-block;">
-                        عدد الأفرع: <span id="pdf-branch-count"></span>
-                    </div>
-                    <div style="display: inline-block; width: 1cm;"></div>
-                    <div style="font-size: 12px; display: inline-block;">
-                        إجمالي الحوافز: <span id="pdf-total-incentives"></span> دينار كويتي
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px;">
-                    <div>تاريخ التقرير: <span id="pdf-report-date"></span></div>
-                    <div>تاريخ الطباعة: <span id="pdf-print-date"></span></div>
-                </div>
-            </div>
+        <div id="pdf-pages">
+            <!-- سيتم إنشاء الصفحات هنا -->
         </div>
-        
-        <div id="pdf-summary" style="margin-bottom: 10px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 11px; padding-left: 30px;">
-        </div>
-        
-        <table class="statement-table" id="pdf-statement-table" style="font-size: 10px; border-collapse: collapse; width: calc(100% - 40px); margin-left: 30px;">
-            <thead id="pdf-table-head">
-            </thead>
-            <tbody id="pdf-table-body" style="font-size: 9px;">
-            </tbody>
-            <tfoot id="pdf-totals" style="font-size: 11px; font-weight: bold;">
-            </tfoot>
-        </table>
     </div>
     
     <script>
@@ -1091,8 +1109,14 @@
             charts: {
                 sales: null,
                 costs: null,
-                customers: null
-            }
+                salaries: null,
+                extra: null,
+                totalCosts: null,
+                bill: null,
+                customers: null,
+                complaints: null
+            },
+            branchPerformance: {} // لتخزين أداء الفروع لاستخدامها في الرسوم البيانية
         };
         
         // تهيئة التطبيق عند تحميل الصفحة
@@ -1149,7 +1173,9 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
-                    switchTab(tabId);
+                    if (tabId) {
+                        switchTab(tabId);
+                    }
                 });
             });
             
@@ -1172,6 +1198,7 @@
             document.getElementById('export-incentives-pdf').addEventListener('click', exportIncentivesPDF);
             document.getElementById('export-targets-pdf').addEventListener('click', exportTargetsPDF);
             document.getElementById('export-results-pdf').addEventListener('click', exportActualsPDF);
+            document.getElementById('export-charts-pdf').addEventListener('click', exportChartsPDF);
             document.getElementById('save-settings').addEventListener('click', saveSettings);
             document.getElementById('reset-settings').addEventListener('click', resetSettings);
         }
@@ -1231,9 +1258,14 @@
             
             // تحديث عناوين الرسوم البيانية
             const titles = {
-                sales: "أعلى 10 أفرع في المبيعات",
-                costs: "أعلى 10 أفرع في تخفيض التكاليف",
-                customers: "أعلى 10 أفرع في زيادة العملاء والقيمة"
+                sales: "أعلى 10 أفرع في تحقيق مبيعات الهدف",
+                costs: "أعلى 10 أفرع في تخفيض نسبة التكلفة",
+                salaries: "أعلى 10 أفرع في تخفيض الرواتب",
+                extra: "أعلى 10 أفرع في تخفيض الإضافي",
+                'total-costs': "أعلى 10 أفرع في تخفيض التكاليف مجتمعة",
+                bill: "أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة",
+                customers: "أعلى 10 أفرع في ارتفاع عدد العملاء",
+                complaints: "أعلى 10 أفرع في تخفيض عدد الشكاوى"
             };
             
             document.getElementById('chart1-title').textContent = titles[chartId];
@@ -1336,27 +1368,32 @@
         // تحديث بطاقات الإحصاءات
         function updateStatsCards() {
             if (appData.incentives.length > 0) {
-                const totalIncentives = appData.incentives.reduce((sum, item) => sum + item.totalIncentive, 0);
-                const avgIncentives = totalIncentives / appData.incentives.length;
+                const totalIncentives = appData.incentives.reduce((sum, item) => sum + Math.round(item.totalIncentive), 0);
+                const avgIncentives = Math.round(totalIncentives / appData.incentives.length);
                 
                 // إيجاد الفرع ذو أعلى حافز
                 let topBranch = {branchName: '-', incentive: 0};
                 appData.incentives.forEach(item => {
-                    if (item.totalIncentive > topBranch.incentive) {
-                        topBranch = {branchName: item.branch, incentive: item.totalIncentive};
+                    if (Math.round(item.totalIncentive) > topBranch.incentive) {
+                        topBranch = {branchName: item.branch, incentive: Math.round(item.totalIncentive)};
                     }
                 });
                 
-                document.getElementById('total-incentives').textContent = totalIncentives.toFixed(0);
-                document.getElementById('avg-incentives').textContent = avgIncentives.toFixed(0);
+                document.getElementById('total-incentives').textContent = totalIncentives.toLocaleString();
+                document.getElementById('avg-incentives').textContent = avgIncentives.toLocaleString();
                 document.getElementById('top-branch').textContent = topBranch.branchName;
-                document.getElementById('top-branch-value').textContent = `${topBranch.incentive.toFixed(0)} دينار`;
+                document.getElementById('top-branch-value').textContent = `${topBranch.incentive.toLocaleString()} دينار`;
             } else {
                 document.getElementById('total-incentives').textContent = '0';
                 document.getElementById('avg-incentives').textContent = '0';
                 document.getElementById('top-branch').textContent = '-';
                 document.getElementById('top-branch-value').textContent = '0 دينار';
             }
+        }
+        
+        // دالة تقريب الأرقام لأقرب عدد صحيح
+        function roundToNearest(value) {
+            return Math.round(Number(value));
         }
         
         // معالجة تحميل الملفات
@@ -1503,13 +1540,20 @@
                 branchName = branchName.replace(/\s+/g, ' ').trim();
                 
                 // تحويل القيم الرقمية
-                const totalSales = parseFloat(row[columnIndices.sales]) || 0;
-                const costPercentage = parseFloat(row[columnIndices.cost]) || 0;
-                const salaries = parseFloat(row[columnIndices.salaries]) || 0;
-                const extra = parseFloat(row[columnIndices.extra]) || 0;
+                const totalSales = roundToNearest(parseFloat(row[columnIndices.sales]) || 0);
+                let costPercentage = parseFloat(row[columnIndices.cost]) || 0;
+                
+                // تصحيح نسبة التكلفة لتبدو 42.22% بدلاً من 0.4222
+                // إذا كانت القيمة أقل من 1 (مثل 0.4222) اضربها في 100
+                if (costPercentage < 1) {
+                    costPercentage = costPercentage * 100;
+                }
+                
+                const salaries = roundToNearest(parseFloat(row[columnIndices.salaries]) || 0);
+                const extra = roundToNearest(parseFloat(row[columnIndices.extra]) || 0);
                 const avgBillValue = parseFloat(row[columnIndices.avgBill]) || 0;
-                const customerCount = parseInt(row[columnIndices.customers]) || 0;
-                const complaints = parseInt(row[columnIndices.complaints]) || 0;
+                const customerCount = roundToNearest(parseInt(row[columnIndices.customers]) || 0);
+                const complaints = roundToNearest(parseInt(row[columnIndices.complaints]) || 0);
                 
                 processedData.push({
                     branch: branchName,
@@ -1638,6 +1682,7 @@
             // استخدام setTimeout للسماح بتحديث واجهة المستخدم
             setTimeout(() => {
                 appData.incentives = [];
+                appData.branchPerformance = {};
                 let matchedBranches = 0;
                 let unmatchedBranches = [];
                 let matchDetails = [];
@@ -1785,6 +1830,11 @@
                     const customerIncreasePercent = target.customerCount > 0 ? 
                         ((actual.customerCount - target.customerCount) / target.customerCount) * 100 : 0;
                     
+                    // حساب تخفيض الشكاوى
+                    const complaintsReduction = target.complaints - actual.complaints;
+                    const complaintsReductionPercent = target.complaints > 0 ? 
+                        (complaintsReduction / target.complaints) * 100 : 0;
+                    
                     // حساب حافز زيادة القيمة والعملاء
                     let customerIncentive = 0;
                     if (billIncrease >= 0.250 && customerIncreasePercent >= 10) {
@@ -1794,7 +1844,7 @@
                     }
                     
                     // إجمالي الحافز
-                    const totalIncentive = salesIncentive + costIncentive + customerIncentive;
+                    const totalIncentive = roundToNearest(salesIncentive + costIncentive + customerIncentive);
                     
                     // تحديد فئة الحافز
                     let incentiveClass = '';
@@ -1823,6 +1873,18 @@
                         statusClass = 'cell-negative';
                     }
                     
+                    // حفظ أداء الفرع لاستخدامه في الرسوم البيانية
+                    appData.branchPerformance[branch.restaurant] = {
+                        salesPercentage: salesPercentage,
+                        costReductionPercent: costReductionPercent,
+                        salariesReductionPercent: salariesReductionPercent,
+                        extraReductionPercent: extraReductionPercent,
+                        totalCostReductionPercent: totalCostReductionPercent,
+                        billIncrease: billIncrease * 1000, // تحويل للفلس
+                        customerIncreasePercent: customerIncreasePercent,
+                        complaintsReductionPercent: complaintsReductionPercent
+                    };
+                    
                     // إضافة إلى مصفوفة الحوافز
                     appData.incentives.push({
                         branch: branch.restaurant,
@@ -1843,6 +1905,9 @@
                 
                 // تحديث شريط التقدم
                 updateProgress(100, 'اكتمل حساب الحوافز!');
+                
+                // ترتيب جدول الحوافز من الأعلى إلى الأقل
+                appData.incentives.sort((a, b) => b.totalIncentive - a.totalIncentive);
                 
                 // تحديث جدول الحوافز
                 updateIncentivesTable();
@@ -1882,12 +1947,12 @@
                     <td><strong>${item.branch}</strong></td>
                     <td>${item.areaManager}</td>
                     <td class="${item.salesPercentage >= 100 ? 'cell-positive' : 'cell-negative'}">${item.salesPercentage.toFixed(2)}%</td>
-                    <td class="${item.salesIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${item.salesIncentive}</td>
+                    <td class="${item.salesIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.salesIncentive)}</td>
                     <td class="${item.costReduction > 0 ? 'cell-positive' : 'cell-negative'}">${item.costReduction.toFixed(2)}%</td>
-                    <td class="${item.costIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${item.costIncentive}</td>
+                    <td class="${item.costIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.costIncentive)}</td>
                     <td>${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
-                    <td class="${item.customerIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${item.customerIncentive}</td>
-                    <td class="incentive-achieved"><strong>${item.totalIncentive}</strong></td>
+                    <td class="${item.customerIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.customerIncentive)}</td>
+                    <td class="incentive-achieved"><strong>${roundToNearest(item.totalIncentive)}</strong></td>
                     <td class="${item.statusClass}">${item.status}</td>
                 `;
                 tbody.appendChild(row);
@@ -1898,7 +1963,7 @@
         
         // تحديث الرسوم البيانية
         function updateCharts() {
-            if (appData.incentives.length === 0) {
+            if (appData.incentives.length === 0 || Object.keys(appData.branchPerformance).length === 0) {
                 // عرض رسالة إذا لم تكن هناك بيانات
                 document.querySelectorAll('canvas').forEach(canvas => {
                     const ctx = canvas.getContext('2d');
@@ -1911,19 +1976,59 @@
                 return;
             }
             
-            // فرز البيانات للحصول على أفضل 10 أفرع لكل بند
-            const salesSorted = [...appData.incentives].sort((a, b) => b.salesPercentage - a.salesPercentage).slice(0, 10);
-            const costsSorted = [...appData.incentives].sort((a, b) => b.costReduction - a.costReduction).slice(0, 10);
-            const customersSorted = [...appData.incentives].sort((a, b) => {
-                const aScore = a.billIncrease * 1000 + a.customerIncrease;
-                const bScore = b.billIncrease * 1000 + b.customerIncrease;
-                return bScore - aScore;
-            }).slice(0, 10);
+            // الحصول على البيانات للأفرع المطابقة فقط
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
+            });
+            
+            // فرز البيانات للحصول على أفضل 10 أفرع لكل مؤشر
+            const salesSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.salesPercentage - a.performance.salesPercentage)
+                .slice(0, 10);
+            
+            const costsSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.costReductionPercent - a.performance.costReductionPercent)
+                .slice(0, 10);
+            
+            const salariesSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.salariesReductionPercent - a.performance.salariesReductionPercent)
+                .slice(0, 10);
+            
+            const extraSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.extraReductionPercent - a.performance.extraReductionPercent)
+                .slice(0, 10);
+            
+            const totalCostsSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.totalCostReductionPercent - a.performance.totalCostReductionPercent)
+                .slice(0, 10);
+            
+            const billSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.billIncrease - a.performance.billIncrease)
+                .slice(0, 10);
+            
+            const customersSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.customerIncreasePercent - a.performance.customerIncreasePercent)
+                .slice(0, 10);
+            
+            const complaintsSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.complaintsReductionPercent - a.performance.complaintsReductionPercent)
+                .slice(0, 10);
             
             // تدمير الرسوم البيانية القديمة إن وجدت
             if (appData.charts.sales) appData.charts.sales.destroy();
             if (appData.charts.costs) appData.charts.costs.destroy();
+            if (appData.charts.salaries) appData.charts.salaries.destroy();
+            if (appData.charts.extra) appData.charts.extra.destroy();
+            if (appData.charts.totalCosts) appData.charts.totalCosts.destroy();
+            if (appData.charts.bill) appData.charts.bill.destroy();
             if (appData.charts.customers) appData.charts.customers.destroy();
+            if (appData.charts.complaints) appData.charts.complaints.destroy();
             
             // رسم مخطط المبيعات
             const salesCtx = document.getElementById('sales-chart').getContext('2d');
@@ -1932,20 +2037,20 @@
                 data: {
                     labels: salesSorted.map(item => item.branch),
                     datasets: [{
-                        label: 'نسبة المبيعات %',
-                        data: salesSorted.map(item => item.salesPercentage),
+                        label: 'نسبة تحقيق المبيعات %',
+                        data: salesSorted.map(item => item.performance.salesPercentage),
                         backgroundColor: salesSorted.map(item => 
-                            item.salesPercentage >= 110 ? 'rgba(76, 175, 80, 0.7)' : 
-                            item.salesPercentage >= 105 ? 'rgba(255, 193, 7, 0.7)' : 
-                            item.salesPercentage >= 100 ? 'rgba(33, 150, 243, 0.7)' : 
-                            item.salesPercentage >= 95 ? 'rgba(158, 158, 158, 0.7)' : 
+                            item.performance.salesPercentage >= 110 ? 'rgba(76, 175, 80, 0.7)' : 
+                            item.performance.salesPercentage >= 105 ? 'rgba(255, 193, 7, 0.7)' : 
+                            item.performance.salesPercentage >= 100 ? 'rgba(33, 150, 243, 0.7)' : 
+                            item.performance.salesPercentage >= 95 ? 'rgba(158, 158, 158, 0.7)' : 
                             'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: salesSorted.map(item => 
-                            item.salesPercentage >= 110 ? 'rgba(76, 175, 80, 1)' : 
-                            item.salesPercentage >= 105 ? 'rgba(255, 193, 7, 1)' : 
-                            item.salesPercentage >= 100 ? 'rgba(33, 150, 243, 1)' : 
-                            item.salesPercentage >= 95 ? 'rgba(158, 158, 158, 1)' : 
+                            item.performance.salesPercentage >= 110 ? 'rgba(76, 175, 80, 1)' : 
+                            item.performance.salesPercentage >= 105 ? 'rgba(255, 193, 7, 1)' : 
+                            item.performance.salesPercentage >= 100 ? 'rgba(33, 150, 243, 1)' : 
+                            item.performance.salesPercentage >= 95 ? 'rgba(158, 158, 158, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
                         borderWidth: 1
@@ -1962,7 +2067,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `نسبة المبيعات: ${context.raw.toFixed(2)}%`;
+                                    return `نسبة تحقيق المبيعات: ${context.raw.toFixed(2)}%`;
                                 }
                             }
                         }
@@ -1979,23 +2084,167 @@
                 }
             });
             
-            // رسم مخطط تخفيض التكاليف
+            // رسم مخطط تخفيض التكلفة
             const costsCtx = document.getElementById('costs-chart').getContext('2d');
             appData.charts.costs = new Chart(costsCtx, {
                 type: 'bar',
                 data: {
                     labels: costsSorted.map(item => item.branch),
                     datasets: [{
-                        label: 'تخفيض التكاليف %',
-                        data: costsSorted.map(item => item.costReduction),
+                        label: 'نسبة تخفيض التكلفة %',
+                        data: costsSorted.map(item => item.performance.costReductionPercent),
                         backgroundColor: costsSorted.map(item => 
-                            item.costReduction >= 2 ? 'rgba(76, 175, 80, 0.7)' : 
-                            item.costReduction >= 1 ? 'rgba(33, 150, 243, 0.7)' : 
-                            'rgba(158, 158, 158, 0.7)'
+                            item.performance.costReductionPercent > 0 ? 'rgba(76, 175, 80, 0.7)' : 
+                            'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: costsSorted.map(item => 
-                            item.costReduction >= 2 ? 'rgba(76, 175, 80, 1)' : 
-                            item.costReduction >= 1 ? 'rgba(33, 150, 243, 1)' : 
+                            item.performance.costReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
+                            'rgba(244, 67, 54, 1)'
+                        ),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            rtl: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `نسبة تخفيض التكلفة: ${context.raw.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'النسبة المئوية %'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم مخطط تخفيض الرواتب
+            const salariesCtx = document.getElementById('salaries-chart').getContext('2d');
+            appData.charts.salaries = new Chart(salariesCtx, {
+                type: 'bar',
+                data: {
+                    labels: salariesSorted.map(item => item.branch),
+                    datasets: [{
+                        label: 'نسبة تخفيض الرواتب %',
+                        data: salariesSorted.map(item => item.performance.salariesReductionPercent),
+                        backgroundColor: salariesSorted.map(item => 
+                            item.performance.salariesReductionPercent > 0 ? 'rgba(76, 175, 80, 0.7)' : 
+                            'rgba(244, 67, 54, 0.7)'
+                        ),
+                        borderColor: salariesSorted.map(item => 
+                            item.performance.salariesReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
+                            'rgba(244, 67, 54, 1)'
+                        ),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            rtl: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `نسبة تخفيض الرواتب: ${context.raw.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'النسبة المئوية %'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم مخطط تخفيض الإضافي
+            const extraCtx = document.getElementById('extra-chart').getContext('2d');
+            appData.charts.extra = new Chart(extraCtx, {
+                type: 'bar',
+                data: {
+                    labels: extraSorted.map(item => item.branch),
+                    datasets: [{
+                        label: 'نسبة تخفيض الإضافي %',
+                        data: extraSorted.map(item => item.performance.extraReductionPercent),
+                        backgroundColor: extraSorted.map(item => 
+                            item.performance.extraReductionPercent > 0 ? 'rgba(76, 175, 80, 0.7)' : 
+                            'rgba(244, 67, 54, 0.7)'
+                        ),
+                        borderColor: extraSorted.map(item => 
+                            item.performance.extraReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
+                            'rgba(244, 67, 54, 1)'
+                        ),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            rtl: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `نسبة تخفيض الإضافي: ${context.raw.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'النسبة المئوية %'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم مخطط تخفيض التكاليف مجتمعة
+            const totalCostsCtx = document.getElementById('total-costs-chart').getContext('2d');
+            appData.charts.totalCosts = new Chart(totalCostsCtx, {
+                type: 'bar',
+                data: {
+                    labels: totalCostsSorted.map(item => item.branch),
+                    datasets: [{
+                        label: 'نسبة تخفيض التكاليف مجتمعة %',
+                        data: totalCostsSorted.map(item => item.performance.totalCostReductionPercent),
+                        backgroundColor: totalCostsSorted.map(item => 
+                            item.performance.totalCostReductionPercent >= 2 ? 'rgba(76, 175, 80, 0.7)' : 
+                            item.performance.totalCostReductionPercent >= 1 ? 'rgba(33, 150, 243, 0.7)' : 
+                            'rgba(158, 158, 158, 0.7)'
+                        ),
+                        borderColor: totalCostsSorted.map(item => 
+                            item.performance.totalCostReductionPercent >= 2 ? 'rgba(76, 175, 80, 1)' : 
+                            item.performance.totalCostReductionPercent >= 1 ? 'rgba(33, 150, 243, 1)' : 
                             'rgba(158, 158, 158, 1)'
                         ),
                         borderWidth: 1
@@ -2012,7 +2261,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `تخفيض التكاليف: ${context.raw.toFixed(2)}%`;
+                                    return `نسبة تخفيض التكاليف: ${context.raw.toFixed(2)}%`;
                                 }
                             }
                         }
@@ -2029,30 +2278,27 @@
                 }
             });
             
-            // رسم مخطط زيادة العملاء والقيمة
-            const customersCtx = document.getElementById('customers-chart').getContext('2d');
-            appData.charts.customers = new Chart(customersCtx, {
+            // رسم مخطط ارتفاع قيمة الفاتورة
+            const billCtx = document.getElementById('bill-chart').getContext('2d');
+            appData.charts.bill = new Chart(billCtx, {
                 type: 'bar',
                 data: {
-                    labels: customersSorted.map(item => item.branch),
-                    datasets: [
-                        {
-                            label: 'زيادة قيمة الفاتورة (بالفلس)',
-                            data: customersSorted.map(item => item.billIncrease * 1000),
-                            backgroundColor: 'rgba(33, 150, 243, 0.7)',
-                            borderColor: 'rgba(33, 150, 243, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'زيادة عدد العملاء %',
-                            data: customersSorted.map(item => item.customerIncrease),
-                            backgroundColor: 'rgba(255, 152, 0, 0.7)',
-                            borderColor: 'rgba(255, 152, 0, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y1'
-                        }
-                    ]
+                    labels: billSorted.map(item => item.branch),
+                    datasets: [{
+                        label: 'ارتفاع قيمة الفاتورة (فلس)',
+                        data: billSorted.map(item => item.performance.billIncrease),
+                        backgroundColor: billSorted.map(item => 
+                            item.performance.billIncrease >= 350 ? 'rgba(76, 175, 80, 0.7)' : 
+                            item.performance.billIncrease >= 250 ? 'rgba(33, 150, 243, 0.7)' : 
+                            'rgba(158, 158, 158, 0.7)'
+                        ),
+                        borderColor: billSorted.map(item => 
+                            item.performance.billIncrease >= 350 ? 'rgba(76, 175, 80, 1)' : 
+                            item.performance.billIncrease >= 250 ? 'rgba(33, 150, 243, 1)' : 
+                            'rgba(158, 158, 158, 1)'
+                        ),
+                        borderWidth: 1
+                    }]
                 },
                 options: {
                     responsive: true,
@@ -2065,35 +2311,115 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    if (context.datasetIndex === 0) {
-                                        return `زيادة قيمة الفاتورة: ${context.raw.toFixed(0)} فلس`;
-                                    } else {
-                                        return `زيادة عدد العملاء: ${context.raw.toFixed(1)}%`;
-                                    }
+                                    return `ارتفاع قيمة الفاتورة: ${context.raw.toFixed(0)} فلس`;
                                 }
                             }
                         }
                     },
                     scales: {
                         y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
+                            beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'زيادة قيمة الفاتورة (فلس)'
+                                text: 'الزيادة بالفلس'
                             }
-                        },
-                        y1: {
-                            type: 'linear',
+                        }
+                    }
+                }
+            });
+            
+            // رسم مخطط ارتفاع عدد العملاء
+            const customersCtx = document.getElementById('customers-chart').getContext('2d');
+            appData.charts.customers = new Chart(customersCtx, {
+                type: 'bar',
+                data: {
+                    labels: customersSorted.map(item => item.branch),
+                    datasets: [{
+                        label: 'نسبة زيادة العملاء %',
+                        data: customersSorted.map(item => item.performance.customerIncreasePercent),
+                        backgroundColor: customersSorted.map(item => 
+                            item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 0.7)' : 
+                            item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 0.7)' : 
+                            'rgba(158, 158, 158, 0.7)'
+                        ),
+                        borderColor: customersSorted.map(item => 
+                            item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 1)' : 
+                            item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 1)' : 
+                            'rgba(158, 158, 158, 1)'
+                        ),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
                             display: true,
-                            position: 'right',
+                            position: 'top',
+                            rtl: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `نسبة زيادة العملاء: ${context.raw.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'زيادة العملاء %'
-                            },
-                            grid: {
-                                drawOnChartArea: false
+                                text: 'النسبة المئوية %'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم مخطط تخفيض الشكاوى
+            const complaintsCtx = document.getElementById('complaints-chart').getContext('2d');
+            appData.charts.complaints = new Chart(complaintsCtx, {
+                type: 'bar',
+                data: {
+                    labels: complaintsSorted.map(item => item.branch),
+                    datasets: [{
+                        label: 'نسبة تخفيض الشكاوى %',
+                        data: complaintsSorted.map(item => item.performance.complaintsReductionPercent),
+                        backgroundColor: complaintsSorted.map(item => 
+                            item.performance.complaintsReductionPercent > 0 ? 'rgba(76, 175, 80, 0.7)' : 
+                            'rgba(244, 67, 54, 0.7)'
+                        ),
+                        borderColor: complaintsSorted.map(item => 
+                            item.performance.complaintsReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
+                            'rgba(244, 67, 54, 1)'
+                        ),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            rtl: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `نسبة تخفيض الشكاوى: ${context.raw.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'النسبة المئوية %'
                             }
                         }
                     }
@@ -2159,6 +2485,7 @@
                 appData.targets = [];
                 appData.actuals = [];
                 appData.incentives = [];
+                appData.branchPerformance = {};
                 
                 // تحديث الجداول
                 updateTargetsTable();
@@ -2172,10 +2499,13 @@
                 document.getElementById('targets-file-name').textContent = 'لم يتم تحميل ملف بعد';
                 document.getElementById('results-file-name').textContent = 'لم يتم تحميل ملف بعد';
                 
-                // مسح الرسوم البيانية
-                if (appData.charts.sales) appData.charts.sales.destroy();
-                if (appData.charts.costs) appData.charts.costs.destroy();
-                if (appData.charts.customers) appData.charts.customers.destroy();
+                // تدمير الرسوم البيانية
+                Object.keys(appData.charts).forEach(chartName => {
+                    if (appData.charts[chartName]) {
+                        appData.charts[chartName].destroy();
+                        appData.charts[chartName] = null;
+                    }
+                });
                 
                 // مسح الرسائل
                 document.getElementById('match-results').style.display = 'none';
@@ -2199,7 +2529,7 @@
             localStorage.setItem('naifIncentivesData', JSON.stringify(dataToSave));
         }
         
-        // تحديث التواريخ في قالب PDF
+        // تحديث التواريخ في تذييل PDF
         function updatePDFDates() {
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
@@ -2207,8 +2537,7 @@
             const year = now.getFullYear();
             const printDate = `${day}-${month}-${year}`;
             
-            document.getElementById('pdf-print-date').textContent = printDate;
-            document.getElementById('pdf-report-date').textContent = printDate;
+            return printDate;
         }
         
         // إظهار رسالة التحميل
@@ -2282,6 +2611,31 @@
             matchResultsDiv.style.display = 'block';
         }
         
+        // دالة إنشاء صفحة PDF
+        function createPDFPage(title, content) {
+            const printDate = updatePDFDates();
+            
+            return `
+                <div class="pdf-page">
+                    <div style="padding: 5px; margin-bottom: 10px; padding-left: 30px;">
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <img src="https://i.postimg.cc/NM2zJWZD/NAIF-LOGO.jpg" alt="شعار الشركة" 
+                                 style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a90e2; margin-bottom: 5px; margin: 0 auto 5px; display: block;">
+                            <h2 style="color: #4a90e2; margin: 0; font-size: 18px;">
+                                شركة نايف للأغذية
+                            </h2>
+                        </div>
+                        <h3 style="color: #4a90e2; margin: 0 0 8px 0; font-size: 16px; text-align: center;">${title}</h3>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px;">
+                            <div>تاريخ التقرير: ${printDate}</div>
+                            <div>تاريخ الطباعة: ${printDate}</div>
+                        </div>
+                    </div>
+                    ${content}
+                </div>
+            `;
+        }
+        
         // تصدير النتائج إلى PDF
         function exportResultsPDF() {
             if (appData.incentives.length === 0) {
@@ -2292,76 +2646,115 @@
             showLoading('جاري إنشاء ملف PDF...');
             
             setTimeout(() => {
-                const element = document.getElementById('pdf-template');
-                const title = document.getElementById('pdf-title');
-                const branchCount = document.getElementById('pdf-branch-count');
-                const totalIncentives = document.getElementById('pdf-total-incentives');
-                const summary = document.getElementById('pdf-summary');
-                const tableHead = document.getElementById('pdf-table-head');
-                const tableBody = document.getElementById('pdf-table-body');
-                const totals = document.getElementById('pdf-totals');
+                const pdfPages = document.getElementById('pdf-pages');
+                pdfPages.innerHTML = '';
                 
-                // تحديث العنوان والمعلومات
-                title.textContent = 'تقرير حوافز موظفي المطاعم';
-                branchCount.textContent = appData.incentives.length;
+                // صفحة 1: ملخص الحوافز
+                const totalIncentivesValue = appData.incentives.reduce((sum, item) => sum + Math.round(item.totalIncentive), 0);
+                const avgIncentive = Math.round(totalIncentivesValue / appData.incentives.length);
+                const topBranch = getTopBranch();
                 
-                const totalIncentivesValue = appData.incentives.reduce((sum, item) => sum + item.totalIncentive, 0);
-                totalIncentives.textContent = totalIncentivesValue.toLocaleString();
-                
-                // تحديث الملخص
-                const avgIncentive = totalIncentivesValue / appData.incentives.length;
-                summary.innerHTML = `
-                    <div style="display: flex; justify-content: space-between;">
-                        <div>متوسط الحافز لكل فرع: <strong>${avgIncentive.toFixed(0)}</strong> دينار كويتي</div>
-                        <div>أعلى فرع حافزًا: <strong>${getTopBranch()}</strong></div>
+                const summaryContent = `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>عدد الأفرع:</strong> ${appData.incentives.length}</div>
+                            <div><strong>إجمالي الحوافز:</strong> ${totalIncentivesValue.toLocaleString()} دينار</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>متوسط الحافز لكل فرع:</strong> ${avgIncentive.toLocaleString()} دينار</div>
+                            <div><strong>أعلى فرع حافزًا:</strong> ${topBranch}</div>
+                        </div>
                     </div>
                 `;
                 
-                // تحديث رأس الجدول
-                tableHead.innerHTML = `
-                    <tr>
-                        <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
-                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
-                    </tr>
+                pdfPages.innerHTML += createPDFPage('تقرير حوافز موظفي المطاعم', summaryContent);
+                
+                // صفحة 2: جدول الحوافز (الصفحة الأولى من الجدول)
+                let tableContent = `
+                    <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
+                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                 `;
                 
-                // تحديث محتوى الجدول
-                tableBody.innerHTML = '';
-                appData.incentives.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.areaManager}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${item.totalIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
+                // إضافة 20 صف لكل صفحة
+                const rowsPerPage = 20;
+                const totalPages = Math.ceil(appData.incentives.length / rowsPerPage);
+                
+                for (let page = 0; page < totalPages; page++) {
+                    if (page > 0) {
+                        tableContent = `
+                            <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                        <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
+                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
+                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
+                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
+                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
+                                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
+                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
+                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
+                                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                    }
+                    
+                    const startIndex = page * rowsPerPage;
+                    const endIndex = Math.min(startIndex + rowsPerPage, appData.incentives.length);
+                    
+                    for (let i = startIndex; i < endIndex; i++) {
+                        const item = appData.incentives[i];
+                        tableContent += `
+                            <tr>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${i + 1}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.areaManager}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    tableContent += `
+                        </tbody>
+                    </table>
                     `;
-                    tableBody.appendChild(row);
-                });
-                
-                // تحديث الإجماليات
-                totals.innerHTML = `
-                    <tr>
-                        <td colspan="9" style="padding: 4px; border: 1px solid #000; text-align: left;">الإجمالي</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalIncentivesValue}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                    </tr>
-                `;
+                    
+                    if (page === totalPages - 1) {
+                        // إضافة الإجماليات في الصفحة الأخيرة
+                        tableContent += `
+                            <div style="margin-top: 10px; font-size: 11px; font-weight: bold;">
+                                <div style="text-align: left;">الإجمالي: ${totalIncentivesValue.toLocaleString()} دينار كويتي</div>
+                            </div>
+                        `;
+                    }
+                    
+                    pdfPages.innerHTML += createPDFPage(`جدول الحوافز - الصفحة ${page + 1} من ${totalPages}`, tableContent);
+                }
                 
                 // إنشاء PDF
                 savePDF('تقرير_الحوافز');
@@ -2376,81 +2769,7 @@
                 return;
             }
             
-            showLoading('جاري إنشاء ملف PDF...');
-            
-            setTimeout(() => {
-                const element = document.getElementById('pdf-template');
-                const title = document.getElementById('pdf-title');
-                const branchCount = document.getElementById('pdf-branch-count');
-                const totalIncentives = document.getElementById('pdf-total-incentives');
-                const summary = document.getElementById('pdf-summary');
-                const tableHead = document.getElementById('pdf-table-head');
-                const tableBody = document.getElementById('pdf-table-body');
-                const totals = document.getElementById('pdf-totals');
-                
-                // تحديث العنوان والمعلومات
-                title.textContent = 'جدول حوافز موظفي المطاعم';
-                branchCount.textContent = appData.incentives.length;
-                
-                const totalIncentivesValue = appData.incentives.reduce((sum, item) => sum + item.totalIncentive, 0);
-                totalIncentives.textContent = totalIncentivesValue.toLocaleString();
-                
-                // تحديث الملخص
-                const avgIncentive = totalIncentivesValue / appData.incentives.length;
-                summary.innerHTML = `
-                    <div>إجمالي الحوافز: <strong>${totalIncentivesValue.toLocaleString()}</strong> دينار كويتي | متوسط الحافز لكل فرع: <strong>${avgIncentive.toFixed(0)}</strong> دينار</div>
-                `;
-                
-                // تحديث رأس الجدول
-                tableHead.innerHTML = `
-                    <tr>
-                        <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
-                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
-                        <th width="7%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
-                    </tr>
-                `;
-                
-                // تحديث محتوى الجدول
-                tableBody.innerHTML = '';
-                appData.incentives.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.areaManager}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${item.totalIncentive}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-                
-                // تحديث الإجماليات
-                totals.innerHTML = `
-                    <tr>
-                        <td colspan="9" style="padding: 4px; border: 1px solid #000; text-align: left;">الإجمالي</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalIncentivesValue}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                    </tr>
-                `;
-                
-                // إنشاء PDF
-                savePDF('جدول_الحوافز');
-                
-            }, 500);
+            exportResultsPDF(); // استخدم نفس الدالة
         }
         
         // تصدير جدول الأهداف إلى PDF
@@ -2463,68 +2782,70 @@
             showLoading('جاري إنشاء ملف PDF...');
             
             setTimeout(() => {
-                const element = document.getElementById('pdf-template');
-                const title = document.getElementById('pdf-title');
-                const branchCount = document.getElementById('pdf-branch-count');
-                const totalIncentives = document.getElementById('pdf-total-incentives');
-                const summary = document.getElementById('pdf-summary');
-                const tableHead = document.getElementById('pdf-table-head');
-                const tableBody = document.getElementById('pdf-table-body');
-                const totals = document.getElementById('pdf-totals');
+                const pdfPages = document.getElementById('pdf-pages');
+                pdfPages.innerHTML = '';
                 
-                // تحديث العنوان والمعلومات
-                title.textContent = 'جدول أهداف المطاعم';
-                branchCount.textContent = appData.targets.length;
-                totalIncentives.textContent = '-';
-                
-                // تحديث الملخص
                 const totalSales = appData.targets.reduce((sum, item) => sum + item.totalSales, 0);
-                summary.innerHTML = `
-                    <div>إجمالي المبيعات المستهدفة: <strong>${totalSales.toLocaleString()}</strong> دينار كويتي | عدد الأفرع: <strong>${appData.targets.length}</strong></div>
+                const summaryContent = `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div><strong>عدد الأفرع:</strong> ${appData.targets.length}</div>
+                            <div><strong>إجمالي المبيعات المستهدفة:</strong> ${totalSales.toLocaleString()} دينار</div>
+                        </div>
+                    </div>
                 `;
                 
-                // تحديث رأس الجدول
-                tableHead.innerHTML = `
-                    <tr>
-                        <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                        <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي المبيعات</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة التكلفة</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرواتب</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الإضافي</th>
-                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">متوسط الفاتورة</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">عدد العملاء</th>
-                        <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
-                    </tr>
+                pdfPages.innerHTML += createPDFPage('جدول أهداف المطاعم', summaryContent);
+                
+                // إضافة جدول الأهداف
+                let tableContent = `
+                    <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي المبيعات</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة التكلفة</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرواتب</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الإضافي</th>
+                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">متوسط الفاتورة</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">عدد العملاء</th>
+                                <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                 `;
                 
-                // تحديث محتوى الجدول
-                tableBody.innerHTML = '';
                 appData.targets.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.totalSales.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costPercentage.toFixed(2)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salaries.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.extra.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.avgBillValue.toFixed(3)}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerCount.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.complaints}</td>
+                    tableContent += `
+                        <tr>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.totalSales.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costPercentage.toFixed(2)}%</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salaries.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.extra.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.avgBillValue.toFixed(3)}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerCount.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.complaints}</td>
+                        </tr>
                     `;
-                    tableBody.appendChild(row);
                 });
                 
-                // تحديث الإجماليات
-                totals.innerHTML = `
-                    <tr>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: left;">الإجمالي</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${totalSales.toLocaleString()}</td>
-                        <td colspan="6" style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                    </tr>
+                tableContent += `
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalSales.toLocaleString()}</td>
+                            <td colspan="6" style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
+                        </tr>
+                    </tfoot>
+                </table>
                 `;
+                
+                pdfPages.innerHTML += tableContent;
                 
                 // إنشاء PDF
                 savePDF('جدول_الأهداف');
@@ -2542,73 +2863,184 @@
             showLoading('جاري إنشاء ملف PDF...');
             
             setTimeout(() => {
-                const element = document.getElementById('pdf-template');
-                const title = document.getElementById('pdf-title');
-                const branchCount = document.getElementById('pdf-branch-count');
-                const totalIncentives = document.getElementById('pdf-total-incentives');
-                const summary = document.getElementById('pdf-summary');
-                const tableHead = document.getElementById('pdf-table-head');
-                const tableBody = document.getElementById('pdf-table-body');
-                const totals = document.getElementById('pdf-totals');
+                const pdfPages = document.getElementById('pdf-pages');
+                pdfPages.innerHTML = '';
                 
-                // تحديث العنوان والمعلومات
-                title.textContent = 'جدول النتائج الفعلية للمطاعم';
-                branchCount.textContent = appData.actuals.length;
-                totalIncentives.textContent = '-';
-                
-                // تحديث الملخص
                 const totalSales = appData.actuals.reduce((sum, item) => sum + item.totalSales, 0);
-                summary.innerHTML = `
-                    <div>إجمالي المبيعات الفعلية: <strong>${totalSales.toLocaleString()}</strong> دينار كويتي | عدد الأفرع: <strong>${appData.actuals.length}</strong></div>
+                const summaryContent = `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div><strong>عدد الأفرع:</strong> ${appData.actuals.length}</div>
+                            <div><strong>إجمالي المبيعات الفعلية:</strong> ${totalSales.toLocaleString()} دينار</div>
+                        </div>
+                    </div>
                 `;
                 
-                // تحديث رأس الجدول
-                tableHead.innerHTML = `
-                    <tr>
-                        <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                        <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي المبيعات</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة التكلفة</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرواتب</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الإضافي</th>
-                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">متوسط الفاتورة</th>
-                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">عدد العملاء</th>
-                        <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
-                    </tr>
+                pdfPages.innerHTML += createPDFPage('جدول النتائج الفعلية للمطاعم', summaryContent);
+                
+                // إضافة جدول النتائج
+                let tableContent = `
+                    <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي المبيعات</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة التكلفة</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرواتب</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الإضافي</th>
+                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">متوسط الفاتورة</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">عدد العملاء</th>
+                                <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                 `;
                 
-                // تحديث محتوى الجدول
-                tableBody.innerHTML = '';
                 appData.actuals.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.totalSales.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costPercentage.toFixed(2)}%</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salaries.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.extra.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.avgBillValue.toFixed(3)}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerCount.toLocaleString()}</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.complaints}</td>
+                    tableContent += `
+                        <tr>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.totalSales.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costPercentage.toFixed(2)}%</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salaries.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.extra.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.avgBillValue.toFixed(3)}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerCount.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.complaints}</td>
+                        </tr>
                     `;
-                    tableBody.appendChild(row);
                 });
                 
-                // تحديث الإجماليات
-                totals.innerHTML = `
-                    <tr>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: left;">الإجمالي</td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                        <td style="padding: 4px; border: 1px solid #000; text-align: center;">${totalSales.toLocaleString()}</td>
-                        <td colspan="6" style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                    </tr>
+                tableContent += `
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalSales.toLocaleString()}</td>
+                            <td colspan="6" style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
+                        </tr>
+                    </tfoot>
+                </table>
                 `;
+                
+                pdfPages.innerHTML += tableContent;
                 
                 // إنشاء PDF
                 savePDF('جدول_النتائج_الفعلية');
                 
             }, 500);
+        }
+        
+        // تصدير الرسوم البيانية إلى PDF
+        function exportChartsPDF() {
+            if (appData.incentives.length === 0) {
+                alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
+                return;
+            }
+            
+            showLoading('جاري إنشاء ملف PDF للرسوم البيانية...');
+            
+            // تأخير لضمان تحميل الرسوم البيانية
+            setTimeout(() => {
+                const pdfPages = document.getElementById('pdf-pages');
+                pdfPages.innerHTML = '';
+                
+                // الحصول على قماشات الرسوم البيانية
+                const chartIds = ['sales-chart', 'costs-chart', 'salaries-chart', 'extra-chart', 
+                                 'total-costs-chart', 'bill-chart', 'customers-chart', 'complaints-chart'];
+                
+                const chartTitles = [
+                    'أعلى 10 أفرع في تحقيق مبيعات الهدف',
+                    'أعلى 10 أفرع في تخفيض نسبة التكلفة',
+                    'أعلى 10 أفرع في تخفيض الرواتب',
+                    'أعلى 10 أفرع في تخفيض الإضافي',
+                    'أعلى 10 أفرع في تخفيض التكاليف مجتمعة',
+                    'أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة',
+                    'أعلى 10 أفرع في ارتفاع عدد العملاء',
+                    'أعلى 10 أفرع في تخفيض عدد الشكاوى'
+                ];
+                
+                // إضافة صفحة لكل رسمين بيانيين
+                for (let i = 0; i < chartIds.length; i += 2) {
+                    let chartContent = `<div style="display: flex; flex-direction: column; gap: 20px;">`;
+                    
+                    // الرسم البياني الأول
+                    const canvas1 = document.getElementById(chartIds[i]);
+                    if (canvas1) {
+                        chartContent += `
+                            <div>
+                                <h4 style="text-align: center; margin-bottom: 10px; color: #4a90e2;">${chartTitles[i]}</h4>
+                                <div style="text-align: center;">
+                                    <img id="chart-img-${i}" style="max-width: 100%; height: auto;" />
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // الرسم البياني الثاني إذا كان موجوداً
+                    if (i + 1 < chartIds.length) {
+                        const canvas2 = document.getElementById(chartIds[i + 1]);
+                        if (canvas2) {
+                            chartContent += `
+                                <div>
+                                    <h4 style="text-align: center; margin-bottom: 10px; color: #4a90e2;">${chartTitles[i + 1]}</h4>
+                                    <div style="text-align: center;">
+                                        <img id="chart-img-${i + 1}" style="max-width: 100%; height: auto;" />
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    chartContent += `</div>`;
+                    
+                    pdfPages.innerHTML += createPDFPage(`الرسوم البيانية - الجزء ${Math.floor(i/2) + 1}`, chartContent);
+                }
+                
+                // بعد إضافة جميع الصفحات، نقوم بتحويل القماشات إلى صور
+                setTimeout(() => {
+                    convertChartsToImages().then(() => {
+                        savePDF('الرسوم_البيانية');
+                    }).catch(error => {
+                        hideLoading();
+                        console.error('Error converting charts to images:', error);
+                        alert('حدث خطأ أثناء تحويل الرسوم البيانية. يرجى المحاولة مرة أخرى.');
+                    });
+                }, 1000);
+                
+            }, 1000);
+        }
+        
+        // تحويل القماشات إلى صور
+        async function convertChartsToImages() {
+            const chartIds = ['sales-chart', 'costs-chart', 'salaries-chart', 'extra-chart', 
+                             'total-costs-chart', 'bill-chart', 'customers-chart', 'complaints-chart'];
+            
+            const promises = [];
+            
+            for (let i = 0; i < chartIds.length; i++) {
+                const canvas = document.getElementById(chartIds[i]);
+                if (canvas) {
+                    promises.push(
+                        html2canvas(canvas, {
+                            scale: 2,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#FFFFFF'
+                        }).then(chartCanvas => {
+                            const imgElement = document.getElementById(`chart-img-${i}`);
+                            if (imgElement) {
+                                imgElement.src = chartCanvas.toDataURL('image/jpeg', 0.9);
+                            }
+                        })
+                    );
+                }
+            }
+            
+            await Promise.all(promises);
         }
         
         // دالة مساعدة للحصول على الفرع ذو أعلى حافز
@@ -2617,18 +3049,19 @@
             
             let topBranch = appData.incentives[0];
             appData.incentives.forEach(item => {
-                if (item.totalIncentive > topBranch.totalIncentive) {
+                if (Math.round(item.totalIncentive) > Math.round(topBranch.totalIncentive)) {
                     topBranch = item;
                 }
             });
             
-            return `${topBranch.branch} (${topBranch.totalIncentive} دينار)`;
+            return `${topBranch.branch} (${Math.round(topBranch.totalIncentive).toLocaleString()} دينار)`;
         }
         
         // دالة حفظ PDF العامة
         async function savePDF(fileName) {
             if (!window.jspdf) {
                 alert('مكتبة PDF غير محملة. يرجى تحديث الصفحة.');
+                hideLoading();
                 return;
             }
             
@@ -2653,6 +3086,7 @@
                 element.style.zIndex = '10000';
                 element.style.background = 'white';
                 element.style.padding = '5px';
+                element.style.overflow = 'visible';
                 
                 // استخدام html2canvas لالتقاط الصورة
                 const canvas = await html2canvas(element, {
@@ -2661,9 +3095,10 @@
                     logging: false,
                     backgroundColor: '#FFFFFF',
                     width: 1123,
-                    height: 794,
+                    height: element.scrollHeight,
                     windowWidth: 1123,
-                    windowHeight: 794
+                    windowHeight: element.scrollHeight,
+                    scrollY: 0
                 });
                 
                 // إعادة العنصر إلى وضعه الأصلي
@@ -2674,15 +3109,30 @@
                 element.style.width = originalWidth;
                 element.style.height = originalHeight;
                 element.style.zIndex = originalZIndex;
+                element.style.overflow = 'hidden';
                 
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                const pdf = new window.jspdf.jsPDF('l', 'pt', 'a4'); // 'l' للوضع الأفقي (landscape)
+                const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4'); // 'p' للوضع العمودي (portrait)
                 
                 const imgWidth = pdf.internal.pageSize.getWidth();
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
-                // إضافة الصورة إلى PDF
-                pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                // حساب عدد الصفحات المطلوبة
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                // إضافة الصفحة الأولى
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                // إضافة صفحات إضافية إذا كان المحتوى طويلاً
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
                 
                 // تنظيف اسم الملف
                 const cleanFileName = fileName.replace(/[^\w\u0600-\u06FF\s]/g, '');
