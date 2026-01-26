@@ -178,7 +178,7 @@
             margin-top: 10px;
         }
         
-        /* منطقة تحميل الملفات */
+        /* منطقة تحميل الملفات المحسنة */
         .file-upload-area {
             background: var(--white);
             border-radius: var(--border-radius);
@@ -197,29 +197,60 @@
             margin-bottom: 15px;
         }
         
-        .file-input-container {
+        /* تصميم محسن لزر تحميل الملفات */
+        .file-input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .file-input-card {
+            border: 2px solid var(--gray-medium);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            position: relative;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-        }
-        
-        .file-input {
-            padding: 12px;
-            border: 2px dashed var(--gray-medium);
-            border-radius: var(--border-radius);
-            background-color: var(--gray-light);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            align-items: center;
             text-align: center;
-            position: relative;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .file-input:hover {
+        .file-input-card:hover {
             border-color: var(--primary-red);
-            background-color: rgba(211, 47, 47, 0.05);
+            box-shadow: 0 6px 15px rgba(211, 47, 47, 0.15);
+            transform: translateY(-3px);
         }
         
-        .file-input input[type="file"] {
+        .file-input-card.active {
+            border-color: var(--success);
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .file-input-card i {
+            font-size: 2.5rem;
+            color: var(--primary-red);
+            margin-bottom: 15px;
+        }
+        
+        .file-input-card h3 {
+            color: var(--dark-red);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .file-input-card p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .file-input-card input[type="file"] {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -229,10 +260,21 @@
             cursor: pointer;
         }
         
-        .file-name {
+        .file-status {
             font-size: 0.9rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: var(--gray-light);
             color: var(--text-light);
-            margin-top: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-status.loaded {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
         }
         
         /* أزرار */
@@ -555,6 +597,10 @@
                 overflow-x: auto;
                 flex-wrap: nowrap;
             }
+            
+            .file-input-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media print {
@@ -705,6 +751,81 @@
             font-weight: bold;
             color: var(--dark-red);
         }
+        
+        /* صفحة تقارير المدراء */
+        .manager-reports {
+            margin-top: 30px;
+        }
+        
+        .manager-select-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .manager-filters {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-weight: bold;
+            color: var(--dark-red);
+            font-size: 0.9rem;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--gray-medium);
+            border-radius: var(--border-radius);
+            background-color: var(--white);
+            font-size: 1rem;
+            min-width: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:hover {
+            border-color: var(--primary-red);
+        }
+        
+        .manager-summary {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .summary-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark-red);
+        }
+        
+        .summary-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
     </style>
 </head>
 <body>
@@ -726,6 +847,9 @@
             </a>
             <a href="#" class="nav-link" data-page="results">
                 <i class="fas fa-chart-bar"></i> النتائج والحوافز
+            </a>
+            <a href="#" class="nav-link" data-page="manager-reports">
+                <i class="fas fa-user-tie"></i> تقارير المدراء
             </a>
             <a href="#" class="nav-link" data-page="charts">
                 <i class="fas fa-chart-pie"></i> الرسوم البيانية
@@ -773,34 +897,39 @@
                 <h2 class="section-title">تحميل ملفات البيانات</h2>
                 
                 <div class="upload-section">
-                    <h3>الملف الأول: أهداف المطاعم</h3>
-                    <p style="color: var(--text-light); margin-bottom: 10px; font-size: 0.9rem;">
-                        <strong>ملاحظة:</strong> يجب أن يحتوي ملف Excel على شيت باسم "الهدف" مع الأعمدة التالية بالترتيب:<br>
-                        اسم المطعم | إجمالي المبيعات | نسبة تكلفة المبيعات | الرواتب | الإضافي | متوسط قيمة الفاتورة | عدد العملاء | عدد الشكاوى
-                    </p>
-                    <div class="file-input-container">
-                        <label class="file-input">
-                            <i class="fas fa-file-excel"></i>
-                            <span id="targets-label">انقر لتحميل ملف Excel للأهداف</span>
+                    <div class="file-input-grid">
+                        <div class="file-input-card" id="targets-card">
+                            <i class="fas fa-bullseye"></i>
+                            <h3>الملف الأول: أهداف المطاعم</h3>
+                            <p>تحميل ملف Excel يحتوي على أهداف المطاعم مع الأعمدة المطلوبة</p>
+                            <div class="file-status" id="targets-status">لم يتم تحميل الملف</div>
                             <input type="file" id="targets-file" accept=".xlsx,.xls,.csv">
-                        </label>
-                        <div class="file-name" id="targets-file-name">لم يتم تحميل ملف بعد</div>
-                    </div>
-                </div>
-                
-                <div class="upload-section">
-                    <h3>الملف الثاني: النتائج الفعلية</h3>
-                    <p style="color: var(--text-light); margin-bottom: 10px; font-size: 0.9rem;">
-                        <strong>ملاحظة:</strong> يجب أن يحتوي ملف Excel على شيت باسم "النتائج" مع الأعمدة التالية بالترتيب:<br>
-                        اسم المطعم | إجمالي المبيعات | نسبة تكلفة المبيعات | الرواتب | الإضافي | متوسط قيمة الفاتورة | عدد العملاء | عدد الشكاوى
-                    </p>
-                    <div class="file-input-container">
-                        <label class="file-input">
-                            <i class="fas fa-file-excel"></i>
-                            <span id="results-label">انقر لتحميل ملف Excel للنتائج الفعلية</span>
+                        </div>
+                        
+                        <div class="file-input-card" id="results-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>الملف الثاني: النتائج الفعلية</h3>
+                            <p>تحميل ملف Excel يحتوي على النتائج الفعلية مع الأعمدة المطلوبة</p>
+                            <div class="file-status" id="results-status">لم يتم تحميل الملف</div>
                             <input type="file" id="results-file" accept=".xlsx,.xls,.csv">
-                        </label>
-                        <div class="file-name" id="results-file-name">لم يتم تحميل ملف بعد</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: var(--border-radius);">
+                        <h4 style="color: var(--dark-red); margin-bottom: 10px;"><i class="fas fa-info-circle"></i> معلومات هامة:</h4>
+                        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 8px;">
+                            <strong>ملاحظة:</strong> يجب أن يحتوي ملف Excel على شيت باسم "الهدف" أو "النتائج" مع الأعمدة التالية بالترتيب:
+                        </p>
+                        <ul style="color: var(--text-light); font-size: 0.85rem; padding-right: 20px;">
+                            <li>اسم المطعم</li>
+                            <li>إجمالي المبيعات</li>
+                            <li>نسبة تكلفة المبيعات</li>
+                            <li>الرواتب</li>
+                            <li>الإضافي</li>
+                            <li>متوسط قيمة الفاتورة</li>
+                            <li>عدد العملاء</li>
+                            <li>عدد الشكاوى</li>
+                        </ul>
                     </div>
                 </div>
                 
@@ -937,6 +1066,89 @@
                         <i class="fas fa-file-pdf"></i> تصدير جدول النتائج PDF
                     </button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- صفحة تقارير المدراء -->
+        <div id="manager-reports" class="page">
+            <h1 class="page-title">تقارير المدراء</h1>
+            
+            <div class="manager-select-container">
+                <h3 style="color: var(--dark-red); margin-bottom: 20px;">اختر المدير لعرض تقريره</h3>
+                <div class="manager-filters">
+                    <div class="filter-group">
+                        <label for="manager-type">نوع المدير:</label>
+                        <select id="manager-type" class="filter-select">
+                            <option value="area">مدير المنطقة</option>
+                            <option value="operation">مدير التشغيل</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="manager-name">اسم المدير:</label>
+                        <select id="manager-name" class="filter-select">
+                            <option value="">اختر المدير</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button class="btn btn-primary" id="generate-report">
+                            <i class="fas fa-chart-bar"></i> توليد التقرير
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="manager-summary" id="manager-summary" style="display: none;">
+                <div class="summary-item">
+                    <div class="summary-value" id="manager-branches">0</div>
+                    <div class="summary-label">عدد المطاعم</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="manager-incentives">0</div>
+                    <div class="summary-label">إجمالي الحوافز</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="manager-avg">0</div>
+                    <div class="summary-label">متوسط الحافز</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="manager-percentage">0%</div>
+                    <div class="summary-label">نسبة تحقيق الأهداف</div>
+                </div>
+            </div>
+            
+            <div class="table-container" id="manager-report-table" style="display: none;">
+                <h3 style="margin-bottom: 15px; color: var(--dark-red);">تقارير المطاعم التابعة للمدير: <span id="selected-manager-name">-</span></h3>
+                <table id="manager-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المطعم</th>
+                            <th>نوع المدير</th>
+                            <th>نسبة المبيعات</th>
+                            <th>حافز المبيعات</th>
+                            <th>تخفيض التكاليف</th>
+                            <th>حافز التخفيض</th>
+                            <th>زيادة القيمة/العملاء</th>
+                            <th>حافز الزيادة</th>
+                            <th>إجمالي الحافز</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manager-table-body">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="action-buttons" id="manager-actions" style="display: none;">
+                <button class="btn btn-primary" id="export-manager-pdf">
+                    <i class="fas fa-file-pdf"></i> تصدير تقرير المدير PDF
+                </button>
+                <button class="btn btn-secondary" id="export-manager-charts">
+                    <i class="fas fa-chart-pie"></i> تصدير الرسوم البيانية PDF
+                </button>
             </div>
         </div>
         
@@ -1124,6 +1336,7 @@
             initApp();
             setupEventListeners();
             loadBranchesData();
+            updateManagerDropdowns();
         });
         
         // تهيئة التطبيق
@@ -1201,6 +1414,12 @@
             document.getElementById('export-charts-pdf').addEventListener('click', exportChartsPDF);
             document.getElementById('save-settings').addEventListener('click', saveSettings);
             document.getElementById('reset-settings').addEventListener('click', resetSettings);
+            
+            // تقارير المدراء
+            document.getElementById('manager-type').addEventListener('change', updateManagerDropdowns);
+            document.getElementById('generate-report').addEventListener('click', generateManagerReport);
+            document.getElementById('export-manager-pdf').addEventListener('click', exportManagerPDF);
+            document.getElementById('export-manager-charts').addEventListener('click', exportManagerChartsPDF);
         }
         
         // التنقل بين الصفحات
@@ -1224,6 +1443,11 @@
             // إذا كانت صفحة الرسوم البيانية، قم بتحديث الرسوم
             if (pageId === 'charts') {
                 updateCharts();
+            }
+            
+            // إذا كانت صفحة تقارير المدراء، قم بتحديث القوائم المنسدلة
+            if (pageId === 'manager-reports') {
+                updateManagerDropdowns();
             }
         }
         
@@ -1276,67 +1500,67 @@
         
         // تحميل بيانات الأفرع
         function loadBranchesData() {
-            // بيانات الأفرع والمديرين
+            // بيانات الأفرع والمديرين المحدثة من الملف المرفق
             const branchesData = [
-                {restaurant: "الافينيوز", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Avenues"},
-                {restaurant: "الجابرية بنت الديك", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Jabriya 2 - Jabriya BD"},
-                {restaurant: "الجابرية تكا و فرايد", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Jabriya 1 - Jabriya Tikka"},
-                {restaurant: "الجهراء الزويخ", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Jahra 2 - Jahra Ind"},
-                {restaurant: "الجهراء الصناعية", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Jahra1-Duwaik"},
-                {restaurant: "الجهراء ليالي الشرق", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Jahra Layaly Elsharq"},
-                {restaurant: "الجهراء مجمع مكة", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Jahra Makkah"},
-                {restaurant: "الخيران أوتليت مول", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Khairan Outlet Mall"},
-                {restaurant: "الخيران أويا مول", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Khairan Oia"},
-                {restaurant: "الخيول", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Khioul"},
-                {restaurant: "الدسمة وبنيد القار", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Dasma"},
-                {restaurant: "الرحاب", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "Rehab"},
-                {restaurant: "الرقـة", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Riqqa"},
-                {restaurant: "الرقعي", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "Reggai"},
-                {restaurant: "الري", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Al Rai"},
-                {restaurant: "السندباد", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Salmiya 2 - Sindhibad"},
-                {restaurant: "السيد ياسين", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Salmiya 4 - Sayed Yasin"},
-                {restaurant: "الشرق", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Sharq"},
-                {restaurant: "الشهداء", areaManager: "انور", operationManager: "طارق بيومي", siteName: "Shuhada"},
-                {restaurant: "الشويخ واره", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Shuwaikh"},
-                {restaurant: "الصليبية الصناعية", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Suleibiya"},
-                {restaurant: "الضباعية", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Dabaya"},
-                {restaurant: "العارضية الجديد", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "New Ardiya"},
-                {restaurant: "الفحاحيل", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Fahaheel"},
-                {restaurant: "الفروانية", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "Farwaniya"},
-                {restaurant: "الفروانية فرع 2", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "New Farwaniya"},
-                {restaurant: "الفنطاس", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Fintas"},
-                {restaurant: "الفيحاء", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Faiha"},
-                {restaurant: "القادسية", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Qadsiya"},
-                {restaurant: "المطار", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Airport"},
-                {restaurant: "المنقف", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Mangaf"},
-                {restaurant: "النافورة", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Salmiya 1 - Nafura"},
-                {restaurant: "الوفرة", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Wafra"},
-                {restaurant: "أبو حليفة", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Abu Halifa"},
-                {restaurant: "أسواق القرين", areaManager: "انور", operationManager: "طارق بيومي", siteName: "Souq Qurain"},
-                {restaurant: "جمعية الزهراء", areaManager: "انور", operationManager: "طارق بيومي", siteName: "Zahra"},
-                {restaurant: "جمعية الصليبية", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Sulaibiya CO-OP"},
-                {restaurant: "جمعية العدان والقصور", areaManager: "انور", operationManager: "طارق بيومي", siteName: "Adan & Qusoor"},
-                {restaurant: "جمعية القيروان", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Qairawan"},
-                {restaurant: "جمعية أبوفطيرة", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "Abu Fatira Co-Op"},
-                {restaurant: "جمعية صباح  الاحمد", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Sabah al Ahmed"},
-                {restaurant: "جمعية مدينة جابر الأحمد", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "Jaber Al-Ahmed"},
-                {restaurant: "حولي بارك", areaManager: "حجازي", operationManager: "طارق بيومي", siteName: "Hawally Park"},
-                {restaurant: "خيطان العصيمي", areaManager: "انور", operationManager: "طارق بيومي", siteName: "Khaitan New"},
-                {restaurant: "سعد العبدالله", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Saad Al Abdullah"},
-                {restaurant: "سلوى", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Salwa"},
-                {restaurant: "سوق الجليب", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Jleeb Al-Shiyoukh"},
-                {restaurant: "شارع البحرين", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Salmiya 3 - Bahrain Street"},
-                {restaurant: "شرق الاحمدي", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "East Ahmadi"},
-                {restaurant: "صباح السالم", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Sabah Salem"},
-                {restaurant: "صباح السالم (العرين)", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Sabah-Salem Alareen"},
-                {restaurant: "غرب أبو فطيرة", areaManager: "انور", operationManager: "طارق بيومي", siteName: "West Abu Fatira"},
-                {restaurant: "كبد", areaManager: "طارق", operationManager: "طارق بيومي", siteName: "Kabed"},
-                {restaurant: "مارينا مول", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Marina Mall"},
-                {restaurant: "مجمع الكوت", areaManager: "وليد", operationManager: "هاني عبدالله", siteName: "AlKout"},
-                {restaurant: "مشرف", areaManager: "مختار", operationManager: "هاني عبدالله", siteName: "Mishref"},
-                {restaurant: "مول 360", areaManager: "انور", operationManager: "طارق بيومي", siteName: "360 Mall"},
-                {restaurant: "نادي الصليبخات", areaManager: "عماد", operationManager: "طارق بيومي", siteName: "Sulebhikat"},
-                {restaurant: "هدية", areaManager: "ثروت", operationManager: "هاني عبدالله", siteName: "Hadiya"}
+                {restaurant: "الفيحاء", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Faiha"},
+                {restaurant: "شارع البحرين", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Salmiya 3 - Bahrain Street"},
+                {restaurant: "جمعية العدان والقصور", areaManager: "مرتضى", operationManager: "طارق بيومي", siteName: "Qurain"},
+                {restaurant: "الجابرية تكا و فرايد", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Jabriya 1 - Jabriya Tikka"},
+                {restaurant: "الفحاحيل", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "Fahaheel"},
+                {restaurant: "أبوحليفة", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Abu Halifa"},
+                {restaurant: "الرقعي", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Reggai"},
+                {restaurant: "مشرف", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Mishref"},
+                {restaurant: "النافورة", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Salmiya 1 - Nafura"},
+                {restaurant: "القادسية", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Qadsiya"},
+                {restaurant: "صباح السالم", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Sabah Salem"},
+                {restaurant: "الضباعية", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "Dabaya"},
+                {restaurant: "الشرق", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Sharq"},
+                {restaurant: "الجابرية بنت الديك", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Jabriya 2 - Jabriya BD"},
+                {restaurant: "الجهراء الزويخ", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Jahra1-Duwaik"},
+                {restaurant: "الشويخ واره", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Shuwaikh"},
+                {restaurant: "سيد ياسين", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Salmiya 4 - Sayed Yasin"},
+                {restaurant: "الفنطاس", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Fintas"},
+                {restaurant: "السندباد", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Salmiya 2 - Sindhibad"},
+                {restaurant: "شرق الاحمدي", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Ahmadi Ind"},
+                {restaurant: "المطار", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Airport"},
+                {restaurant: "المنقف", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "Mangaf"},
+                {restaurant: "حولي الترفيهي", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Hawally Park"},
+                {restaurant: "الرقة", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Riqqa"},
+                {restaurant: "الرحاب", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Rehab"},
+                {restaurant: "هدية", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Hadiya"},
+                {restaurant: "نادي الصليبخات", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Sulebhikat"},
+                {restaurant: "الجهراء الصناعية", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Jahra 2 - Jahra Ind"},
+                {restaurant: "الفروانية", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Farwaniya"},
+                {restaurant: "اسواق القرين", areaManager: "مرتضى", operationManager: "طارق بيومي", siteName: "Souq Qurain"},
+                {restaurant: "سلوى", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Salwa"},
+                {restaurant: "سوق الجليب", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Jleeb Al-Shiyoukh"},
+                {restaurant: "جمعية الشهداء", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Shuhada"},
+                {restaurant: "الدسمة وبنيد القار", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Dasma"},
+                {restaurant: "مدينة صباح الاحمد", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Sabah al Ahmed"},
+                {restaurant: "مجمع الافنيوز", areaManager: "مرتضى", operationManager: "طارق بيومي", siteName: "Avenues"},
+                {restaurant: "الصليبية", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Suleibiya"},
+                {restaurant: "جمعية أبو فطيرة", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "Abu Fatira Co-Op"},
+                {restaurant: "غرب أبو فطيرة الحرفية", areaManager: "مرتضى", operationManager: "طارق بيومي", siteName: "West Abu Fatira"},
+                {restaurant: "خيطان العصيمي", areaManager: "مرتضى", operationManager: "طارق بيومي", siteName: "Khaitan New"},
+                {restaurant: "جمعية الوفرة", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Wafra"},
+                {restaurant: "جمعية القيروان", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Qairawan"},
+                {restaurant: "الفروانية فرع 2", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "New Farwaniya"},
+                {restaurant: "جمعية الصليبية", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Sulaibiya CO-OP"},
+                {restaurant: "جمعية الزهراء التعاونية", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Zahra"},
+                {restaurant: "جمعية مدينة جابر الأحمد", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Jaber Al-Ahmed"},
+                {restaurant: "الخيران أوتليت", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "Khairan Outlet Mall"},
+                {restaurant: "الخيران أويا", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "Khairan Oia"},
+                {restaurant: "الجهراء - ليالي الشرق", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Jahra Layaly Elsharq"},
+                {restaurant: "الجهراء - مجمع مكة", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "Jahra Makkah"},
+                {restaurant: "العارضية الحرفية", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "New Ardiya"},
+                {restaurant: "الري", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Al Rai"},
+                {restaurant: "مارينا مول - عالم المارينا", areaManager: "طارق", operationManager: "هاني عبدالله", siteName: "Marina Mall"},
+                {restaurant: "صباح السالم - العرين", areaManager: "انور", operationManager: "هاني عبدالله", siteName: "Sabah-Salem Alareen"},
+                {restaurant: "مول 360", areaManager: "وليد", operationManager: "طارق بيومي", siteName: "360 Mall"},
+                {restaurant: "الخيول", areaManager: "حجازي", operationManager: "هاني عبدالله", siteName: "Khioul"},
+                {restaurant: "مجمع الكوت", areaManager: "عماد", operationManager: "هاني عبدالله", siteName: "AlKout"},
+                {restaurant: "كبد", areaManager: "مختار", operationManager: "طارق بيومي", siteName: "Kabed"},
+                {restaurant: "مدينة سعد العبد الله", areaManager: "ثروت", operationManager: "طارق بيومي", siteName: "Saad Al Abdullah"}
             ];
             
             appData.branches = branchesData;
@@ -1400,13 +1624,17 @@
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             const fileId = event.target.id;
-            const fileNameElement = document.getElementById(`${fileId}-name`);
+            const card = document.getElementById(`${fileId.split('-')[0]}-card`);
+            const status = document.getElementById(`${fileId.split('-')[0]}-status`);
             
             if (!file) return;
             
             showLoading('جاري قراءة الملف...');
             
-            fileNameElement.textContent = file.name;
+            // تحديث حالة البطاقة
+            card.classList.add('active');
+            status.textContent = file.name;
+            status.classList.add('loaded');
             
             try {
                 const data = await readFileAsync(file);
@@ -1472,6 +1700,11 @@
                 hideLoading();
                 console.error('Error reading file:', error);
                 showError('حدث خطأ أثناء قراءة الملف: ' + error.message);
+                
+                // إعادة تعيين حالة البطاقة
+                card.classList.remove('active');
+                status.textContent = 'حدث خطأ في التحميل';
+                status.classList.remove('loaded');
             }
         }
         
@@ -1889,6 +2122,7 @@
                     appData.incentives.push({
                         branch: branch.restaurant,
                         areaManager: branch.areaManager,
+                        operationManager: branch.operationManager,
                         salesPercentage: salesPercentage,
                         salesIncentive: salesIncentive,
                         costReduction: totalCostReductionPercent,
@@ -1914,6 +2148,9 @@
                 
                 // تحديث بطاقات الإحصاءات
                 updateStatsCards();
+                
+                // تحديث قائمة المدراء
+                updateManagerDropdowns();
                 
                 // حفظ البيانات في localStorage
                 saveDataToLocalStorage();
@@ -2427,6 +2664,112 @@
             });
         }
         
+        // تحديث قوائم المدراء المنسدلة
+        function updateManagerDropdowns() {
+            const managerType = document.getElementById('manager-type').value;
+            const managerSelect = document.getElementById('manager-name');
+            
+            // مسح الخيارات الحالية
+            managerSelect.innerHTML = '<option value="">اختر المدير</option>';
+            
+            if (appData.branches.length === 0) return;
+            
+            // جمع أسماء المدراء الفريدة بناءً على النوع
+            const managers = new Set();
+            
+            appData.branches.forEach(branch => {
+                if (managerType === 'area') {
+                    managers.add(branch.areaManager);
+                } else {
+                    managers.add(branch.operationManager);
+                }
+            });
+            
+            // إضافة الخيارات
+            managers.forEach(manager => {
+                if (manager && manager.trim() !== '') {
+                    const option = document.createElement('option');
+                    option.value = manager;
+                    option.textContent = manager;
+                    managerSelect.appendChild(option);
+                }
+            });
+        }
+        
+        // توليد تقرير المدير
+        function generateManagerReport() {
+            const managerType = document.getElementById('manager-type').value;
+            const managerName = document.getElementById('manager-name').value;
+            
+            if (!managerName) {
+                alert('يرجى اختيار اسم المدير');
+                return;
+            }
+            
+            if (appData.incentives.length === 0) {
+                alert('لا توجد بيانات حوافز. يرجى حساب الحوافز أولاً.');
+                return;
+            }
+            
+            // تصفية البيانات حسب المدير المختار
+            let filteredData = [];
+            let totalIncentives = 0;
+            let totalBranches = 0;
+            let totalSalesPercentage = 0;
+            
+            if (managerType === 'area') {
+                filteredData = appData.incentives.filter(item => item.areaManager === managerName);
+            } else {
+                filteredData = appData.incentives.filter(item => item.operationManager === managerName);
+            }
+            
+            if (filteredData.length === 0) {
+                alert('لا توجد بيانات لهذا المدير');
+                return;
+            }
+            
+            // حساب الإحصائيات
+            totalBranches = filteredData.length;
+            totalIncentives = filteredData.reduce((sum, item) => sum + Math.round(item.totalIncentive), 0);
+            totalSalesPercentage = filteredData.reduce((sum, item) => sum + item.salesPercentage, 0) / filteredData.length;
+            
+            // تحديث الملخص
+            document.getElementById('manager-summary').style.display = 'flex';
+            document.getElementById('manager-branches').textContent = totalBranches;
+            document.getElementById('manager-incentives').textContent = totalIncentives.toLocaleString();
+            document.getElementById('manager-avg').textContent = Math.round(totalIncentives / totalBranches).toLocaleString();
+            document.getElementById('manager-percentage').textContent = totalSalesPercentage.toFixed(2) + '%';
+            
+            // تحديث الجدول
+            document.getElementById('manager-report-table').style.display = 'block';
+            document.getElementById('selected-manager-name').textContent = managerName;
+            
+            const tbody = document.getElementById('manager-table-body');
+            tbody.innerHTML = '';
+            
+            filteredData.sort((a, b) => b.totalIncentive - a.totalIncentive).forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = item.incentiveClass;
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${item.branch}</strong></td>
+                    <td>${managerType === 'area' ? 'مدير منطقة' : 'مدير تشغيل'}</td>
+                    <td class="${item.salesPercentage >= 100 ? 'cell-positive' : 'cell-negative'}">${item.salesPercentage.toFixed(2)}%</td>
+                    <td class="${item.salesIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.salesIncentive)}</td>
+                    <td class="${item.costReduction > 0 ? 'cell-positive' : 'cell-negative'}">${item.costReduction.toFixed(2)}%</td>
+                    <td class="${item.costIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.costIncentive)}</td>
+                    <td>${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
+                    <td class="${item.customerIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.customerIncentive)}</td>
+                    <td class="incentive-achieved"><strong>${roundToNearest(item.totalIncentive)}</strong></td>
+                    <td class="${item.statusClass}">${item.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // إظهار أزرار التصدير
+            document.getElementById('manager-actions').style.display = 'flex';
+        }
+        
         // تحديث إدخالات الإعدادات
         function updateSettingsInputs() {
             document.getElementById('sales-tier1').value = appData.settings.salesTiers[0];
@@ -2496,8 +2839,14 @@
                 // مسح حقول الملفات
                 document.getElementById('targets-file').value = '';
                 document.getElementById('results-file').value = '';
-                document.getElementById('targets-file-name').textContent = 'لم يتم تحميل ملف بعد';
-                document.getElementById('results-file-name').textContent = 'لم يتم تحميل ملف بعد';
+                
+                // إعادة تعيين بطاقات تحميل الملفات
+                document.getElementById('targets-card').classList.remove('active');
+                document.getElementById('results-card').classList.remove('active');
+                document.getElementById('targets-status').textContent = 'لم يتم تحميل الملف';
+                document.getElementById('results-status').textContent = 'لم يتم تحميل الملف';
+                document.getElementById('targets-status').classList.remove('loaded');
+                document.getElementById('results-status').classList.remove('loaded');
                 
                 // تدمير الرسوم البيانية
                 Object.keys(appData.charts).forEach(chartName => {
@@ -2506,6 +2855,11 @@
                         appData.charts[chartName] = null;
                     }
                 });
+                
+                // إخفاء تقارير المدراء
+                document.getElementById('manager-summary').style.display = 'none';
+                document.getElementById('manager-report-table').style.display = 'none';
+                document.getElementById('manager-actions').style.display = 'none';
                 
                 // مسح الرسائل
                 document.getElementById('match-results').style.display = 'none';
@@ -2760,6 +3114,127 @@
                 savePDF('تقرير_الحوافز');
                 
             }, 500);
+        }
+        
+        // تصدير تقرير المدير إلى PDF
+        function exportManagerPDF() {
+            const managerType = document.getElementById('manager-type').value;
+            const managerName = document.getElementById('manager-name').value;
+            
+            if (!managerName) {
+                alert('يرجى اختيار اسم المدير أولاً');
+                return;
+            }
+            
+            if (appData.incentives.length === 0) {
+                alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
+                return;
+            }
+            
+            showLoading('جاري إنشاء ملف PDF...');
+            
+            setTimeout(() => {
+                const pdfPages = document.getElementById('pdf-pages');
+                pdfPages.innerHTML = '';
+                
+                // تصفية البيانات حسب المدير المختار
+                let filteredData = [];
+                if (managerType === 'area') {
+                    filteredData = appData.incentives.filter(item => item.areaManager === managerName);
+                } else {
+                    filteredData = appData.incentives.filter(item => item.operationManager === managerName);
+                }
+                
+                if (filteredData.length === 0) {
+                    alert('لا توجد بيانات لهذا المدير');
+                    hideLoading();
+                    return;
+                }
+                
+                // حساب الإحصائيات
+                const totalIncentivesValue = filteredData.reduce((sum, item) => sum + Math.round(item.totalIncentive), 0);
+                const avgIncentive = Math.round(totalIncentivesValue / filteredData.length);
+                const totalSalesPercentage = filteredData.reduce((sum, item) => sum + item.salesPercentage, 0) / filteredData.length;
+                
+                const summaryContent = `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>اسم المدير:</strong> ${managerName}</div>
+                            <div><strong>نوع المدير:</strong> ${managerType === 'area' ? 'مدير منطقة' : 'مدير تشغيل'}</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>عدد المطاعم:</strong> ${filteredData.length}</div>
+                            <div><strong>إجمالي الحوافز:</strong> ${totalIncentivesValue.toLocaleString()} دينار</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>متوسط الحافز لكل فرع:</strong> ${avgIncentive.toLocaleString()} دينار</div>
+                            <div><strong>متوسط نسبة تحقيق المبيعات:</strong> ${totalSalesPercentage.toFixed(2)}%</div>
+                        </div>
+                    </div>
+                `;
+                
+                pdfPages.innerHTML += createPDFPage(`تقرير أداء المدير: ${managerName}`, summaryContent);
+                
+                // إضافة جدول الحوافز
+                let tableContent = `
+                    <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                <th width="20%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
+                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
+                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
+                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                filteredData.sort((a, b) => b.totalIncentive - a.totalIncentive).forEach((item, index) => {
+                    tableContent += `
+                        <tr>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableContent += `
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="8" style="padding: 4px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalIncentivesValue.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                `;
+                
+                pdfPages.innerHTML += tableContent;
+                
+                // إنشاء PDF
+                savePDF(`تقرير_المدير_${managerName}`);
+                
+            }, 500);
+        }
+        
+        // تصدير الرسوم البيانية للمدير إلى PDF
+        function exportManagerChartsPDF() {
+            exportChartsPDF(); // استخدم نفس الدالة للرسوم البيانية العامة حالياً
         }
         
         // تصدير جدول الحوافز إلى PDF
