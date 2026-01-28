@@ -409,10 +409,10 @@
             display: block;
         }
         
-        /* الرسوم البيانية */
+        /* الرسوم البيانية - تم إصلاحها */
         .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
             gap: 30px;
             margin-top: 30px;
         }
@@ -422,6 +422,9 @@
             border-radius: var(--border-radius);
             padding: 20px;
             box-shadow: var(--shadow);
+            height: 400px; /* ارتفاع ثابت */
+            display: flex;
+            flex-direction: column;
         }
         
         .chart-title {
@@ -429,6 +432,16 @@
             color: var(--dark-red);
             margin-bottom: 15px;
             text-align: center;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart-card canvas {
+            flex: 1;
+            width: 100% !important;
+            height: calc(100% - 40px) !important;
         }
         
         /* صفحة الإعدادات */
@@ -570,6 +583,10 @@
             
             .charts-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .chart-card {
+                height: 350px;
             }
             
             .action-buttons {
@@ -1116,6 +1133,10 @@
                     <div class="summary-value" id="manager-percentage">0%</div>
                     <div class="summary-label">نسبة تحقيق الأهداف</div>
                 </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="manager-achieved-amount">0</div>
+                    <div class="summary-label">المبلغ المحقق للمشرف</div>
+                </div>
             </div>
             
             <div class="table-container" id="manager-report-table" style="display: none;">
@@ -1222,7 +1243,7 @@
             
             <div class="settings-container">
                 <div class="settings-section">
-                    <h2 class="section-title">شرائح حوافز المبيعات</h2>
+                    <h2 class="section-title">شرائح حوافز المبيعات (المطاعم)</h2>
                     
                     <div class="settings-item">
                         <div class="settings-label">من 95% إلى 99.99%</div>
@@ -1232,25 +1253,19 @@
                     
                     <div class="settings-item">
                         <div class="settings-label">من 100% إلى 104.99%</div>
-                        <input type="number" class="settings-input" id="sales-tier2" value="100" min="0">
+                        <input type="number" class="settings-input" id="sales-tier2" value="50" min="0">
                         <span style="margin-right: 10px;">دينار كويتي</span>
                     </div>
                     
                     <div class="settings-item">
-                        <div class="settings-label">من 105% إلى 109.99%</div>
-                        <input type="number" class="settings-input" id="sales-tier3" value="150" min="0">
-                        <span style="margin-right: 10px;">دينار كويتي</span>
-                    </div>
-                    
-                    <div class="settings-item">
-                        <div class="settings-label">110% فما فوق</div>
-                        <input type="number" class="settings-input" id="sales-tier4" value="185" min="0">
+                        <div class="settings-label">105% فما فوق</div>
+                        <input type="number" class="settings-input" id="sales-tier3" value="100" min="0">
                         <span style="margin-right: 10px;">دينار كويتي</span>
                     </div>
                 </div>
                 
                 <div class="settings-section">
-                    <h2 class="section-title">حوافز تخفيض التكاليف (التكلفة والرواتب والإضافي)</h2>
+                    <h2 class="section-title">حوافز تخفيض التكاليف (المطاعم)</h2>
                     
                     <div class="settings-item">
                         <div class="settings-label">تخفيض 1%</div>
@@ -1266,17 +1281,55 @@
                 </div>
                 
                 <div class="settings-section">
-                    <h2 class="section-title">حوافز زيادة قيمة الفاتورة وعدد العملاء</h2>
+                    <h2 class="section-title">حوافز زيادة قيمة الفاتورة وعدد العملاء (المطاعم)</h2>
                     
                     <div class="settings-item">
-                        <div class="settings-label">زيادة 250 فلس في الفاتورة و 10% في العملاء</div>
+                        <div class="settings-label">زيادة 0.250 إلى 0.349 فلس في الفاتورة مع ثبات أو زيادة العملاء</div>
                         <input type="number" class="settings-input" id="customers-tier1" value="25" min="0">
                         <span style="margin-right: 10px;">دينار كويتي</span>
                     </div>
                     
                     <div class="settings-item">
-                        <div class="settings-label">زيادة 350 فلس في الفاتورة و 20% في العملاء</div>
+                        <div class="settings-label">زيادة 0.350 فما فوق في الفاتورة مع ثبات أو زيادة العملاء</div>
                         <input type="number" class="settings-input" id="customers-tier2" value="50" min="0">
+                        <span style="margin-right: 10px;">دينار كويتي</span>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h2 class="section-title">حوافز المشرفين (المدراء) للمبيعات</h2>
+                    
+                    <div class="settings-item">
+                        <div class="settings-label">مجموعة المطاعم حققت 95% إلى 99.99%</div>
+                        <input type="number" class="settings-input" id="manager-sales-tier1" value="25" min="0">
+                        <span style="margin-right: 10px;">دينار كويتي</span>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-label">مجموعة المطاعم حققت 100% إلى 104.99%</div>
+                        <input type="number" class="settings-input" id="manager-sales-tier2" value="50" min="0">
+                        <span style="margin-right: 10px;">دينار كويتي</span>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-label">مجموعة المطاعم حققت 105% فما فوق</div>
+                        <input type="number" class="settings-input" id="manager-sales-tier3" value="100" min="0">
+                        <span style="margin-right: 10px;">دينار كويتي</span>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h2 class="section-title">حوافز المشرفين (المدراء) لمتوسط الفاتورة والعملاء</h2>
+                    
+                    <div class="settings-item">
+                        <div class="settings-label">متوسط زيادة 0.250 إلى 0.349 في الفاتورة مع ثبات أو زيادة العملاء</div>
+                        <input type="number" class="settings-input" id="manager-customers-tier1" value="25" min="0">
+                        <span style="margin-right: 10px;">دينار كويتي</span>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-label">متوسط زيادة 0.350 فما فوق في الفاتورة مع ثبات أو زيادة العملاء</div>
+                        <input type="number" class="settings-input" id="manager-customers-tier2" value="50" min="0">
                         <span style="margin-right: 10px;">دينار كويتي</span>
                     </div>
                 </div>
@@ -1314,9 +1367,11 @@
             actuals: [], // النتائج الفعلية
             incentives: [], // الحوافز المحسوبة
             settings: {
-                salesTiers: [25, 100, 150, 185],
+                salesTiers: [25, 50, 100],
                 costTiers: [25, 50],
-                customerTiers: [25, 50]
+                customerTiers: [25, 50],
+                managerSalesTiers: [25, 50, 100],
+                managerCustomerTiers: [25, 50]
             },
             charts: {
                 sales: null,
@@ -1328,7 +1383,8 @@
                 customers: null,
                 complaints: null
             },
-            branchPerformance: {} // لتخزين أداء الفروع لاستخدامها في الرسوم البيانية
+            branchPerformance: {}, // لتخزين أداء الفروع لاستخدامها في الرسوم البيانية
+            managerPerformance: {} // لتخزين أداء المدراء
         };
         
         // تهيئة التطبيق عند تحميل الصفحة
@@ -1344,7 +1400,8 @@
             // تحميل الإعدادات من localStorage إن وجدت
             const savedSettings = localStorage.getItem('naifIncentivesSettings');
             if (savedSettings) {
-                appData.settings = JSON.parse(savedSettings);
+                const parsedSettings = JSON.parse(savedSettings);
+                appData.settings = { ...appData.settings, ...parsedSettings };
                 updateSettingsInputs();
             }
             
@@ -1364,6 +1421,9 @@
                     appData.incentives = parsedData.incentives;
                     updateIncentivesTable();
                     updateStatsCards();
+                }
+                if (parsedData.managerPerformance) {
+                    appData.managerPerformance = parsedData.managerPerformance;
                 }
             }
             
@@ -1916,6 +1976,7 @@
             setTimeout(() => {
                 appData.incentives = [];
                 appData.branchPerformance = {};
+                appData.managerPerformance = {};
                 let matchedBranches = 0;
                 let unmatchedBranches = [];
                 let matchDetails = [];
@@ -2007,16 +2068,14 @@
                     // حساب نسبة المبيعات
                     const salesPercentage = target.totalSales > 0 ? (actual.totalSales / target.totalSales) * 100 : 0;
                     
-                    // حساب حافز المبيعات
+                    // حساب حافز المبيعات (بالمبالغ الجديدة المعدلة)
                     let salesIncentive = 0;
                     if (salesPercentage >= 95 && salesPercentage < 100) {
-                        salesIncentive = appData.settings.salesTiers[0];
+                        salesIncentive = appData.settings.salesTiers[0]; // 25 دينار
                     } else if (salesPercentage >= 100 && salesPercentage < 105) {
-                        salesIncentive = appData.settings.salesTiers[1];
-                    } else if (salesPercentage >= 105 && salesPercentage < 110) {
-                        salesIncentive = appData.settings.salesTiers[2];
-                    } else if (salesPercentage >= 110) {
-                        salesIncentive = appData.settings.salesTiers[3];
+                        salesIncentive = appData.settings.salesTiers[1]; // 50 دينار
+                    } else if (salesPercentage >= 105) {
+                        salesIncentive = appData.settings.salesTiers[2]; // 100 دينار
                     }
                     
                     // حساب تخفيض التكاليف (التكلفة والرواتب والإضافي)
@@ -2050,30 +2109,24 @@
                         totalCostReductionPercent = totalCostReductionPercent / count;
                     }
                     
-                    // حساب حافز تخفيض التكاليف
+                    // حساب حافز تخفيض التكاليف (بالمبالغ الجديدة)
                     let costIncentive = 0;
                     if (totalCostReductionPercent >= 1 && totalCostReductionPercent < 2) {
-                        costIncentive = appData.settings.costTiers[0];
+                        costIncentive = appData.settings.costTiers[0]; // 25 دينار
                     } else if (totalCostReductionPercent >= 2) {
-                        costIncentive = appData.settings.costTiers[1];
+                        costIncentive = appData.settings.costTiers[1]; // 50 دينار
                     }
                     
                     // حساب زيادة متوسط قيمة الفاتورة وعدد العملاء
                     const billIncrease = actual.avgBillValue - target.avgBillValue; // بالفلس
-                    const customerIncreasePercent = target.customerCount > 0 ? 
-                        ((actual.customerCount - target.customerCount) / target.customerCount) * 100 : 0;
+                    const customerIncrease = actual.customerCount - target.customerCount;
                     
-                    // حساب تخفيض الشكاوى
-                    const complaintsReduction = target.complaints - actual.complaints;
-                    const complaintsReductionPercent = target.complaints > 0 ? 
-                        (complaintsReduction / target.complaints) * 100 : 0;
-                    
-                    // حساب حافز زيادة القيمة والعملاء
+                    // حساب حافز زيادة القيمة والعملاء (بالمبالغ الجديدة المعدلة)
                     let customerIncentive = 0;
-                    if (billIncrease >= 0.250 && customerIncreasePercent >= 10) {
-                        customerIncentive = appData.settings.customerTiers[0];
-                    } else if (billIncrease >= 0.350 && customerIncreasePercent >= 20) {
-                        customerIncentive = appData.settings.customerTiers[1];
+                    if (billIncrease >= 0.250 && billIncrease < 0.350 && customerIncrease >= 0) {
+                        customerIncentive = appData.settings.customerTiers[0]; // 25 دينار
+                    } else if (billIncrease >= 0.350 && customerIncrease >= 0) {
+                        customerIncentive = appData.settings.customerTiers[1]; // 50 دينار
                     }
                     
                     // إجمالي الحافز
@@ -2087,6 +2140,8 @@
                         incentiveClass = 'incentive-medium';
                     } else if (totalIncentive > 0) {
                         incentiveClass = 'incentive-low';
+                    } else {
+                        incentiveClass = '';
                     }
                     
                     // تحديد حالة الفرع
@@ -2114,8 +2169,8 @@
                         extraReductionPercent: extraReductionPercent,
                         totalCostReductionPercent: totalCostReductionPercent,
                         billIncrease: billIncrease * 1000, // تحويل للفلس
-                        customerIncreasePercent: customerIncreasePercent,
-                        complaintsReductionPercent: complaintsReductionPercent
+                        customerIncrease: customerIncrease,
+                        customerIncreasePercent: target.customerCount > 0 ? (customerIncrease / target.customerCount) * 100 : 0
                     };
                     
                     // إضافة إلى مصفوفة الحوافز
@@ -2128,13 +2183,116 @@
                         costReduction: totalCostReductionPercent,
                         costIncentive: costIncentive,
                         billIncrease: billIncrease,
-                        customerIncrease: customerIncreasePercent,
+                        customerIncrease: customerIncrease,
+                        customerIncreasePercent: target.customerCount > 0 ? (customerIncrease / target.customerCount) * 100 : 0,
                         customerIncentive: customerIncentive,
                         totalIncentive: totalIncentive,
                         incentiveClass: incentiveClass,
                         status: status,
                         statusClass: statusClass
                     });
+                    
+                    // تحديث أداء المدراء
+                    // مدير المنطقة
+                    if (!appData.managerPerformance[branch.areaManager]) {
+                        appData.managerPerformance[branch.areaManager] = {
+                            type: 'area',
+                            branches: [],
+                            totalSalesPercentage: 0,
+                            avgSalesPercentage: 0,
+                            totalBillIncrease: 0,
+                            avgBillIncrease: 0,
+                            totalCustomerIncrease: 0,
+                            avgCustomerIncrease: 0,
+                            totalIncentive: 0,
+                            totalBranches: 0
+                        };
+                    }
+                    appData.managerPerformance[branch.areaManager].branches.push({
+                        name: branch.restaurant,
+                        salesPercentage: salesPercentage,
+                        billIncrease: billIncrease,
+                        customerIncrease: customerIncrease,
+                        incentive: totalIncentive
+                    });
+                    appData.managerPerformance[branch.areaManager].totalSalesPercentage += salesPercentage;
+                    appData.managerPerformance[branch.areaManager].totalBillIncrease += billIncrease;
+                    appData.managerPerformance[branch.areaManager].totalCustomerIncrease += customerIncrease;
+                    appData.managerPerformance[branch.areaManager].totalIncentive += totalIncentive;
+                    appData.managerPerformance[branch.areaManager].totalBranches++;
+                    appData.managerPerformance[branch.areaManager].avgSalesPercentage = 
+                        appData.managerPerformance[branch.areaManager].totalSalesPercentage / 
+                        appData.managerPerformance[branch.areaManager].totalBranches;
+                    appData.managerPerformance[branch.areaManager].avgBillIncrease = 
+                        appData.managerPerformance[branch.areaManager].totalBillIncrease / 
+                        appData.managerPerformance[branch.areaManager].totalBranches;
+                    appData.managerPerformance[branch.areaManager].avgCustomerIncrease = 
+                        appData.managerPerformance[branch.areaManager].totalCustomerIncrease / 
+                        appData.managerPerformance[branch.areaManager].totalBranches;
+                    
+                    // مدير التشغيل
+                    if (!appData.managerPerformance[branch.operationManager]) {
+                        appData.managerPerformance[branch.operationManager] = {
+                            type: 'operation',
+                            branches: [],
+                            totalSalesPercentage: 0,
+                            avgSalesPercentage: 0,
+                            totalBillIncrease: 0,
+                            avgBillIncrease: 0,
+                            totalCustomerIncrease: 0,
+                            avgCustomerIncrease: 0,
+                            totalIncentive: 0,
+                            totalBranches: 0
+                        };
+                    }
+                    appData.managerPerformance[branch.operationManager].branches.push({
+                        name: branch.restaurant,
+                        salesPercentage: salesPercentage,
+                        billIncrease: billIncrease,
+                        customerIncrease: customerIncrease,
+                        incentive: totalIncentive
+                    });
+                    appData.managerPerformance[branch.operationManager].totalSalesPercentage += salesPercentage;
+                    appData.managerPerformance[branch.operationManager].totalBillIncrease += billIncrease;
+                    appData.managerPerformance[branch.operationManager].totalCustomerIncrease += customerIncrease;
+                    appData.managerPerformance[branch.operationManager].totalIncentive += totalIncentive;
+                    appData.managerPerformance[branch.operationManager].totalBranches++;
+                    appData.managerPerformance[branch.operationManager].avgSalesPercentage = 
+                        appData.managerPerformance[branch.operationManager].totalSalesPercentage / 
+                        appData.managerPerformance[branch.operationManager].totalBranches;
+                    appData.managerPerformance[branch.operationManager].avgBillIncrease = 
+                        appData.managerPerformance[branch.operationManager].totalBillIncrease / 
+                        appData.managerPerformance[branch.operationManager].totalBranches;
+                    appData.managerPerformance[branch.operationManager].avgCustomerIncrease = 
+                        appData.managerPerformance[branch.operationManager].totalCustomerIncrease / 
+                        appData.managerPerformance[branch.operationManager].totalBranches;
+                });
+                
+                // حساب الحوافز للمدراء بناءً على متوسط أداء فروعهم
+                Object.keys(appData.managerPerformance).forEach(managerName => {
+                    const manager = appData.managerPerformance[managerName];
+                    let managerSalesIncentive = 0;
+                    let managerCustomerIncentive = 0;
+                    
+                    // حساب حافز المدير بناءً على متوسط نسبة المبيعات لفروعه
+                    if (manager.avgSalesPercentage >= 95 && manager.avgSalesPercentage < 100) {
+                        managerSalesIncentive = appData.settings.managerSalesTiers[0]; // 25 دينار
+                    } else if (manager.avgSalesPercentage >= 100 && manager.avgSalesPercentage < 105) {
+                        managerSalesIncentive = appData.settings.managerSalesTiers[1]; // 50 دينار
+                    } else if (manager.avgSalesPercentage >= 105) {
+                        managerSalesIncentive = appData.settings.managerSalesTiers[2]; // 100 دينار
+                    }
+                    
+                    // حساب حافز المدير بناءً على متوسط زيادة الفاتورة والعملاء لفروعه
+                    if (manager.avgBillIncrease >= 0.250 && manager.avgBillIncrease < 0.350 && manager.avgCustomerIncrease >= 0) {
+                        managerCustomerIncentive = appData.settings.managerCustomerTiers[0]; // 25 دينار
+                    } else if (manager.avgBillIncrease >= 0.350 && manager.avgCustomerIncrease >= 0) {
+                        managerCustomerIncentive = appData.settings.managerCustomerTiers[1]; // 50 دينار
+                    }
+                    
+                    appData.managerPerformance[managerName].managerSalesIncentive = managerSalesIncentive;
+                    appData.managerPerformance[managerName].managerCustomerIncentive = managerCustomerIncentive;
+                    appData.managerPerformance[managerName].managerTotalIncentive = managerSalesIncentive + managerCustomerIncentive;
                 });
                 
                 // تحديث شريط التقدم
@@ -2178,7 +2336,9 @@
             
             appData.incentives.forEach((item, index) => {
                 const row = document.createElement('tr');
-                row.className = item.incentiveClass;
+                if (item.incentiveClass) {
+                    row.className = item.incentiveClass;
+                }
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td><strong>${item.branch}</strong></td>
@@ -2187,7 +2347,7 @@
                     <td class="${item.salesIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.salesIncentive)}</td>
                     <td class="${item.costReduction > 0 ? 'cell-positive' : 'cell-negative'}">${item.costReduction.toFixed(2)}%</td>
                     <td class="${item.costIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.costIncentive)}</td>
-                    <td>${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
+                    <td>${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}</td>
                     <td class="${item.customerIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.customerIncentive)}</td>
                     <td class="incentive-achieved"><strong>${roundToNearest(item.totalIncentive)}</strong></td>
                     <td class="${item.statusClass}">${item.status}</td>
@@ -2198,7 +2358,7 @@
             document.getElementById('incentives-count').textContent = appData.incentives.length;
         }
         
-        // تحديث الرسوم البيانية
+        // تحديث الرسوم البيانية - تم إصلاحها
         function updateCharts() {
             if (appData.incentives.length === 0 || Object.keys(appData.branchPerformance).length === 0) {
                 // عرض رسالة إذا لم تكن هناك بيانات
@@ -2254,38 +2414,72 @@
                 .slice(0, 10);
             
             const complaintsSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.complaintsReductionPercent - a.performance.complaintsReductionPercent)
+                .sort((a, b) => b.performance.customerIncreasePercent - a.performance.customerIncreasePercent)
                 .slice(0, 10);
             
             // تدمير الرسوم البيانية القديمة إن وجدت
-            if (appData.charts.sales) appData.charts.sales.destroy();
-            if (appData.charts.costs) appData.charts.costs.destroy();
-            if (appData.charts.salaries) appData.charts.salaries.destroy();
-            if (appData.charts.extra) appData.charts.extra.destroy();
-            if (appData.charts.totalCosts) appData.charts.totalCosts.destroy();
-            if (appData.charts.bill) appData.charts.bill.destroy();
-            if (appData.charts.customers) appData.charts.customers.destroy();
-            if (appData.charts.complaints) appData.charts.complaints.destroy();
+            Object.keys(appData.charts).forEach(chartName => {
+                if (appData.charts[chartName]) {
+                    appData.charts[chartName].destroy();
+                    appData.charts[chartName] = null;
+                }
+            });
+            
+            // إعدادات مشتركة للرسوم البيانية
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        rtl: true
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'النسبة المئوية %'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            };
             
             // رسم مخطط المبيعات
             const salesCtx = document.getElementById('sales-chart').getContext('2d');
             appData.charts.sales = new Chart(salesCtx, {
                 type: 'bar',
                 data: {
-                    labels: salesSorted.map(item => item.branch),
+                    labels: salesSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'نسبة تحقيق المبيعات %',
                         data: salesSorted.map(item => item.performance.salesPercentage),
                         backgroundColor: salesSorted.map(item => 
-                            item.performance.salesPercentage >= 110 ? 'rgba(76, 175, 80, 0.7)' : 
-                            item.performance.salesPercentage >= 105 ? 'rgba(255, 193, 7, 0.7)' : 
+                            item.performance.salesPercentage >= 105 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.salesPercentage >= 100 ? 'rgba(33, 150, 243, 0.7)' : 
                             item.performance.salesPercentage >= 95 ? 'rgba(158, 158, 158, 0.7)' : 
                             'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: salesSorted.map(item => 
-                            item.performance.salesPercentage >= 110 ? 'rgba(76, 175, 80, 1)' : 
-                            item.performance.salesPercentage >= 105 ? 'rgba(255, 193, 7, 1)' : 
+                            item.performance.salesPercentage >= 105 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.salesPercentage >= 100 ? 'rgba(33, 150, 243, 1)' : 
                             item.performance.salesPercentage >= 95 ? 'rgba(158, 158, 158, 1)' : 
                             'rgba(244, 67, 54, 1)'
@@ -2293,32 +2487,7 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة تحقيق المبيعات: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
             
             // رسم مخطط تخفيض التكلفة
@@ -2326,7 +2495,7 @@
             appData.charts.costs = new Chart(costsCtx, {
                 type: 'bar',
                 data: {
-                    labels: costsSorted.map(item => item.branch),
+                    labels: costsSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'نسبة تخفيض التكلفة %',
                         data: costsSorted.map(item => item.performance.costReductionPercent),
@@ -2341,32 +2510,7 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة تخفيض التكلفة: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
             
             // رسم مخطط تخفيض الرواتب
@@ -2374,7 +2518,7 @@
             appData.charts.salaries = new Chart(salariesCtx, {
                 type: 'bar',
                 data: {
-                    labels: salariesSorted.map(item => item.branch),
+                    labels: salariesSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'نسبة تخفيض الرواتب %',
                         data: salariesSorted.map(item => item.performance.salariesReductionPercent),
@@ -2389,32 +2533,7 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة تخفيض الرواتب: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
             
             // رسم مخطط تخفيض الإضافي
@@ -2422,7 +2541,7 @@
             appData.charts.extra = new Chart(extraCtx, {
                 type: 'bar',
                 data: {
-                    labels: extraSorted.map(item => item.branch),
+                    labels: extraSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'نسبة تخفيض الإضافي %',
                         data: extraSorted.map(item => item.performance.extraReductionPercent),
@@ -2437,32 +2556,7 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة تخفيض الإضافي: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
             
             // رسم مخطط تخفيض التكاليف مجتمعة
@@ -2470,7 +2564,7 @@
             appData.charts.totalCosts = new Chart(totalCostsCtx, {
                 type: 'bar',
                 data: {
-                    labels: totalCostsSorted.map(item => item.branch),
+                    labels: totalCostsSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'نسبة تخفيض التكاليف مجتمعة %',
                         data: totalCostsSorted.map(item => item.performance.totalCostReductionPercent),
@@ -2487,32 +2581,7 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة تخفيض التكاليف: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
             
             // رسم مخطط ارتفاع قيمة الفاتورة
@@ -2520,7 +2589,7 @@
             appData.charts.bill = new Chart(billCtx, {
                 type: 'bar',
                 data: {
-                    labels: billSorted.map(item => item.branch),
+                    labels: billSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'ارتفاع قيمة الفاتورة (فلس)',
                         data: billSorted.map(item => item.performance.billIncrease),
@@ -2538,24 +2607,11 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `ارتفاع قيمة الفاتورة: ${context.raw.toFixed(0)} فلس`;
-                                }
-                            }
-                        }
-                    },
+                    ...chartOptions,
                     scales: {
+                        ...chartOptions.scales,
                         y: {
-                            beginAtZero: true,
+                            ...chartOptions.scales.y,
                             title: {
                                 display: true,
                                 text: 'الزيادة بالفلس'
@@ -2570,49 +2626,26 @@
             appData.charts.customers = new Chart(customersCtx, {
                 type: 'bar',
                 data: {
-                    labels: customersSorted.map(item => item.branch),
+                    labels: customersSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
                         label: 'نسبة زيادة العملاء %',
                         data: customersSorted.map(item => item.performance.customerIncreasePercent),
                         backgroundColor: customersSorted.map(item => 
                             item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 0.7)' : 
-                            'rgba(158, 158, 158, 0.7)'
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 0.7)' : 
+                            'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: customersSorted.map(item => 
                             item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 1)' : 
-                            'rgba(158, 158, 158, 1)'
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 1)' : 
+                            'rgba(244, 67, 54, 1)'
                         ),
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة زيادة العملاء: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
             
             // رسم مخطط تخفيض الشكاوى
@@ -2620,47 +2653,26 @@
             appData.charts.complaints = new Chart(complaintsCtx, {
                 type: 'bar',
                 data: {
-                    labels: complaintsSorted.map(item => item.branch),
+                    labels: complaintsSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
                     datasets: [{
-                        label: 'نسبة تخفيض الشكاوى %',
-                        data: complaintsSorted.map(item => item.performance.complaintsReductionPercent),
+                        label: 'نسبة زيادة العملاء %',
+                        data: complaintsSorted.map(item => item.performance.customerIncreasePercent),
                         backgroundColor: complaintsSorted.map(item => 
-                            item.performance.complaintsReductionPercent > 0 ? 'rgba(76, 175, 80, 0.7)' : 
+                            item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 0.7)' : 
+                            item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 0.7)' : 
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 0.7)' : 
                             'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: complaintsSorted.map(item => 
-                            item.performance.complaintsReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
+                            item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 1)' : 
+                            item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 1)' : 
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            rtl: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `نسبة تخفيض الشكاوى: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'النسبة المئوية %'
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
         }
         
@@ -2711,11 +2723,15 @@
                 return;
             }
             
+            if (!appData.managerPerformance[managerName]) {
+                alert('لا توجد بيانات أداء لهذا المدير');
+                return;
+            }
+            
             // تصفية البيانات حسب المدير المختار
             let filteredData = [];
             let totalIncentives = 0;
             let totalBranches = 0;
-            let totalSalesPercentage = 0;
             
             if (managerType === 'area') {
                 filteredData = appData.incentives.filter(item => item.areaManager === managerName);
@@ -2731,14 +2747,39 @@
             // حساب الإحصائيات
             totalBranches = filteredData.length;
             totalIncentives = filteredData.reduce((sum, item) => sum + Math.round(item.totalIncentive), 0);
-            totalSalesPercentage = filteredData.reduce((sum, item) => sum + item.salesPercentage, 0) / filteredData.length;
+            
+            // حساب المبلغ المحقق للمشرف
+            const managerPerformance = appData.managerPerformance[managerName];
+            const avgSalesPercentage = managerPerformance.avgSalesPercentage;
+            const avgBillIncrease = managerPerformance.avgBillIncrease;
+            const avgCustomerIncrease = managerPerformance.avgCustomerIncrease;
+            
+            let managerSalesIncentive = 0;
+            let managerCustomerIncentive = 0;
+            
+            if (avgSalesPercentage >= 95 && avgSalesPercentage < 100) {
+                managerSalesIncentive = appData.settings.managerSalesTiers[0]; // 25 دينار
+            } else if (avgSalesPercentage >= 100 && avgSalesPercentage < 105) {
+                managerSalesIncentive = appData.settings.managerSalesTiers[1]; // 50 دينار
+            } else if (avgSalesPercentage >= 105) {
+                managerSalesIncentive = appData.settings.managerSalesTiers[2]; // 100 دينار
+            }
+            
+            if (avgBillIncrease >= 0.250 && avgBillIncrease < 0.350 && avgCustomerIncrease >= 0) {
+                managerCustomerIncentive = appData.settings.managerCustomerTiers[0]; // 25 دينار
+            } else if (avgBillIncrease >= 0.350 && avgCustomerIncrease >= 0) {
+                managerCustomerIncentive = appData.settings.managerCustomerTiers[1]; // 50 دينار
+            }
+            
+            const managerTotalIncentive = managerSalesIncentive + managerCustomerIncentive;
             
             // تحديث الملخص
             document.getElementById('manager-summary').style.display = 'flex';
             document.getElementById('manager-branches').textContent = totalBranches;
             document.getElementById('manager-incentives').textContent = totalIncentives.toLocaleString();
             document.getElementById('manager-avg').textContent = Math.round(totalIncentives / totalBranches).toLocaleString();
-            document.getElementById('manager-percentage').textContent = totalSalesPercentage.toFixed(2) + '%';
+            document.getElementById('manager-percentage').textContent = avgSalesPercentage.toFixed(2) + '%';
+            document.getElementById('manager-achieved-amount').textContent = managerTotalIncentive.toLocaleString();
             
             // تحديث الجدول
             document.getElementById('manager-report-table').style.display = 'block';
@@ -2749,7 +2790,9 @@
             
             filteredData.sort((a, b) => b.totalIncentive - a.totalIncentive).forEach((item, index) => {
                 const row = document.createElement('tr');
-                row.className = item.incentiveClass;
+                if (item.incentiveClass) {
+                    row.className = item.incentiveClass;
+                }
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td><strong>${item.branch}</strong></td>
@@ -2758,7 +2801,7 @@
                     <td class="${item.salesIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.salesIncentive)}</td>
                     <td class="${item.costReduction > 0 ? 'cell-positive' : 'cell-negative'}">${item.costReduction.toFixed(2)}%</td>
                     <td class="${item.costIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.costIncentive)}</td>
-                    <td>${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
+                    <td>${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}</td>
                     <td class="${item.customerIncentive > 0 ? 'incentive-achieved' : 'incentive-not-achieved'}">${roundToNearest(item.customerIncentive)}</td>
                     <td class="incentive-achieved"><strong>${roundToNearest(item.totalIncentive)}</strong></td>
                     <td class="${item.statusClass}">${item.status}</td>
@@ -2775,13 +2818,19 @@
             document.getElementById('sales-tier1').value = appData.settings.salesTiers[0];
             document.getElementById('sales-tier2').value = appData.settings.salesTiers[1];
             document.getElementById('sales-tier3').value = appData.settings.salesTiers[2];
-            document.getElementById('sales-tier4').value = appData.settings.salesTiers[3];
             
             document.getElementById('cost-tier1').value = appData.settings.costTiers[0];
             document.getElementById('cost-tier2').value = appData.settings.costTiers[1];
             
             document.getElementById('customers-tier1').value = appData.settings.customerTiers[0];
             document.getElementById('customers-tier2').value = appData.settings.customerTiers[1];
+            
+            document.getElementById('manager-sales-tier1').value = appData.settings.managerSalesTiers[0];
+            document.getElementById('manager-sales-tier2').value = appData.settings.managerSalesTiers[1];
+            document.getElementById('manager-sales-tier3').value = appData.settings.managerSalesTiers[2];
+            
+            document.getElementById('manager-customers-tier1').value = appData.settings.managerCustomerTiers[0];
+            document.getElementById('manager-customers-tier2').value = appData.settings.managerCustomerTiers[1];
         }
         
         // حفظ الإعدادات
@@ -2789,8 +2838,7 @@
             appData.settings.salesTiers = [
                 parseInt(document.getElementById('sales-tier1').value),
                 parseInt(document.getElementById('sales-tier2').value),
-                parseInt(document.getElementById('sales-tier3').value),
-                parseInt(document.getElementById('sales-tier4').value)
+                parseInt(document.getElementById('sales-tier3').value)
             ];
             
             appData.settings.costTiers = [
@@ -2803,6 +2851,17 @@
                 parseInt(document.getElementById('customers-tier2').value)
             ];
             
+            appData.settings.managerSalesTiers = [
+                parseInt(document.getElementById('manager-sales-tier1').value),
+                parseInt(document.getElementById('manager-sales-tier2').value),
+                parseInt(document.getElementById('manager-sales-tier3').value)
+            ];
+            
+            appData.settings.managerCustomerTiers = [
+                parseInt(document.getElementById('manager-customers-tier1').value),
+                parseInt(document.getElementById('manager-customers-tier2').value)
+            ];
+            
             localStorage.setItem('naifIncentivesSettings', JSON.stringify(appData.settings));
             
             showSuccess('تم حفظ الإعدادات بنجاح!');
@@ -2811,9 +2870,11 @@
         // إعادة تعيين الإعدادات
         function resetSettings() {
             appData.settings = {
-                salesTiers: [25, 100, 150, 185],
+                salesTiers: [25, 50, 100],
                 costTiers: [25, 50],
-                customerTiers: [25, 50]
+                customerTiers: [25, 50],
+                managerSalesTiers: [25, 50, 100],
+                managerCustomerTiers: [25, 50]
             };
             
             updateSettingsInputs();
@@ -2829,6 +2890,7 @@
                 appData.actuals = [];
                 appData.incentives = [];
                 appData.branchPerformance = {};
+                appData.managerPerformance = {};
                 
                 // تحديث الجداول
                 updateTargetsTable();
@@ -2877,7 +2939,8 @@
             const dataToSave = {
                 targets: appData.targets,
                 actuals: appData.actuals,
-                incentives: appData.incentives
+                incentives: appData.incentives,
+                managerPerformance: appData.managerPerformance
             };
             
             localStorage.setItem('naifIncentivesData', JSON.stringify(dataToSave));
@@ -2966,7 +3029,7 @@
         }
         
         // دالة إنشاء صفحة PDF
-        function createPDFPage(title, content) {
+        function createPDFPage(title, content, landscape = false) {
             const printDate = updatePDFDates();
             
             return `
@@ -3085,7 +3148,7 @@
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}</td>
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
@@ -3111,12 +3174,12 @@
                 }
                 
                 // إنشاء PDF
-                savePDF('تقرير_الحوافز');
+                savePDF('تقرير_الحوافز', 'p');
                 
             }, 500);
         }
         
-        // تصدير تقرير المدير إلى PDF
+        // تصدير تقرير المدير إلى PDF - مع تعديل للوضع الأفقي
         function exportManagerPDF() {
             const managerType = document.getElementById('manager-type').value;
             const managerName = document.getElementById('manager-name').value;
@@ -3128,6 +3191,11 @@
             
             if (appData.incentives.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
+                return;
+            }
+            
+            if (!appData.managerPerformance[managerName]) {
+                alert('لا توجد بيانات أداء لهذا المدير');
                 return;
             }
             
@@ -3154,7 +3222,31 @@
                 // حساب الإحصائيات
                 const totalIncentivesValue = filteredData.reduce((sum, item) => sum + Math.round(item.totalIncentive), 0);
                 const avgIncentive = Math.round(totalIncentivesValue / filteredData.length);
-                const totalSalesPercentage = filteredData.reduce((sum, item) => sum + item.salesPercentage, 0) / filteredData.length;
+                
+                // بيانات المدير
+                const managerPerformance = appData.managerPerformance[managerName];
+                const avgSalesPercentage = managerPerformance.avgSalesPercentage;
+                const avgBillIncrease = managerPerformance.avgBillIncrease;
+                const avgCustomerIncrease = managerPerformance.avgCustomerIncrease;
+                
+                let managerSalesIncentive = 0;
+                let managerCustomerIncentive = 0;
+                
+                if (avgSalesPercentage >= 95 && avgSalesPercentage < 100) {
+                    managerSalesIncentive = appData.settings.managerSalesTiers[0]; // 25 دينار
+                } else if (avgSalesPercentage >= 100 && avgSalesPercentage < 105) {
+                    managerSalesIncentive = appData.settings.managerSalesTiers[1]; // 50 دينار
+                } else if (avgSalesPercentage >= 105) {
+                    managerSalesIncentive = appData.settings.managerSalesTiers[2]; // 100 دينار
+                }
+                
+                if (avgBillIncrease >= 0.250 && avgBillIncrease < 0.350 && avgCustomerIncrease >= 0) {
+                    managerCustomerIncentive = appData.settings.managerCustomerTiers[0]; // 25 دينار
+                } else if (avgBillIncrease >= 0.350 && avgCustomerIncrease >= 0) {
+                    managerCustomerIncentive = appData.settings.managerCustomerTiers[1]; // 50 دينار
+                }
+                
+                const managerTotalIncentive = managerSalesIncentive + managerCustomerIncentive;
                 
                 const summaryContent = `
                     <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
@@ -3164,32 +3256,48 @@
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                             <div><strong>عدد المطاعم:</strong> ${filteredData.length}</div>
-                            <div><strong>إجمالي الحوافز:</strong> ${totalIncentivesValue.toLocaleString()} دينار</div>
+                            <div><strong>إجمالي حوافز المطاعم:</strong> ${totalIncentivesValue.toLocaleString()} دينار</div>
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>متوسط نسبة تحقيق المبيعات:</strong> ${avgSalesPercentage.toFixed(2)}%</div>
                             <div><strong>متوسط الحافز لكل فرع:</strong> ${avgIncentive.toLocaleString()} دينار</div>
-                            <div><strong>متوسط نسبة تحقيق المبيعات:</strong> ${totalSalesPercentage.toFixed(2)}%</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div><strong>متوسط زيادة الفاتورة:</strong> ${avgBillIncrease.toFixed(3)}</div>
+                            <div><strong>متوسط زيادة العملاء:</strong> ${avgCustomerIncrease >= 0 ? '+' : ''}${avgCustomerIncrease.toFixed(0)}</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; background: #e8f5e9; padding: 8px; border-radius: 4px;">
+                            <div><strong>المبلغ المحقق للمشرف (المبيعات):</strong></div>
+                            <div><strong style="color: #2e7d32; font-size: 14px;">${managerSalesIncentive.toLocaleString()} دينار كويتي</strong></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; background: #e8f5e9; padding: 8px; border-radius: 4px;">
+                            <div><strong>المبلغ المحقق للمشرف (الفاتورة والعملاء):</strong></div>
+                            <div><strong style="color: #2e7d32; font-size: 14px;">${managerCustomerIncentive.toLocaleString()} دينار كويتي</strong></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; background: #c8e6c9; padding: 8px; border-radius: 4px;">
+                            <div><strong>المبلغ الإجمالي المحقق للمشرف:</strong></div>
+                            <div><strong style="color: #1b5e20; font-size: 16px;">${managerTotalIncentive.toLocaleString()} دينار كويتي</strong></div>
                         </div>
                     </div>
                 `;
                 
                 pdfPages.innerHTML += createPDFPage(`تقرير أداء المدير: ${managerName}`, summaryContent);
                 
-                // إضافة جدول الحوافز
+                // إضافة جدول الحوافز مع تصميم للوضع الأفقي
                 let tableContent = `
-                    <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                    <table style="font-size: 9px; border-collapse: collapse; width: 100%;">
                         <thead>
                             <tr>
-                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                                <th width="20%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
-                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
-                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
+                                <th width="4%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                <th width="16%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="7%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
+                                <th width="7%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
+                                <th width="7%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
+                                <th width="7%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
+                                <th width="10%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
+                                <th width="7%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
+                                <th width="7%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
+                                <th width="8%" style="padding: 3px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -3198,16 +3306,16 @@
                 filteredData.sort((a, b) => b.totalIncentive - a.totalIncentive).forEach((item, index) => {
                     tableContent += `
                         <tr>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease.toFixed(1)}%</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${index + 1}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.branch}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.status}</td>
                         </tr>
                     `;
                 });
@@ -3216,9 +3324,9 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="8" style="padding: 4px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalIncentivesValue.toLocaleString()}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
+                            <td colspan="8" style="padding: 3px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalIncentivesValue.toLocaleString()}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;"></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -3226,8 +3334,8 @@
                 
                 pdfPages.innerHTML += tableContent;
                 
-                // إنشاء PDF
-                savePDF(`تقرير_المدير_${managerName}`);
+                // إنشاء PDF بالوضع الأفقي
+                savePDF(`تقرير_المدير_${managerName}`, 'l');
                 
             }, 500);
         }
@@ -3247,7 +3355,7 @@
             exportResultsPDF(); // استخدم نفس الدالة
         }
         
-        // تصدير جدول الأهداف إلى PDF
+        // تصدير جدول الأهداف إلى PDF - تم إرجاعها كما كانت
         function exportTargetsPDF() {
             if (appData.targets.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى تحميل ملف الأهداف أولاً.');
@@ -3278,14 +3386,14 @@
                         <thead>
                             <tr>
                                 <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                                <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="20%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
                                 <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي المبيعات</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة التكلفة</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرواتب</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الإضافي</th>
                                 <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">متوسط الفاتورة</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">عدد العملاء</th>
-                                <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
+                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -3323,12 +3431,12 @@
                 pdfPages.innerHTML += tableContent;
                 
                 // إنشاء PDF
-                savePDF('جدول_الأهداف');
+                savePDF('جدول_الأهداف', 'p');
                 
             }, 500);
         }
         
-        // تصدير جدول النتائج الفعلية إلى PDF
+        // تصدير جدول النتائج الفعلية إلى PDF - تم إرجاعها كما كانت
         function exportActualsPDF() {
             if (appData.actuals.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى تحميل ملف النتائج الفعلية أولاً.');
@@ -3359,14 +3467,14 @@
                         <thead>
                             <tr>
                                 <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                                <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                <th width="20%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
                                 <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي المبيعات</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة التكلفة</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرواتب</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الإضافي</th>
                                 <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">متوسط الفاتورة</th>
                                 <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">عدد العملاء</th>
-                                <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
+                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الشكاوى</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -3404,13 +3512,13 @@
                 pdfPages.innerHTML += tableContent;
                 
                 // إنشاء PDF
-                savePDF('جدول_النتائج_الفعلية');
+                savePDF('جدول_النتائج_الفعلية', 'p');
                 
             }, 500);
         }
         
         // تصدير الرسوم البيانية إلى PDF
-        function exportChartsPDF() {
+        async function exportChartsPDF() {
             if (appData.incentives.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
                 return;
@@ -3418,8 +3526,7 @@
             
             showLoading('جاري إنشاء ملف PDF للرسوم البيانية...');
             
-            // تأخير لضمان تحميل الرسوم البيانية
-            setTimeout(() => {
+            try {
                 const pdfPages = document.getElementById('pdf-pages');
                 pdfPages.innerHTML = '';
                 
@@ -3438,84 +3545,52 @@
                     'أعلى 10 أفرع في تخفيض عدد الشكاوى'
                 ];
                 
-                // إضافة صفحة لكل رسمين بيانيين
-                for (let i = 0; i < chartIds.length; i += 2) {
-                    let chartContent = `<div style="display: flex; flex-direction: column; gap: 20px;">`;
+                // إنشاء صفحة واحدة لكل رسم بياني
+                for (let i = 0; i < chartIds.length; i++) {
+                    const canvas = document.getElementById(chartIds[i]);
+                    if (!canvas) continue;
                     
-                    // الرسم البياني الأول
-                    const canvas1 = document.getElementById(chartIds[i]);
-                    if (canvas1) {
-                        chartContent += `
-                            <div>
-                                <h4 style="text-align: center; margin-bottom: 10px; color: #4a90e2;">${chartTitles[i]}</h4>
-                                <div style="text-align: center;">
-                                    <img id="chart-img-${i}" style="max-width: 100%; height: auto;" />
-                                </div>
+                    let pageContent = `
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 600px; padding: 20px;">
+                    `;
+                    
+                    try {
+                        // تصغير الصورة لتناسب الصفحة
+                        const chartCanvas = await html2canvas(canvas, {
+                            scale: 0.7,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#FFFFFF'
+                        });
+                        
+                        pageContent += `
+                            <h4 style="color: #4a90e2; margin-bottom: 20px; font-size: 16px; text-align: center; width: 100%;">${chartTitles[i]}</h4>
+                            <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 500px;">
+                                <img src="${chartCanvas.toDataURL('image/jpeg', 0.9)}" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: 0 auto;" />
+                            </div>
+                        `;
+                    } catch (error) {
+                        pageContent += `
+                            <h4 style="color: #4a90e2; margin-bottom: 20px; font-size: 16px; text-align: center; width: 100%;">${chartTitles[i]}</h4>
+                            <div style="height: 400px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; width: 100%;">
+                                لم يتمكن من تحويل الرسم البياني إلى صورة
                             </div>
                         `;
                     }
                     
-                    // الرسم البياني الثاني إذا كان موجوداً
-                    if (i + 1 < chartIds.length) {
-                        const canvas2 = document.getElementById(chartIds[i + 1]);
-                        if (canvas2) {
-                            chartContent += `
-                                <div>
-                                    <h4 style="text-align: center; margin-bottom: 10px; color: #4a90e2;">${chartTitles[i + 1]}</h4>
-                                    <div style="text-align: center;">
-                                        <img id="chart-img-${i + 1}" style="max-width: 100%; height: auto;" />
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    }
+                    pageContent += `</div>`;
                     
-                    chartContent += `</div>`;
-                    
-                    pdfPages.innerHTML += createPDFPage(`الرسوم البيانية - الجزء ${Math.floor(i/2) + 1}`, chartContent);
+                    pdfPages.innerHTML += createPDFPage(`الرسم البياني ${i+1} من ${chartIds.length}`, pageContent);
                 }
                 
-                // بعد إضافة جميع الصفحات، نقوم بتحويل القماشات إلى صور
-                setTimeout(() => {
-                    convertChartsToImages().then(() => {
-                        savePDF('الرسوم_البيانية');
-                    }).catch(error => {
-                        hideLoading();
-                        console.error('Error converting charts to images:', error);
-                        alert('حدث خطأ أثناء تحويل الرسوم البيانية. يرجى المحاولة مرة أخرى.');
-                    });
-                }, 1000);
+                // إنشاء PDF بالوضع العمودي
+                await savePDF('الرسوم_البيانية', 'p');
                 
-            }, 1000);
-        }
-        
-        // تحويل القماشات إلى صور
-        async function convertChartsToImages() {
-            const chartIds = ['sales-chart', 'costs-chart', 'salaries-chart', 'extra-chart', 
-                             'total-costs-chart', 'bill-chart', 'customers-chart', 'complaints-chart'];
-            
-            const promises = [];
-            
-            for (let i = 0; i < chartIds.length; i++) {
-                const canvas = document.getElementById(chartIds[i]);
-                if (canvas) {
-                    promises.push(
-                        html2canvas(canvas, {
-                            scale: 2,
-                            useCORS: true,
-                            logging: false,
-                            backgroundColor: '#FFFFFF'
-                        }).then(chartCanvas => {
-                            const imgElement = document.getElementById(`chart-img-${i}`);
-                            if (imgElement) {
-                                imgElement.src = chartCanvas.toDataURL('image/jpeg', 0.9);
-                            }
-                        })
-                    );
-                }
+            } catch (error) {
+                hideLoading();
+                console.error('Error generating charts PDF:', error);
+                alert('حدث خطأ أثناء إنشاء ملف PDF للرسوم البيانية: ' + error.message);
             }
-            
-            await Promise.all(promises);
         }
         
         // دالة مساعدة للحصول على الفرع ذو أعلى حافز
@@ -3533,7 +3608,7 @@
         }
         
         // دالة حفظ PDF العامة
-        async function savePDF(fileName) {
+        async function savePDF(fileName, orientation = 'p') {
             if (!window.jspdf) {
                 alert('مكتبة PDF غير محملة. يرجى تحديث الصفحة.');
                 hideLoading();
@@ -3557,7 +3632,7 @@
                 element.style.left = '0';
                 element.style.top = '0';
                 element.style.width = '1123px';
-                element.style.height = '794px';
+                element.style.height = orientation === 'l' ? '794px' : '1123px';
                 element.style.zIndex = '10000';
                 element.style.background = 'white';
                 element.style.padding = '5px';
@@ -3587,7 +3662,7 @@
                 element.style.overflow = 'hidden';
                 
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4'); // 'p' للوضع العمودي (portrait)
+                const pdf = new window.jspdf.jsPDF(orientation, 'pt', 'a4');
                 
                 const imgWidth = pdf.internal.pageSize.getWidth();
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
