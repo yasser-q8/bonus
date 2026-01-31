@@ -409,11 +409,11 @@
             display: block;
         }
         
-        /* الرسوم البيانية - تم إصلاحها */
+        /* الرسوم البيانية - تم التعديل لعرض 2 في الصف */
         .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
             margin-top: 30px;
         }
         
@@ -422,17 +422,17 @@
             border-radius: var(--border-radius);
             padding: 20px;
             box-shadow: var(--shadow);
-            height: 400px; /* ارتفاع ثابت */
+            height: 500px;
             display: flex;
             flex-direction: column;
         }
         
         .chart-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--dark-red);
             margin-bottom: 15px;
             text-align: center;
-            height: 40px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -441,7 +441,7 @@
         .chart-card canvas {
             flex: 1;
             width: 100% !important;
-            height: calc(100% - 40px) !important;
+            height: calc(100% - 50px) !important;
         }
         
         /* صفحة الإعدادات */
@@ -564,7 +564,70 @@
             page-break-after: avoid;
         }
         
+        /* مربع البحث */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border: 2px solid var(--gray-medium);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            flex: 1;
+            min-width: 250px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .search-count {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--warning);
+        }
+        
         /* تخصيص لأجهزة المحمول */
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -586,7 +649,7 @@
             }
             
             .chart-card {
-                height: 350px;
+                height: 450px;
             }
             
             .action-buttons {
@@ -617,6 +680,15 @@
             
             .file-input-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-input {
+                min-width: 100%;
             }
         }
         
@@ -920,7 +992,7 @@
                             <h3>الملف الأول: أهداف المطاعم</h3>
                             <p>تحميل ملف Excel يحتوي على أهداف المطاعم مع الأعمدة المطلوبة</p>
                             <div class="file-status" id="targets-status">لم يتم تحميل الملف</div>
-                            <input type="file" id="targets-file" accept=".xlsx,.xls,.csv">
+                            <input type="file" id="targets-file" accept=".xlsx,.xls,.xlsm,.csv,.xlsb">
                         </div>
                         
                         <div class="file-input-card" id="results-card">
@@ -928,7 +1000,7 @@
                             <h3>الملف الثاني: النتائج الفعلية</h3>
                             <p>تحميل ملف Excel يحتوي على النتائج الفعلية مع الأعمدة المطلوبة</p>
                             <div class="file-status" id="results-status">لم يتم تحميل الملف</div>
-                            <input type="file" id="results-file" accept=".xlsx,.xls,.csv">
+                            <input type="file" id="results-file" accept=".xlsx,.xls,.xlsm,.csv,.xlsb">
                         </div>
                     </div>
                     
@@ -947,6 +1019,9 @@
                             <li>عدد العملاء</li>
                             <li>عدد الشكاوى</li>
                         </ul>
+                        <p style="color: var(--dark-red); font-size: 0.85rem; margin-top: 10px;">
+                            <strong>الملفات المدعومة:</strong> XLSX, XLS, XLSM, XLSB, CSV
+                        </p>
                     </div>
                 </div>
                 
@@ -972,6 +1047,10 @@
             
             <div class="table-container">
                 <h2 class="section-title">بيانات الأفرع والمديرين (إجمالي: <span id="branches-count">0</span> فرع)</h2>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="branch-search" placeholder="ابحث عن اسم المطعم..." autocomplete="off">
+                    <div class="search-count" id="branch-search-count">0 نتيجة</div>
+                </div>
                 <table id="branches-table">
                     <thead>
                         <tr>
@@ -986,6 +1065,10 @@
                         <!-- سيتم ملؤها بالبيانات -->
                     </tbody>
                 </table>
+                <div id="branches-no-results" class="no-results" style="display: none;">
+                    <i class="fas fa-search"></i>
+                    <p>لا توجد نتائج للبحث " <span id="branch-search-term"></span> "</p>
+                </div>
             </div>
         </div>
         
@@ -1001,6 +1084,10 @@
             
             <div class="tab-content active" id="targets-tab">
                 <div class="table-container">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="targets-search" placeholder="ابحث عن اسم المطعم في الأهداف..." autocomplete="off">
+                        <div class="search-count" id="targets-search-count">0 نتيجة</div>
+                    </div>
                     <h3 style="margin-bottom: 15px; color: var(--dark-red);">أهداف المطاعم (إجمالي: <span id="targets-count">0</span> فرع)</h3>
                     <table id="targets-table">
                         <thead>
@@ -1020,11 +1107,19 @@
                             <!-- سيتم ملؤها بالبيانات -->
                         </tbody>
                     </table>
+                    <div id="targets-no-results" class="no-results" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <p>لا توجد نتائج للبحث " <span id="targets-search-term"></span> "</p>
+                    </div>
                 </div>
             </div>
             
             <div class="tab-content" id="actuals-tab">
                 <div class="table-container">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="actuals-search" placeholder="ابحث عن اسم المطعم في النتائج..." autocomplete="off">
+                        <div class="search-count" id="actuals-search-count">0 نتيجة</div>
+                    </div>
                     <h3 style="margin-bottom: 15px; color: var(--dark-red);">النتائج الفعلية (إجمالي: <span id="actuals-count">0</span> فرع)</h3>
                     <table id="actuals-table">
                         <thead>
@@ -1044,6 +1139,10 @@
                             <!-- سيتم ملؤها بالبيانات -->
                         </tbody>
                     </table>
+                    <div id="actuals-no-results" class="no-results" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <p>لا توجد نتائج للبحث " <span id="actuals-search-term"></span> "</p>
+                    </div>
                 </div>
             </div>
             
@@ -1412,10 +1511,12 @@
                 if (parsedData.targets && parsedData.targets.length > 0) {
                     appData.targets = parsedData.targets;
                     updateTargetsTable();
+                    setupSearchForTargets();
                 }
                 if (parsedData.actuals && parsedData.actuals.length > 0) {
                     appData.actuals = parsedData.actuals;
                     updateActualsTable();
+                    setupSearchForActuals();
                 }
                 if (parsedData.incentives && parsedData.incentives.length > 0) {
                     appData.incentives = parsedData.incentives;
@@ -1429,6 +1530,9 @@
             
             // تحديث التواريخ في تذييل PDF
             updatePDFDates();
+            
+            // إعداد البحث للأفرع
+            setupSearchForBranches();
         }
         
         // إعداد مستمعي الأحداث
@@ -1480,6 +1584,222 @@
             document.getElementById('generate-report').addEventListener('click', generateManagerReport);
             document.getElementById('export-manager-pdf').addEventListener('click', exportManagerPDF);
             document.getElementById('export-manager-charts').addEventListener('click', exportManagerChartsPDF);
+        }
+        
+        // إعداد البحث للأفرع
+        function setupSearchForBranches() {
+            const searchInput = document.getElementById('branch-search');
+            if (searchInput) {
+                // البحث أثناء الكتابة
+                searchInput.addEventListener('input', function() {
+                    filterBranchesTable(this.value);
+                });
+                
+                // البحث عند الضغط على Enter
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        filterBranchesTable(this.value);
+                    }
+                });
+                
+                // مسح البحث
+                searchInput.addEventListener('search', function() {
+                    if (this.value === '') {
+                        filterBranchesTable('');
+                    }
+                });
+            }
+        }
+        
+        // إعداد البحث للأهداف
+        function setupSearchForTargets() {
+            const searchInput = document.getElementById('targets-search');
+            if (searchInput) {
+                // البحث أثناء الكتابة
+                searchInput.addEventListener('input', function() {
+                    filterTargetsTable(this.value);
+                });
+                
+                // البحث عند الضغط على Enter
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        filterTargetsTable(this.value);
+                    }
+                });
+                
+                // مسح البحث
+                searchInput.addEventListener('search', function() {
+                    if (this.value === '') {
+                        filterTargetsTable('');
+                    }
+                });
+            }
+        }
+        
+        // إعداد البحث للنتائج الفعلية
+        function setupSearchForActuals() {
+            const searchInput = document.getElementById('actuals-search');
+            if (searchInput) {
+                // البحث أثناء الكتابة
+                searchInput.addEventListener('input', function() {
+                    filterActualsTable(this.value);
+                });
+                
+                // البحث عند الضغط على Enter
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        filterActualsTable(this.value);
+                    }
+                });
+                
+                // مسح البحث
+                searchInput.addEventListener('search', function() {
+                    if (this.value === '') {
+                        filterActualsTable('');
+                    }
+                });
+            }
+        }
+        
+        // تصفية جدول الأفرع
+        function filterBranchesTable(searchTerm) {
+            const tbody = document.getElementById('branches-table-body');
+            const rows = tbody.getElementsByTagName('tr');
+            const noResultsDiv = document.getElementById('branches-no-results');
+            const searchCountSpan = document.getElementById('branch-search-count');
+            const searchTermSpan = document.getElementById('branch-search-term');
+            
+            let visibleCount = 0;
+            const term = searchTerm.trim().toLowerCase();
+            
+            // إظهار جميع الصفوف إذا كان البحث فارغاً
+            if (term === '') {
+                for (let row of rows) {
+                    row.style.display = '';
+                    visibleCount++;
+                }
+                noResultsDiv.style.display = 'none';
+                searchCountSpan.textContent = `${visibleCount} نتيجة`;
+                return;
+            }
+            
+            // تصفية الصفوف
+            for (let row of rows) {
+                const branchCell = row.cells[1]; // الخلية الثانية تحتوي على اسم المطعم
+                if (branchCell) {
+                    const branchName = branchCell.textContent.toLowerCase();
+                    if (branchName.includes(term)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+            
+            // عرض رسالة إذا لم توجد نتائج
+            if (visibleCount === 0) {
+                noResultsDiv.style.display = 'block';
+                searchTermSpan.textContent = searchTerm;
+            } else {
+                noResultsDiv.style.display = 'none';
+            }
+            
+            searchCountSpan.textContent = `${visibleCount} نتيجة`;
+        }
+        
+        // تصفية جدول الأهداف
+        function filterTargetsTable(searchTerm) {
+            const tbody = document.getElementById('targets-table-body');
+            const rows = tbody.getElementsByTagName('tr');
+            const noResultsDiv = document.getElementById('targets-no-results');
+            const searchCountSpan = document.getElementById('targets-search-count');
+            const searchTermSpan = document.getElementById('targets-search-term');
+            
+            let visibleCount = 0;
+            const term = searchTerm.trim().toLowerCase();
+            
+            // إظهار جميع الصفوف إذا كان البحث فارغاً
+            if (term === '') {
+                for (let row of rows) {
+                    row.style.display = '';
+                    visibleCount++;
+                }
+                noResultsDiv.style.display = 'none';
+                searchCountSpan.textContent = `${visibleCount} نتيجة`;
+                return;
+            }
+            
+            // تصفية الصفوف
+            for (let row of rows) {
+                const branchCell = row.cells[1]; // الخلية الثانية تحتوي على اسم المطعم
+                if (branchCell) {
+                    const branchName = branchCell.textContent.toLowerCase();
+                    if (branchName.includes(term)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+            
+            // عرض رسالة إذا لم توجد نتائج
+            if (visibleCount === 0) {
+                noResultsDiv.style.display = 'block';
+                searchTermSpan.textContent = searchTerm;
+            } else {
+                noResultsDiv.style.display = 'none';
+            }
+            
+            searchCountSpan.textContent = `${visibleCount} نتيجة`;
+        }
+        
+        // تصفية جدول النتائج الفعلية
+        function filterActualsTable(searchTerm) {
+            const tbody = document.getElementById('actuals-table-body');
+            const rows = tbody.getElementsByTagName('tr');
+            const noResultsDiv = document.getElementById('actuals-no-results');
+            const searchCountSpan = document.getElementById('actuals-search-count');
+            const searchTermSpan = document.getElementById('actuals-search-term');
+            
+            let visibleCount = 0;
+            const term = searchTerm.trim().toLowerCase();
+            
+            // إظهار جميع الصفوف إذا كان البحث فارغاً
+            if (term === '') {
+                for (let row of rows) {
+                    row.style.display = '';
+                    visibleCount++;
+                }
+                noResultsDiv.style.display = 'none';
+                searchCountSpan.textContent = `${visibleCount} نتيجة`;
+                return;
+            }
+            
+            // تصفية الصفوف
+            for (let row of rows) {
+                const branchCell = row.cells[1]; // الخلية الثانية تحتوي على اسم المطعم
+                if (branchCell) {
+                    const branchName = branchCell.textContent.toLowerCase();
+                    if (branchName.includes(term)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+            
+            // عرض رسالة إذا لم توجد نتائج
+            if (visibleCount === 0) {
+                noResultsDiv.style.display = 'block';
+                searchTermSpan.textContent = searchTerm;
+            } else {
+                noResultsDiv.style.display = 'none';
+            }
+            
+            searchCountSpan.textContent = `${visibleCount} نتيجة`;
         }
         
         // التنقل بين الصفحات
@@ -1540,19 +1860,28 @@
             // إضافة النشاط لعلامة التبويب المحددة
             document.querySelector(`[data-chart="${chartId}"]`).classList.add('active');
             
-            // تحديث عناوين الرسوم البيانية
+            // تحديث جميع الرسوم البيانية للرسم المحدد
+            updateChartsForTab(chartId);
+        }
+        
+        // تحديث الرسوم البيانية للتبويب المحدد
+        function updateChartsForTab(chartId) {
             const titles = {
-                sales: "أعلى 10 أفرع في تحقيق مبيعات الهدف",
-                costs: "أعلى 10 أفرع في تخفيض نسبة التكلفة",
-                salaries: "أعلى 10 أفرع في تخفيض الرواتب",
-                extra: "أعلى 10 أفرع في تخفيض الإضافي",
-                'total-costs': "أعلى 10 أفرع في تخفيض التكاليف مجتمعة",
-                bill: "أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة",
-                customers: "أعلى 10 أفرع في ارتفاع عدد العملاء",
-                complaints: "أعلى 10 أفرع في تخفيض عدد الشكاوى"
+                sales: ["أعلى 10 أفرع في تحقيق مبيعات الهدف", "أعلى 10 أفرع في تخفيض نسبة التكلفة"],
+                costs: ["أعلى 10 أفرع في تخفيض الرواتب", "أعلى 10 أفرع في تخفيض الإضافي"],
+                salaries: ["أعلى 10 أفرع في تخفيض التكاليف مجتمعة", "أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة"],
+                extra: ["أعلى 10 أفرع في ارتفاع عدد العملاء", "أعلى 10 أفرع في تخفيض عدد الشكاوى"],
+                'total-costs': ["أعلى 10 أفرع في تخفيض التكاليف مجتمعة", "أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة"],
+                bill: ["أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة", "أعلى 10 أفرع في ارتفاع عدد العملاء"],
+                customers: ["أعلى 10 أفرع في ارتفاع عدد العملاء", "أعلى 10 أفرع في تخفيض عدد الشكاوى"],
+                complaints: ["أعلى 10 أفرع في تخفيض عدد الشكاوى", "أعلى 10 أفرع في تحقيق مبيعات الهدف"]
             };
             
-            document.getElementById('chart1-title').textContent = titles[chartId];
+            // تحديث عناوين الرسوم البيانية الأولى والثانية
+            if (titles[chartId]) {
+                document.getElementById('chart1-title').textContent = titles[chartId][0];
+                document.getElementById('chart2-title').textContent = titles[chartId][1];
+            }
             
             // تحديث الرسوم البيانية
             updateCharts();
@@ -1647,6 +1976,7 @@
             const branchesCount = appData.branches.length;
             document.getElementById('branches-count').textContent = branchesCount;
             document.getElementById('total-branches').textContent = branchesCount;
+            document.getElementById('branch-search-count').textContent = `${branchesCount} نتيجة`;
         }
         
         // تحديث بطاقات الإحصاءات
@@ -1701,13 +2031,20 @@
                 let workbook;
                 
                 // التحقق من نوع الملف
-                if (file.name.toLowerCase().endsWith('.csv')) {
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                
+                if (fileExtension === 'csv') {
                     // معالجة ملف CSV
                     const csvText = new TextDecoder('utf-8').decode(data);
                     workbook = XLSX.read(csvText, {type: 'string', raw: true});
-                } else {
-                    // معالجة ملف Excel
+                } else if (fileExtension === 'xlsb') {
+                    // معالجة ملف XLSB (Excel Binary)
+                    workbook = XLSX.read(data, {type: 'array', bookType: 'xlsb'});
+                } else if (fileExtension === 'xlsm' || fileExtension === 'xlsx' || fileExtension === 'xls') {
+                    // معالجة ملفات Excel العادية بما فيها الماكرو
                     workbook = XLSX.read(data, {type: 'array'});
+                } else {
+                    throw new Error('نوع الملف غير مدعوم. يرجى استخدام ملف Excel أو CSV.');
                 }
                 
                 // البحث عن الشيت المطلوب
@@ -1869,10 +2206,12 @@
             if (type === 'targets') {
                 appData.targets = processedData;
                 updateTargetsTable();
+                setupSearchForTargets();
                 showSuccess(`تم تحميل ${processedData.length} سجل من أهداف المطاعم${skippedCount > 0 ? ` (تم تخطي ${skippedCount} صف)` : ''}`);
             } else {
                 appData.actuals = processedData;
                 updateActualsTable();
+                setupSearchForActuals();
                 showSuccess(`تم تحميل ${processedData.length} سجل من النتائج الفعلية${skippedCount > 0 ? ` (تم تخطي ${skippedCount} صف)` : ''}`);
             }
             
@@ -1936,6 +2275,7 @@
             });
             
             document.getElementById('targets-count').textContent = appData.targets.length;
+            document.getElementById('targets-search-count').textContent = `${appData.targets.length} نتيجة`;
         }
         
         // تحديث جدول النتائج الفعلية
@@ -1960,6 +2300,7 @@
             });
             
             document.getElementById('actuals-count').textContent = appData.actuals.length;
+            document.getElementById('actuals-search-count').textContent = `${appData.actuals.length} نتيجة`;
         }
         
         // حساب الحوافز
@@ -2358,7 +2699,7 @@
             document.getElementById('incentives-count').textContent = appData.incentives.length;
         }
         
-        // تحديث الرسوم البيانية - تم إصلاحها
+        // تحديث الرسوم البيانية - تم تعديلها لعرض رسمين فقط في كل صف
         function updateCharts() {
             if (appData.incentives.length === 0 || Object.keys(appData.branchPerformance).length === 0) {
                 // عرض رسالة إذا لم تكن هناك بيانات
@@ -2384,39 +2725,6 @@
                 }
             });
             
-            // فرز البيانات للحصول على أفضل 10 أفرع لكل مؤشر
-            const salesSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.salesPercentage - a.performance.salesPercentage)
-                .slice(0, 10);
-            
-            const costsSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.costReductionPercent - a.performance.costReductionPercent)
-                .slice(0, 10);
-            
-            const salariesSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.salariesReductionPercent - a.performance.salariesReductionPercent)
-                .slice(0, 10);
-            
-            const extraSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.extraReductionPercent - a.performance.extraReductionPercent)
-                .slice(0, 10);
-            
-            const totalCostsSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.totalCostReductionPercent - a.performance.totalCostReductionPercent)
-                .slice(0, 10);
-            
-            const billSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.billIncrease - a.performance.billIncrease)
-                .slice(0, 10);
-            
-            const customersSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.customerIncreasePercent - a.performance.customerIncreasePercent)
-                .slice(0, 10);
-            
-            const complaintsSorted = [...branchesWithPerformance]
-                .sort((a, b) => b.performance.customerIncreasePercent - a.performance.customerIncreasePercent)
-                .slice(0, 10);
-            
             // تدمير الرسوم البيانية القديمة إن وجدت
             Object.keys(appData.charts).forEach(chartName => {
                 if (appData.charts[chartName]) {
@@ -2425,77 +2733,88 @@
                 }
             });
             
-            // إعدادات مشتركة للرسوم البيانية
-            const chartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        rtl: true
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'النسبة المئوية %'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 45,
-                            font: {
-                                size: 10
-                            }
-                        }
-                    }
+            // رسم جميع الرسوم البيانية
+            drawSalesChart();
+            drawCostsChart();
+            drawSalariesChart();
+            drawExtraChart();
+            drawTotalCostsChart();
+            drawBillChart();
+            drawCustomersChart();
+            drawComplaintsChart();
+        }
+        
+        // دالة مساعدة لإنشاء أسماء المطاعم بشكل مائل
+        function createBranchLabels(branches) {
+            return branches.map(item => item.branch);
+        }
+        
+        // رسم مخطط المبيعات
+        function drawSalesChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
                 }
-            };
+            });
             
-            // رسم مخطط المبيعات
+            const salesSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.salesPercentage - a.performance.salesPercentage)
+                .slice(0, 10);
+            
             const salesCtx = document.getElementById('sales-chart').getContext('2d');
             appData.charts.sales = new Chart(salesCtx, {
                 type: 'bar',
                 data: {
-                    labels: salesSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(salesSorted),
                     datasets: [{
                         label: 'نسبة تحقيق المبيعات %',
                         data: salesSorted.map(item => item.performance.salesPercentage),
                         backgroundColor: salesSorted.map(item => 
                             item.performance.salesPercentage >= 105 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.salesPercentage >= 100 ? 'rgba(33, 150, 243, 0.7)' : 
-                            item.performance.salesPercentage >= 95 ? 'rgba(158, 158, 158, 0.7)' : 
+                            item.performance.salesPercentage >= 95 ? 'rgba(255, 193, 7, 0.7)' : 
                             'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: salesSorted.map(item => 
                             item.performance.salesPercentage >= 105 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.salesPercentage >= 100 ? 'rgba(33, 150, 243, 1)' : 
-                            item.performance.salesPercentage >= 95 ? 'rgba(158, 158, 158, 1)' : 
+                            item.performance.salesPercentage >= 95 ? 'rgba(255, 193, 7, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
+            });
+        }
+        
+        // رسم مخطط تخفيض التكلفة
+        function drawCostsChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
             });
             
-            // رسم مخطط تخفيض التكلفة
+            const costsSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.costReductionPercent - a.performance.costReductionPercent)
+                .slice(0, 10);
+            
             const costsCtx = document.getElementById('costs-chart').getContext('2d');
             appData.charts.costs = new Chart(costsCtx, {
                 type: 'bar',
                 data: {
-                    labels: costsSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(costsSorted),
                     datasets: [{
                         label: 'نسبة تخفيض التكلفة %',
                         data: costsSorted.map(item => item.performance.costReductionPercent),
@@ -2507,18 +2826,36 @@
                             item.performance.costReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
+            });
+        }
+        
+        // رسم مخطط تخفيض الرواتب
+        function drawSalariesChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
             });
             
-            // رسم مخطط تخفيض الرواتب
+            const salariesSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.salariesReductionPercent - a.performance.salariesReductionPercent)
+                .slice(0, 10);
+            
             const salariesCtx = document.getElementById('salaries-chart').getContext('2d');
             appData.charts.salaries = new Chart(salariesCtx, {
                 type: 'bar',
                 data: {
-                    labels: salariesSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(salariesSorted),
                     datasets: [{
                         label: 'نسبة تخفيض الرواتب %',
                         data: salariesSorted.map(item => item.performance.salariesReductionPercent),
@@ -2530,18 +2867,36 @@
                             item.performance.salariesReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
+            });
+        }
+        
+        // رسم مخطط تخفيض الإضافي
+        function drawExtraChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
             });
             
-            // رسم مخطط تخفيض الإضافي
+            const extraSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.extraReductionPercent - a.performance.extraReductionPercent)
+                .slice(0, 10);
+            
             const extraCtx = document.getElementById('extra-chart').getContext('2d');
             appData.charts.extra = new Chart(extraCtx, {
                 type: 'bar',
                 data: {
-                    labels: extraSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(extraSorted),
                     datasets: [{
                         label: 'نسبة تخفيض الإضافي %',
                         data: extraSorted.map(item => item.performance.extraReductionPercent),
@@ -2553,127 +2908,287 @@
                             item.performance.extraReductionPercent > 0 ? 'rgba(76, 175, 80, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
+            });
+        }
+        
+        // رسم مخطط تخفيض التكاليف مجتمعة
+        function drawTotalCostsChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
             });
             
-            // رسم مخطط تخفيض التكاليف مجتمعة
+            const totalCostsSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.totalCostReductionPercent - a.performance.totalCostReductionPercent)
+                .slice(0, 10);
+            
             const totalCostsCtx = document.getElementById('total-costs-chart').getContext('2d');
             appData.charts.totalCosts = new Chart(totalCostsCtx, {
                 type: 'bar',
                 data: {
-                    labels: totalCostsSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(totalCostsSorted),
                     datasets: [{
                         label: 'نسبة تخفيض التكاليف مجتمعة %',
                         data: totalCostsSorted.map(item => item.performance.totalCostReductionPercent),
                         backgroundColor: totalCostsSorted.map(item => 
                             item.performance.totalCostReductionPercent >= 2 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.totalCostReductionPercent >= 1 ? 'rgba(33, 150, 243, 0.7)' : 
-                            'rgba(158, 158, 158, 0.7)'
+                            'rgba(255, 193, 7, 0.7)'
                         ),
                         borderColor: totalCostsSorted.map(item => 
                             item.performance.totalCostReductionPercent >= 2 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.totalCostReductionPercent >= 1 ? 'rgba(33, 150, 243, 1)' : 
-                            'rgba(158, 158, 158, 1)'
+                            'rgba(255, 193, 7, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
+            });
+        }
+        
+        // رسم مخطط ارتفاع قيمة الفاتورة
+        function drawBillChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
             });
             
-            // رسم مخطط ارتفاع قيمة الفاتورة
+            const billSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.billIncrease - a.performance.billIncrease)
+                .slice(0, 10);
+            
             const billCtx = document.getElementById('bill-chart').getContext('2d');
             appData.charts.bill = new Chart(billCtx, {
                 type: 'bar',
                 data: {
-                    labels: billSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(billSorted),
                     datasets: [{
                         label: 'ارتفاع قيمة الفاتورة (فلس)',
                         data: billSorted.map(item => item.performance.billIncrease),
                         backgroundColor: billSorted.map(item => 
                             item.performance.billIncrease >= 350 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.billIncrease >= 250 ? 'rgba(33, 150, 243, 0.7)' : 
-                            'rgba(158, 158, 158, 0.7)'
+                            'rgba(255, 193, 7, 0.7)'
                         ),
                         borderColor: billSorted.map(item => 
                             item.performance.billIncrease >= 350 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.billIncrease >= 250 ? 'rgba(33, 150, 243, 1)' : 
-                            'rgba(158, 158, 158, 1)'
+                            'rgba(255, 193, 7, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: {
-                    ...chartOptions,
-                    scales: {
-                        ...chartOptions.scales,
-                        y: {
-                            ...chartOptions.scales.y,
-                            title: {
-                                display: true,
-                                text: 'الزيادة بالفلس'
-                            }
-                        }
-                    }
+                options: getChartOptions('الزيادة بالفلس', false)
+            });
+        }
+        
+        // رسم مخطط ارتفاع عدد العملاء
+        function drawCustomersChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
                 }
             });
             
-            // رسم مخطط ارتفاع عدد العملاء
+            const customersSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.customerIncreasePercent - a.performance.customerIncreasePercent)
+                .slice(0, 10);
+            
             const customersCtx = document.getElementById('customers-chart').getContext('2d');
             appData.charts.customers = new Chart(customersCtx, {
                 type: 'bar',
                 data: {
-                    labels: customersSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(customersSorted),
                     datasets: [{
                         label: 'نسبة زيادة العملاء %',
                         data: customersSorted.map(item => item.performance.customerIncreasePercent),
                         backgroundColor: customersSorted.map(item => 
                             item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 0.7)' : 
-                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 0.7)' : 
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(255, 193, 7, 0.7)' : 
                             'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: customersSorted.map(item => 
                             item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 1)' : 
-                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 1)' : 
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(255, 193, 7, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
+            });
+        }
+        
+        // رسم مخطط تخفيض الشكاوى
+        function drawComplaintsChart() {
+            const branchesWithPerformance = [];
+            appData.incentives.forEach(item => {
+                if (appData.branchPerformance[item.branch]) {
+                    branchesWithPerformance.push({
+                        branch: item.branch,
+                        performance: appData.branchPerformance[item.branch]
+                    });
+                }
             });
             
-            // رسم مخطط تخفيض الشكاوى
+            const complaintsSorted = [...branchesWithPerformance]
+                .sort((a, b) => b.performance.customerIncreasePercent - a.performance.customerIncreasePercent)
+                .slice(0, 10);
+            
             const complaintsCtx = document.getElementById('complaints-chart').getContext('2d');
             appData.charts.complaints = new Chart(complaintsCtx, {
                 type: 'bar',
                 data: {
-                    labels: complaintsSorted.map(item => item.branch.length > 15 ? item.branch.substring(0, 15) + '...' : item.branch),
+                    labels: createBranchLabels(complaintsSorted),
                     datasets: [{
                         label: 'نسبة زيادة العملاء %',
                         data: complaintsSorted.map(item => item.performance.customerIncreasePercent),
                         backgroundColor: complaintsSorted.map(item => 
                             item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 0.7)' : 
                             item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 0.7)' : 
-                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 0.7)' : 
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(255, 193, 7, 0.7)' : 
                             'rgba(244, 67, 54, 0.7)'
                         ),
                         borderColor: complaintsSorted.map(item => 
                             item.performance.customerIncreasePercent >= 20 ? 'rgba(76, 175, 80, 1)' : 
                             item.performance.customerIncreasePercent >= 10 ? 'rgba(33, 150, 243, 1)' : 
-                            item.performance.customerIncreasePercent >= 0 ? 'rgba(158, 158, 158, 1)' : 
+                            item.performance.customerIncreasePercent >= 0 ? 'rgba(255, 193, 7, 1)' : 
                             'rgba(244, 67, 54, 1)'
                         ),
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        borderSkipped: false
                     }]
                 },
-                options: chartOptions
+                options: getChartOptions('النسبة المئوية %', true)
             });
+        }
+        
+        // إعدادات مشتركة للرسوم البيانية
+        function getChartOptions(yAxisTitle, isPercentage) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (isPercentage) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
+                                }
+                                return `${context.dataset.label}: ${context.raw.toFixed(2)}`;
+                            }
+                        },
+                        titleFont: {
+                            size: 12,
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                        },
+                        bodyFont: {
+                            size: 11,
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: yAxisTitle,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 10,
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            callback: function(value) {
+                                if (isPercentage) {
+                                    return value + '%';
+                                }
+                                return value;
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            drawBorder: true
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 9,
+                                weight: 'bold',
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                                style: 'italic' // إظهار الأسماء بشكل مائل
+                            },
+                            callback: function(value, index, values) {
+                                // عرض الأسماء الكاملة
+                                const label = this.getLabelForValue(value);
+                                if (label.length > 15) {
+                                    return label.substring(0, 15) + '...';
+                                }
+                                return label;
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            drawBorder: true
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        right: 10,
+                        bottom: 10,
+                        left: 10
+                    }
+                }
+            };
         }
         
         // تحديث قوائم المدراء المنسدلة
@@ -2909,6 +3424,31 @@
                 document.getElementById('results-status').textContent = 'لم يتم تحميل الملف';
                 document.getElementById('targets-status').classList.remove('loaded');
                 document.getElementById('results-status').classList.remove('loaded');
+                
+                // إعادة تعيين حقول البحث
+                document.getElementById('branch-search').value = '';
+                document.getElementById('targets-search').value = '';
+                document.getElementById('actuals-search').value = '';
+                
+                // إعادة تعيين عداد البحث
+                document.getElementById('branch-search-count').textContent = '0 نتيجة';
+                document.getElementById('targets-search-count').textContent = '0 نتيجة';
+                document.getElementById('actuals-search-count').textContent = '0 نتيجة';
+                
+                // إخفاء رسائل عدم وجود نتائج
+                document.getElementById('branches-no-results').style.display = 'none';
+                document.getElementById('targets-no-results').style.display = 'none';
+                document.getElementById('actuals-no-results').style.display = 'none';
+                
+                // إعادة عرض جميع الصفوف في الجداول
+                const branchRows = document.querySelectorAll('#branches-table-body tr');
+                branchRows.forEach(row => row.style.display = '');
+                
+                const targetRows = document.querySelectorAll('#targets-table-body tr');
+                targetRows.forEach(row => row.style.display = '');
+                
+                const actualRows = document.querySelectorAll('#actuals-table-body tr');
+                actualRows.forEach(row => row.style.display = '');
                 
                 // تدمير الرسوم البيانية
                 Object.keys(appData.charts).forEach(chartName => {
