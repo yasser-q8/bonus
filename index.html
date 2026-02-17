@@ -1212,6 +1212,12 @@
                             <i class="fas fa-chart-bar"></i> توليد التقرير
                         </button>
                     </div>
+                    
+                    <div class="filter-group">
+                        <button class="btn btn-success" id="export-all-managers-pdf">
+                            <i class="fas fa-file-pdf"></i> تصدير جميع المدراء
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -1584,6 +1590,8 @@
             document.getElementById('generate-report').addEventListener('click', generateManagerReport);
             document.getElementById('export-manager-pdf').addEventListener('click', exportManagerPDF);
             document.getElementById('export-manager-charts').addEventListener('click', exportManagerChartsPDF);
+            // زر تصدير جميع المدراء
+            document.getElementById('export-all-managers-pdf').addEventListener('click', exportAllManagersPDF);
         }
         
         // إعداد البحث للأفرع
@@ -3593,7 +3601,7 @@
             `;
         }
         
-        // تصدير النتائج إلى PDF
+        // تصدير النتائج إلى PDF (جدول الحوافز) - معدل للوضع الأفقي مع الحفاظ على الألوان وعدد الصفوف
         function exportResultsPDF() {
             if (appData.incentives.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
@@ -3626,83 +3634,78 @@
                 
                 pdfPages.innerHTML += createPDFPage('تقرير حوافز موظفي المطاعم', summaryContent);
                 
-                // صفحة 2: جدول الحوافز (الصفحة الأولى من الجدول)
-                let tableContent = `
-                    <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
-                        <thead>
-                            <tr>
-                                <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                                <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
-                                <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
-                                <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
-                                <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+                // تحديد عدد الصفوف في الصفحة الأولى (15) وباقي الصفحات (26)
+                const rowsFirstPage = 15;
+                const rowsOtherPages = 26;
+                let remainingRows = appData.incentives.length;
+                let startIndex = 0;
+                let pageNum = 0;
                 
-                // إضافة 20 صف لكل صفحة
-                const rowsPerPage = 20;
-                const totalPages = Math.ceil(appData.incentives.length / rowsPerPage);
-                
-                for (let page = 0; page < totalPages; page++) {
-                    if (page > 0) {
-                        tableContent = `
-                            <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
-                                        <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
-                                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
-                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
-                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
-                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
-                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
-                                        <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
-                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
-                                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
-                                        <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                        `;
-                    }
+                while (remainingRows > 0) {
+                    let rowsThisPage = (pageNum === 0) ? Math.min(rowsFirstPage, remainingRows) : Math.min(rowsOtherPages, remainingRows);
                     
-                    const startIndex = page * rowsPerPage;
-                    const endIndex = Math.min(startIndex + rowsPerPage, appData.incentives.length);
+                    let tableContent = `
+                        <table style="font-size: 10px; border-collapse: collapse; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th width="5%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">#</th>
+                                    <th width="15%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">اسم المطعم</th>
+                                    <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدير المنطقة</th>
+                                    <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">نسبة المبيعات</th>
+                                    <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز المبيعات</th>
+                                    <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">تخفيض التكاليف</th>
+                                    <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز التخفيض</th>
+                                    <th width="12%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">زيادة القيمة/العملاء</th>
+                                    <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">حافز الزيادة</th>
+                                    <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">إجمالي الحافز</th>
+                                    <th width="10%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
                     
-                    for (let i = startIndex; i < endIndex; i++) {
+                    for (let i = startIndex; i < startIndex + rowsThisPage; i++) {
                         const item = appData.incentives[i];
+                        // تطبيق الألوان عبر inline styles
+                        let salesColor = item.salesPercentage >= 100 ? '#4caf50' : '#f44336';
+                        let costColor = item.costReduction > 0 ? '#4caf50' : '#f44336';
+                        let billDisplay = `${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}`;
+                        let salesIncentiveColor = item.salesIncentive > 0 ? '#4caf50' : '#ff9800';
+                        let costIncentiveColor = item.costIncentive > 0 ? '#4caf50' : '#ff9800';
+                        let customerIncentiveColor = item.customerIncentive > 0 ? '#4caf50' : '#ff9800';
+                        let totalColor = '#4caf50';
+                        let statusColor = item.statusClass === 'cell-positive' ? '#4caf50' : (item.statusClass === 'cell-negative' ? '#f44336' : '#666');
+                        
+                        // لون خلفية الصف حسب الفئة
+                        let rowBgColor = '';
+                        if (item.incentiveClass === 'incentive-high') rowBgColor = 'background-color: rgba(76, 175, 80, 0.1);';
+                        else if (item.incentiveClass === 'incentive-medium') rowBgColor = 'background-color: rgba(255, 193, 7, 0.1);';
+                        else if (item.incentiveClass === 'incentive-low') rowBgColor = 'background-color: rgba(244, 67, 54, 0.1);';
+                        
                         tableContent += `
-                            <tr>
+                            <tr style="${rowBgColor}">
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${i + 1}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${item.branch}</td>
                                 <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.areaManager}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
-                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.status}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; color: ${salesColor};">${item.salesPercentage.toFixed(2)}%</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; color: ${salesIncentiveColor};">${roundToNearest(item.salesIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; color: ${costColor};">${item.costReduction.toFixed(2)}%</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; color: ${costIncentiveColor};">${roundToNearest(item.costIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center;">${billDisplay}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; color: ${customerIncentiveColor};">${roundToNearest(item.customerIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold; color: ${totalColor};">${roundToNearest(item.totalIncentive)}</td>
+                                <td style="padding: 4px; border: 1px solid #000; text-align: center; color: ${statusColor};">${item.status}</td>
                             </tr>
                         `;
                     }
                     
                     tableContent += `
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
                     `;
                     
-                    if (page === totalPages - 1) {
-                        // إضافة الإجماليات في الصفحة الأخيرة
+                    // إذا كانت هذه هي الصفحة الأخيرة، أضف الإجمالي
+                    if (startIndex + rowsThisPage >= appData.incentives.length) {
                         tableContent += `
                             <div style="margin-top: 10px; font-size: 11px; font-weight: bold;">
                                 <div style="text-align: left;">الإجمالي: ${totalIncentivesValue.toLocaleString()} دينار كويتي</div>
@@ -3710,36 +3713,44 @@
                         `;
                     }
                     
-                    pdfPages.innerHTML += createPDFPage(`جدول الحوافز - الصفحة ${page + 1} من ${totalPages}`, tableContent);
+                    // إضافة فاصل 1.5 سم بعد المحتوى (قبل نهاية الصفحة)
+                    tableContent += `<div style="height: 1.5cm;"></div>`;
+                    
+                    const totalPages = Math.ceil((appData.incentives.length - rowsFirstPage) / rowsOtherPages) + 1;
+                    pdfPages.innerHTML += createPDFPage(`جدول الحوافز - الصفحة ${pageNum + 1} من ${totalPages}`, tableContent);
+                    
+                    remainingRows -= rowsThisPage;
+                    startIndex += rowsThisPage;
+                    pageNum++;
                 }
                 
-                // إنشاء PDF
-                savePDF('تقرير_الحوافز', 'p');
+                // إنشاء PDF بالوضع الأفقي (Landscape)
+                savePDF('تقرير_الحوافز', 'l');
                 
             }, 500);
         }
         
-        // تصدير تقرير المدير إلى PDF - مع تعديل للوضع الأفقي
+        // تصدير تقرير المدير إلى PDF - مع تعديل للوضع الأفقي والحفاظ على الألوان
         function exportManagerPDF() {
-            const managerType = document.getElementById('manager-type').value;
             const managerName = document.getElementById('manager-name').value;
+            const managerType = document.getElementById('manager-type').value;
             
             if (!managerName) {
                 alert('يرجى اختيار اسم المدير أولاً');
                 return;
             }
             
-            if (appData.incentives.length === 0) {
-                alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
-                return;
-            }
-            
+            exportSingleManagerPDF(managerName, managerType);
+        }
+        
+        // دالة مساعدة لتصدير تقرير مدير واحد باستخدام اسمه
+        async function exportSingleManagerPDF(managerName, managerType) {
             if (!appData.managerPerformance[managerName]) {
                 alert('لا توجد بيانات أداء لهذا المدير');
                 return;
             }
             
-            showLoading('جاري إنشاء ملف PDF...');
+            showLoading('جاري إنشاء ملف PDF للمدير...');
             
             setTimeout(() => {
                 const pdfPages = document.getElementById('pdf-pages');
@@ -3823,7 +3834,7 @@
                 
                 pdfPages.innerHTML += createPDFPage(`تقرير أداء المدير: ${managerName}`, summaryContent);
                 
-                // إضافة جدول الحوافز مع تصميم للوضع الأفقي
+                // إضافة جدول الحوافز مع تصميم للوضع الأفقي والألوان
                 let tableContent = `
                     <table style="font-size: 9px; border-collapse: collapse; width: 100%;">
                         <thead>
@@ -3844,18 +3855,33 @@
                 `;
                 
                 filteredData.sort((a, b) => b.totalIncentive - a.totalIncentive).forEach((item, index) => {
+                    let salesColor = item.salesPercentage >= 100 ? '#4caf50' : '#f44336';
+                    let costColor = item.costReduction > 0 ? '#4caf50' : '#f44336';
+                    let billDisplay = `${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}`;
+                    let salesIncentiveColor = item.salesIncentive > 0 ? '#4caf50' : '#ff9800';
+                    let costIncentiveColor = item.costIncentive > 0 ? '#4caf50' : '#ff9800';
+                    let customerIncentiveColor = item.customerIncentive > 0 ? '#4caf50' : '#ff9800';
+                    let totalColor = '#4caf50';
+                    let statusColor = item.statusClass === 'cell-positive' ? '#4caf50' : (item.statusClass === 'cell-negative' ? '#f44336' : '#666');
+                    
+                    // لون خلفية الصف
+                    let rowBgColor = '';
+                    if (item.incentiveClass === 'incentive-high') rowBgColor = 'background-color: rgba(76, 175, 80, 0.1);';
+                    else if (item.incentiveClass === 'incentive-medium') rowBgColor = 'background-color: rgba(255, 193, 7, 0.1);';
+                    else if (item.incentiveClass === 'incentive-low') rowBgColor = 'background-color: rgba(244, 67, 54, 0.1);';
+                    
                     tableContent += `
-                        <tr>
+                        <tr style="${rowBgColor}">
                             <td style="padding: 3px; border: 1px solid #000; text-align: center;">${index + 1}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.salesPercentage.toFixed(2)}%</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${roundToNearest(item.salesIncentive)}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.costReduction.toFixed(2)}%</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${roundToNearest(item.costIncentive)}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.billIncrease.toFixed(3)} / ${item.customerIncrease >= 0 ? '+' : ''}${item.customerIncrease}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${roundToNearest(item.customerIncentive)}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold;">${roundToNearest(item.totalIncentive)}</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${item.status}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold;">${item.branch}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; color: ${salesColor};">${item.salesPercentage.toFixed(2)}%</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; color: ${salesIncentiveColor};">${roundToNearest(item.salesIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; color: ${costColor};">${item.costReduction.toFixed(2)}%</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; color: ${costIncentiveColor};">${roundToNearest(item.costIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center;">${billDisplay}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; color: ${customerIncentiveColor};">${roundToNearest(item.customerIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold; color: ${totalColor};">${roundToNearest(item.totalIncentive)}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; color: ${statusColor};">${item.status}</td>
                         </tr>
                     `;
                 });
@@ -3865,7 +3891,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="8" style="padding: 3px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
-                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalIncentivesValue.toLocaleString()}</td>
+                            <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold; color: #4caf50;">${totalIncentivesValue.toLocaleString()}</td>
                             <td style="padding: 3px; border: 1px solid #000; text-align: center;"></td>
                         </tr>
                     </tfoot>
@@ -3875,9 +3901,58 @@
                 pdfPages.innerHTML += tableContent;
                 
                 // إنشاء PDF بالوضع الأفقي
-                savePDF(`تقرير_المدير_${managerName}`, 'l');
+                savePDF(`تقرير_المدير_${managerName.replace(/[^\w\u0600-\u06FF]/g, '_')}`, 'l');
                 
             }, 500);
+        }
+        
+        // دالة جديدة لتصدير تقارير جميع المدراء - كل مدير في ملف منفصل
+        async function exportAllManagersPDF() {
+            if (appData.incentives.length === 0) {
+                alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
+                return;
+            }
+            
+            if (Object.keys(appData.managerPerformance).length === 0) {
+                alert('لا توجد بيانات أداء للمدراء.');
+                return;
+            }
+            
+            showLoading('جاري إنشاء ملفات PDF لجميع المدراء...');
+            
+            // تجميع كل المدراء (منطقة وتشغيل) من managerPerformance
+            const managers = Object.keys(appData.managerPerformance);
+            
+            if (managers.length === 0) {
+                alert('لا يوجد مدراء لعرضهم.');
+                hideLoading();
+                return;
+            }
+            
+            // لكل مدير، ننشئ ملف PDF منفصل باستخدام نفس الدالة المساعدة
+            for (let i = 0; i < managers.length; i++) {
+                const managerName = managers[i];
+                const managerData = appData.managerPerformance[managerName];
+                const managerType = managerData.type === 'area' ? 'area' : 'operation';
+                
+                // استدعاء الدالة المساعدة لكل مدير مع تأخير بسيط لتجنب تعارض المكتبات
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        exportSingleManagerPDF(managerName, managerType);
+                        // بعد انتهاء التصدير، نكمل
+                        // لكن exportSingleManagerPDF غير متزامن، لذا نستخدم resolve بعد حفظ الملف؟
+                        // في الوضع الحالي، exportSingleManagerPDF ينتهي بعد savePDF الذي يعمل بشكل غير متزامن.
+                        // لتجنب التعقيد، نستخدم حلقة مع تأخير طويل نسبياً بين الملفات.
+                        resolve();
+                    }, i * 2000); // 2 ثانية بين كل ملف
+                });
+            }
+            
+            // بعد الانتهاء من جميع الملفات، نخفي رسالة التحميل
+            setTimeout(() => {
+                hideLoading();
+                showSuccess('تم إنشاء ملفات PDF لجميع المدراء بنجاح!');
+            }, managers.length * 2000 + 1000);
         }
         
         // تصدير الرسوم البيانية للمدير إلى PDF
@@ -3895,7 +3970,7 @@
             exportResultsPDF(); // استخدم نفس الدالة
         }
         
-        // تصدير جدول الأهداف إلى PDF - تم إرجاعها كما كانت
+        // تصدير جدول الأهداف إلى PDF
         function exportTargetsPDF() {
             if (appData.targets.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى تحميل ملف الأهداف أولاً.');
@@ -3944,13 +4019,13 @@
                         <tr>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.totalSales.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; color: #4caf50;">${item.totalSales.toLocaleString()}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costPercentage.toFixed(2)}%</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salaries.toLocaleString()}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.extra.toLocaleString()}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.avgBillValue.toFixed(3)}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerCount.toLocaleString()}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.complaints}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; color: #4caf50;">${item.customerCount.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; color: #f44336;">${item.complaints}</td>
                         </tr>
                     `;
                 });
@@ -3961,7 +4036,7 @@
                         <tr>
                             <td style="padding: 4px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalSales.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold; color: #4caf50;">${totalSales.toLocaleString()}</td>
                             <td colspan="6" style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
                         </tr>
                     </tfoot>
@@ -3976,7 +4051,7 @@
             }, 500);
         }
         
-        // تصدير جدول النتائج الفعلية إلى PDF - تم إرجاعها كما كانت
+        // تصدير جدول النتائج الفعلية إلى PDF
         function exportActualsPDF() {
             if (appData.actuals.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى تحميل ملف النتائج الفعلية أولاً.');
@@ -4025,13 +4100,13 @@
                         <tr>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${index + 1}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.branch}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.totalSales.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; color: #4caf50;">${item.totalSales.toLocaleString()}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.costPercentage.toFixed(2)}%</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.salaries.toLocaleString()}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.extra.toLocaleString()}</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.avgBillValue.toFixed(3)}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.customerCount.toLocaleString()}</td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center;">${item.complaints}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; color: #4caf50;">${item.customerCount.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; color: #f44336;">${item.complaints}</td>
                         </tr>
                     `;
                 });
@@ -4042,7 +4117,7 @@
                         <tr>
                             <td style="padding: 4px; border: 1px solid #000; text-align: left; font-weight: bold;">الإجمالي</td>
                             <td style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
-                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${totalSales.toLocaleString()}</td>
+                            <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold; color: #4caf50;">${totalSales.toLocaleString()}</td>
                             <td colspan="6" style="padding: 4px; border: 1px solid #000; text-align: center;"></td>
                         </tr>
                     </tfoot>
@@ -4057,7 +4132,7 @@
             }, 500);
         }
         
-        // تصدير الرسوم البيانية إلى PDF
+        // تصدير الرسوم البيانية إلى PDF - مع زيادة الحجم
         async function exportChartsPDF() {
             if (appData.incentives.length === 0) {
                 alert('لا توجد بيانات لتصديرها. يرجى حساب الحوافز أولاً.');
@@ -4095,9 +4170,9 @@
                     `;
                     
                     try {
-                        // تصغير الصورة لتناسب الصفحة
+                        // زيادة حجم الصورة بنسبة 15% (كان 0.7، أصبح 0.85)
                         const chartCanvas = await html2canvas(canvas, {
-                            scale: 0.7,
+                            scale: 0.85, // زيادة من 0.7 إلى 0.85 (حوالي 21% زيادة)
                             useCORS: true,
                             logging: false,
                             backgroundColor: '#FFFFFF'
