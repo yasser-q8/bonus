@@ -486,6 +486,32 @@
             text-align: center;
         }
         
+        .month-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+        .month-select {
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-medium);
+            font-size: 1rem;
+            background-color: var(--white);
+        }
+        .year-input {
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-medium);
+            font-size: 1rem;
+            width: 100px;
+            text-align: center;
+        }
+        
         .signature-card {
             position: fixed;
             bottom: 20px;
@@ -961,6 +987,15 @@
             <h1 class="page-title">برنامج حوافز موظفي مطاعم نايف للأغذية</h1>
             <div class="file-upload-area">
                 <h2 class="section-title">تحميل ملفات البيانات</h2>
+                <!-- إضافة محدد شهر التقرير بشكل واضح قبل رفع الملفات -->
+                <div class="month-selector" style="background:#fff3e0; border:2px solid var(--primary-red); margin-bottom:25px;">
+                    <span style="font-weight:bold; color:var(--dark-red);"><i class="fas fa-calendar-alt"></i> شهر التقرير:</span>
+                    <select id="report-month-main" class="month-select">
+                        <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option><option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option><option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+                    </select>
+                    <input type="number" id="report-year-main" class="year-input" value="2026" step="1" min="2020" max="2100">
+                    <span style="color:var(--text-light);">(يتم إدراج هذا الشهر في جميع التقارير)</span>
+                </div>
                 <div class="upload-section">
                     <div class="file-input-grid">
                         <div class="file-input-card" id="targets-card"><i class="fas fa-bullseye"></i><h3>الملف الأول: أهداف المطاعم</h3><p>تحميل ملف Excel يحتوي على أهداف المطاعم مع الأعمدة المطلوبة</p><div class="file-status" id="targets-status">لم يتم تحميل الملف</div><input type="file" id="targets-file" accept=".xlsx,.xls,.xlsm,.csv,.xlsb"></div>
@@ -981,7 +1016,7 @@
         <div id="results" class="page">
             <h1 class="page-title">النتائج والحوافز</h1>
             <div class="tabs"><div class="tab active" data-tab="targets">أهداف المطاعم</div><div class="tab" data-tab="actuals">النتائج الفعلية</div><div class="tab" data-tab="incentives">الحوافز المحسوبة</div></div>
-            <div class="tab-content active" id="targets-tab"><div class="table-container"><div class="search-container"><input type="text" class="search-input" id="targets-search" placeholder="ابحث عن اسم المطعم في الأهداف..."><div class="search-count" id="targets-search-count">0 نتيجة</div></div><h3 style="margin-bottom:15px;color:var(--dark-red);">أهداف المطاعم (إجمالي: <span id="targets-count">0</span> فرع)</h3><table id="targets-table"><thead><tr><th>#</th><th>اسم المطعم</th><th>إجمالي المبيعات</th><th>تكلفة المبيعات</th><th>الرواتب</th><th>الإضافي</th><th>متوسط قيمة الفاتورة</th><th>عدد العملاء</th><th>عدد الشكاوى</th></tr></thead><tbody id="targets-table-body"></tbody></table><div id="targets-no-results" class="no-results" style="display:none;"><i class="fas fa-search"></i><p>لا توجد نتائج للبحث " <span id="targets-search-term"></span> "</p></div></div></div>
+            <div class="tab-content active" id="targets-tab"><div class="table-container"><div class="search-container"><input type="text" class="search-input" id="targets-search" placeholder="ابحث عن اسم المطعم في الأهداف..."><div class="search-count" id="targets-search-count">0 نتيجة</div></div><h3 style="margin-bottom:15px;color:var(--dark-red);">أهداف المطاعم (إجمالي: <span id="targets-count">0</span> فرع)</h3><table id="targets-table"><thead><tr><th>#</th><th>اسم المطعم</th><th>إجمالي المبيعات</th><th>تكلفة المبيعات</th><th>الرواتب</th><th>الإضافي</th><th>متوسط قيمة الفاتورة</th><th>عدد العملاء</th><th>عدد الشكاوى</th></tr></thead><tbody id="targets-table-body"></tbody><table><div id="targets-no-results" class="no-results" style="display:none;"><i class="fas fa-search"></i><p>لا توجد نتائج للبحث " <span id="targets-search-term"></span> "</p></div></div></div>
             <div class="tab-content" id="actuals-tab"><div class="table-container"><div class="search-container"><input type="text" class="search-input" id="actuals-search" placeholder="ابحث عن اسم المطعم في النتائج..."><div class="search-count" id="actuals-search-count">0 نتيجة</div></div><h3 style="margin-bottom:15px;color:var(--dark-red);">النتائج الفعلية (إجمالي: <span id="actuals-count">0</span> فرع)</h3><table id="actuals-table"><thead><tr><th>#</th><th>اسم المطعم</th><th>إجمالي المبيعات</th><th>تكلفة المبيعات</th><th>الرواتب</th><th>الإضافي</th><th>متوسط قيمة الفاتورة</th><th>عدد العملاء</th><th>عدد الشكاوى</th></tr></thead><tbody id="actuals-table-body"></tbody></table><div id="actuals-no-results" class="no-results" style="display:none;"><i class="fas fa-search"></i><p>لا توجد نتائج للبحث " <span id="actuals-search-term"></span> "</p></div></div></div>
             <div class="tab-content" id="incentives-tab"><div class="table-container"><h3 style="margin-bottom:15px;color:var(--dark-red);">الحوافز المحسوبة (إجمالي: <span id="incentives-count">0</span> فرع)</h3><table id="incentives-table"><thead><tr><th>#</th><th>اسم المطعم</th><th>مدير المنطقة</th><th>نسبة المبيعات</th><th>حافز المبيعات</th><th>تخفيض التكاليف (تكلفة / رواتب / إضافي)</th><th>حافز التخفيض</th><th>زيادة القيمة/العملاء</th><th>حافز الزيادة</th><th>إجمالي الحافز</th><th>الحالة</th></tr></thead><tbody id="incentives-table-body"></tbody></table></div><div class="action-buttons"><button class="btn btn-primary" id="export-incentives-pdf"><i class="fas fa-file-pdf"></i> تصدير جدول الحوافز PDF</button><button class="btn btn-secondary" id="export-targets-pdf"><i class="fas fa-file-pdf"></i> تصدير جدول الأهداف PDF</button><button class="btn btn-success" id="export-results-pdf"><i class="fas fa-file-pdf"></i> تصدير جدول النتائج PDF</button></div></div>
         </div>
@@ -1004,6 +1039,14 @@
         <div id="settings" class="page">
             <h1 class="page-title">الإعدادات</h1>
             <div class="settings-container">
+                <div class="settings-section"><h2 class="section-title">شهر التقرير</h2>
+                    <div class="month-selector">
+                        <select id="report-month" class="month-select">
+                            <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option><option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option><option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option><option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+                        </select>
+                        <input type="number" id="report-year" class="year-input" value="2026" step="1" min="2020" max="2100">
+                    </div>
+                </div>
                 <div class="settings-section"><h2 class="section-title">شرائح حوافز المبيعات (المطاعم)</h2><div class="settings-item"><div class="settings-label">من 95% إلى 99.99%</div><input type="number" class="settings-input" id="sales-tier1" value="25" min="0"><span style="margin-right:10px;">دينار كويتي</span></div><div class="settings-item"><div class="settings-label">من 100% إلى 104.99%</div><input type="number" class="settings-input" id="sales-tier2" value="50" min="0"><span style="margin-right:10px;">دينار كويتي</span></div><div class="settings-item"><div class="settings-label">105% فما فوق</div><input type="number" class="settings-input" id="sales-tier3" value="100" min="0"><span style="margin-right:10px;">دينار كويتي</span></div></div>
                 <div class="settings-section"><h2 class="section-title">حوافز تخفيض التكاليف (المطاعم)</h2><div class="settings-item"><div class="settings-label">تخفيض 1%</div><input type="number" class="settings-input" id="cost-tier1" value="25" min="0"><span style="margin-right:10px;">دينار كويتي</span></div><div class="settings-item"><div class="settings-label">تخفيض 2% أو أكثر</div><input type="number" class="settings-input" id="cost-tier2" value="50" min="0"><span style="margin-right:10px;">دينار كويتي</span></div></div>
                 <div class="settings-section"><h2 class="section-title">حوافز زيادة قيمة الفاتورة وعدد العملاء (المطاعم)</h2><div class="settings-item"><div class="settings-label">زيادة 0.250 إلى 0.349 فلس في الفاتورة مع ثبات أو زيادة العملاء</div><input type="number" class="settings-input" id="customers-tier1" value="25" min="0"><span style="margin-right:10px;">دينار كويتي</span></div><div class="settings-item"><div class="settings-label">زيادة 0.350 فما فوق في الفاتورة مع ثبات أو زيادة العملاء</div><input type="number" class="settings-input" id="customers-tier2" value="50" min="0"><span style="margin-right:10px;">دينار كويتي</span></div></div>
@@ -1021,7 +1064,7 @@
         if (typeof Chart !== 'undefined' && ChartDataLabels) Chart.register(ChartDataLabels);
         let appData = {
             branches: [], targets: [], actuals: [], incentives: [],
-            settings: { salesTiers: [25,50,100], costTiers: [25,50], customerTiers: [25,50], managerSalesTiers: [25,50,100], managerCustomerTiers: [25,50] },
+            settings: { salesTiers: [25,50,100], costTiers: [25,50], customerTiers: [25,50], managerSalesTiers: [25,50,100], managerCustomerTiers: [25,50], reportMonth: 1, reportYear: 2026 },
             charts: { main: null }, branchPerformance: {}, managerPerformance: {}, currentChartIndex: 0,
             chartDefinitions: [
                 { id: 'sales', title: 'أعلى 10 أفرع في تحقيق مبيعات الهدف', dataKey: 'salesPercentage', label: 'نسبة تحقيق المبيعات %', unit: '%' },
@@ -1041,6 +1084,39 @@
         function showError(msg){ const d=document.getElementById('error-message'); d.innerText=msg; d.style.display='block'; setTimeout(()=>d.style.display='none',10000); }
         function showSuccess(msg){ const d=document.getElementById('success-message'); d.innerText=msg; d.style.display='block'; setTimeout(()=>d.style.display='none',5000); }
         function updateProgress(pct,text){ document.getElementById('progress-fill').style.width=pct+'%'; document.getElementById('progress-text').innerText=text+` (${pct}%)`; }
+        
+        function getReportMonthText() {
+            const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            return months[appData.settings.reportMonth-1] + ' ' + appData.settings.reportYear;
+        }
+        
+        function syncMonthFromMain() {
+            // مزامنة الشهر من الصفحة الرئيسية إلى الإعدادات
+            const mainMonth = document.getElementById('report-month-main');
+            const mainYear = document.getElementById('report-year-main');
+            if(mainMonth && mainYear) {
+                appData.settings.reportMonth = parseInt(mainMonth.value);
+                appData.settings.reportYear = parseInt(mainYear.value);
+                // تحديث حقول الإعدادات الأخرى
+                document.getElementById('report-month').value = appData.settings.reportMonth;
+                document.getElementById('report-year').value = appData.settings.reportYear;
+            }
+        }
+        
+        function syncMonthFromSettings() {
+            const setMonth = document.getElementById('report-month');
+            const setYear = document.getElementById('report-year');
+            if(setMonth && setYear) {
+                appData.settings.reportMonth = parseInt(setMonth.value);
+                appData.settings.reportYear = parseInt(setYear.value);
+                const mainMonth = document.getElementById('report-month-main');
+                const mainYear = document.getElementById('report-year-main');
+                if(mainMonth && mainYear) {
+                    mainMonth.value = appData.settings.reportMonth;
+                    mainYear.value = appData.settings.reportYear;
+                }
+            }
+        }
         
         function drawSingleChart(chartDef) {
             if(appData.incentives.length===0 || Object.keys(appData.branchPerformance).length===0) {
@@ -1068,19 +1144,15 @@
         function updateCurrentChart() { const chartDef = appData.chartDefinitions[appData.currentChartIndex]; document.getElementById('chart-title').textContent = chartDef.title; document.getElementById('chart-counter').textContent = `${appData.currentChartIndex+1} / ${appData.chartDefinitions.length}`; document.getElementById('prev-chart').disabled = appData.currentChartIndex === 0; document.getElementById('next-chart').disabled = appData.currentChartIndex === appData.chartDefinitions.length-1; drawSingleChart(chartDef); }
         function navigateChart(direction) { appData.currentChartIndex += direction; if(appData.currentChartIndex<0) appData.currentChartIndex=0; if(appData.currentChartIndex>=appData.chartDefinitions.length) appData.currentChartIndex=appData.chartDefinitions.length-1; updateCurrentChart(); }
         
-        // دالة مساعدة لتوليد نص التخفيضات المعدلة
         function formatReductionText(costDiffPct, salariesReductionPct, extraReductionPct, totalReductionSum) {
             const costSign = costDiffPct > 0 ? '+' : '';
             const salarySign = salariesReductionPct > 0 ? '+' : '';
             const extraSign = extraReductionPct > 0 ? '+' : '';
-            
             const displayTotal = -totalReductionSum || 0; 
             const totalSign = displayTotal > 0 ? '+' : '';
-            
             return `تكلفة: ${costSign}${costDiffPct.toFixed(1)}% / رواتب: ${salarySign}${salariesReductionPct.toFixed(1)}% / إضافي: ${extraSign}${extraReductionPct.toFixed(1)}% اجمالي التخفيض ${totalSign}${displayTotal.toFixed(1)}%`;
         }
 
-        // دالة لتوحيد الأسماء للمقارنة الدقيقة
         function normalizeName(name) {
             if (!name) return '';
             let cleaned = name.replace(/[^\u0600-\u06FF\s]/g, '').trim().toLowerCase();
@@ -1090,38 +1162,33 @@
             return words.join(' ');
         }
 
-        // دالة مطابقة محسنة: دقة عالية مع إمكانية صارمة أو غير صارمة
         function matchBranchName(branchName, targetName, strict = false) {
             if (!branchName || !targetName) return false;
             const normBranch = normalizeName(branchName);
             const normTarget = normalizeName(targetName);
             if (normBranch === normTarget) return true;
             if (strict) return false;
-            // في حالة غير صارمة: إذا كان أحدهما يحتوي الآخر بالكامل
             return normBranch.includes(normTarget) || normTarget.includes(normBranch);
         }
         
         function processIncentives() {
             if(appData.targets.length===0 || appData.actuals.length===0){ alert('يرجى تحميل ملفي الأهداف والنتائج الفعلية أولاً'); return; }
+            // مزامنة الشهر قبل الحساب
+            syncMonthFromMain();
             showLoading('جاري حساب الحوافز...');
             document.getElementById('progress-container').style.display = 'block';
             setTimeout(()=>{
                 appData.incentives = []; appData.branchPerformance = {}; appData.managerPerformance = {};
                 let matchedValid=0, unmatched=[];
                 updateProgress(0,'بدء الحساب');
-                
-                // إنشاء نسخ من المصفوفات لتكون متاحة للاستخدام مرة واحدة لكل فرع
                 let availableTargets = [...appData.targets];
                 let availableActuals = [...appData.actuals];
-                
                 appData.branches.forEach((branch,idx)=>{
                     updateProgress(Math.round((idx/appData.branches.length)*100), `معالجة: ${branch.restaurant}`);
                     let target = null;
                     let actual = null;
                     let targetIndex = -1;
                     let actualIndex = -1;
-                    
-                    // البحث عن أفضل هدف مطابق (تام أولاً ثم جزئي)
                     for (let i = 0; i < availableTargets.length; i++) {
                         if (matchBranchName(branch.restaurant, availableTargets[i].branch, true)) {
                             target = availableTargets[i];
@@ -1138,8 +1205,6 @@
                             }
                         }
                     }
-                    
-                    // البحث عن أفضل نتيجة مطابقة (تام أولاً ثم جزئي)
                     for (let i = 0; i < availableActuals.length; i++) {
                         if (matchBranchName(branch.restaurant, availableActuals[i].branch, true)) {
                             actual = availableActuals[i];
@@ -1156,11 +1221,8 @@
                             }
                         }
                     }
-                    
-                    // إزالة العناصر المستخدمة من النسخ لضمان عدم إعادة استخدامها
                     if (targetIndex !== -1) availableTargets.splice(targetIndex, 1);
                     if (actualIndex !== -1) availableActuals.splice(actualIndex, 1);
-                    
                     const hasValidData = (target && actual && target.totalSales>0 && actual.totalSales>0);
                     if(!hasValidData){
                         unmatched.push({branch:branch.restaurant, target:target?target.branch:'غير موجود', actual:actual?actual.branch:'غير موجود'});
@@ -1182,43 +1244,35 @@
                     if(salesPct>=95 && salesPct<100) salesInc = appData.settings.salesTiers[0];
                     else if(salesPct>=100 && salesPct<105) salesInc = appData.settings.salesTiers[1];
                     else if(salesPct>=105) salesInc = appData.settings.salesTiers[2];
-                    
                     const targetCostPct = (target.costAmount / target.totalSales)*100;
                     const actualCostPct = (actual.costAmount / actual.totalSales)*100;
-                    const costDiffPct = actualCostPct - targetCostPct;  // موجب يعني زيادة تكلفة
+                    const costDiffPct = actualCostPct - targetCostPct;
                     const salariesDiff = actual.salaries - target.salaries;
-                    const salariesReductionPct = target.salaries ? (salariesDiff / target.salaries)*100 : 0; // موجب زيادة رواتب
+                    const salariesReductionPct = target.salaries ? (salariesDiff / target.salaries)*100 : 0;
                     const extraDiff = actual.extra - target.extra;
-                    const extraReductionPct = target.extra ? (extraDiff / target.extra)*100 : 0; // موجب زيادة إضافي
-                    const totalReductionSum = -(costDiffPct + salariesReductionPct + extraReductionPct); // موجب تخفيض إجمالي
-                    
+                    const extraReductionPct = target.extra ? (extraDiff / target.extra)*100 : 0;
+                    const totalReductionSum = -(costDiffPct + salariesReductionPct + extraReductionPct);
                     let costInc = 0;
-                    // الشرط المعدل: لا يحسب حافز تخفيض التكاليف إلا إذا كانت نسبة المبيعات >= 95%
                     if(salesPct >= 95 && totalReductionSum >= 1.0) {
                         if(totalReductionSum >= 1.0 && totalReductionSum < 2.0) costInc = appData.settings.costTiers[0];
                         else if(totalReductionSum >= 2.0) costInc = appData.settings.costTiers[1];
                     }
-                    
                     const billInc = actual.avgBillValue - target.avgBillValue;
                     const custInc = actual.customerCount - target.customerCount;
                     let custIncValue = 0;
                     if(billInc>=0.250 && billInc<0.350 && custInc>=0) custIncValue = appData.settings.customerTiers[0];
                     else if(billInc>=0.350 && custInc>=0) custIncValue = appData.settings.customerTiers[1];
-                    
                     const totalInc = roundToNearest(salesInc + costInc + custIncValue);
                     let incClass='', status='', statusClass='';
                     if(totalInc>=200){ incClass='incentive-high'; status='ممتاز'; statusClass='cell-positive'; }
                     else if(totalInc>=100){ incClass='incentive-medium'; status='جيد جداً'; statusClass='cell-positive'; }
                     else if(totalInc>0){ incClass='incentive-low'; status='جيد'; statusClass='cell-neutral'; }
                     else{ status='بدون حافز'; statusClass='cell-negative'; }
-                    
                     appData.branchPerformance[branch.restaurant] = {
                         salesPercentage: salesPct, costReductionPercent: -costDiffPct, salariesReductionPercent: -salariesReductionPct, extraReductionPercent: -extraReductionPct,
                         totalCostReductionPercent: totalReductionSum, billIncrease: billInc*1000, customerIncrease: custInc,
                         customerIncreasePercent: target.customerCount ? (custInc/target.customerCount)*100 : 0, complaintsReduction: target.complaints - actual.complaints
                     };
-                    
-                    // تخزين النسب الفردية والإجمالي لعرضها لاحقاً
                     appData.incentives.push({
                         branch: branch.restaurant, areaManager: branch.areaManager, operationManager: branch.operationManager,
                         salesPercentage: salesPct, salesIncentive: salesInc,
@@ -1226,7 +1280,6 @@
                         costIncentive: costInc, billIncrease: billInc, customerIncrease: custInc, customerIncentive: custIncValue,
                         totalIncentive: totalInc, incentiveClass: incClass, status: status, statusClass: statusClass
                     });
-                    
                     if(!appData.managerPerformance[branch.areaManager]){ appData.managerPerformance[branch.areaManager] = { type:'area', branches:[], totalSalesPct:0, avgSalesPct:0, totalBillInc:0, avgBillInc:0, totalCustInc:0, avgCustInc:0, totalInc:0, totalBranches:0 }; }
                     let mp = appData.managerPerformance[branch.areaManager];
                     mp.branches.push({ name:branch.restaurant, salesPercentage:salesPct, billIncrease:billInc, customerIncrease:custInc, incentive:totalInc });
@@ -1251,10 +1304,6 @@
                 navigateToPage('results'); switchTab('incentives');
             },500);
         }
-        
-        // باقي الدوال كما هي دون تغيير (matchBranchName تم استبدالها أعلاه، لكن نحتفظ بالدوال الأخرى بدون تعديل)
-        // ملاحظة: تم استبدال matchBranchName القديمة بالدالتين normalizeName و matchBranchName المحسنتين.
-        // جميع الدوال الأخرى تبقى كما هي في الكود الأصلي.
         
         function updateIncentivesTable() {
             const tbody = document.getElementById('incentives-table-body');
@@ -1304,8 +1353,28 @@
             tbody.appendChild(row);
         }); document.getElementById('manager-actions').style.display='flex'; }
         
-        function saveSettings() { appData.settings.salesTiers=[parseInt(document.getElementById('sales-tier1').value),parseInt(document.getElementById('sales-tier2').value),parseInt(document.getElementById('sales-tier3').value)]; appData.settings.costTiers=[parseInt(document.getElementById('cost-tier1').value),parseInt(document.getElementById('cost-tier2').value)]; appData.settings.customerTiers=[parseInt(document.getElementById('customers-tier1').value),parseInt(document.getElementById('customers-tier2').value)]; appData.settings.managerSalesTiers=[parseInt(document.getElementById('manager-sales-tier1').value),parseInt(document.getElementById('manager-sales-tier2').value),parseInt(document.getElementById('manager-sales-tier3').value)]; appData.settings.managerCustomerTiers=[parseInt(document.getElementById('manager-customers-tier1').value),parseInt(document.getElementById('manager-customers-tier2').value)]; localStorage.setItem('naifIncentivesSettings',JSON.stringify(appData.settings)); showSuccess('تم حفظ الإعدادات بنجاح!'); }
-        function resetSettings() { appData.settings={ salesTiers:[25,50,100], costTiers:[25,50], customerTiers:[25,50], managerSalesTiers:[25,50,100], managerCustomerTiers:[25,50] }; document.getElementById('sales-tier1').value=25; document.getElementById('sales-tier2').value=50; document.getElementById('sales-tier3').value=100; document.getElementById('cost-tier1').value=25; document.getElementById('cost-tier2').value=50; document.getElementById('customers-tier1').value=25; document.getElementById('customers-tier2').value=50; document.getElementById('manager-sales-tier1').value=25; document.getElementById('manager-sales-tier2').value=50; document.getElementById('manager-sales-tier3').value=100; document.getElementById('manager-customers-tier1').value=25; document.getElementById('manager-customers-tier2').value=50; localStorage.setItem('naifIncentivesSettings',JSON.stringify(appData.settings)); showSuccess('تم إعادة تعيين الإعدادات'); }
+        function saveSettings() { 
+            appData.settings.salesTiers=[parseInt(document.getElementById('sales-tier1').value),parseInt(document.getElementById('sales-tier2').value),parseInt(document.getElementById('sales-tier3').value)]; 
+            appData.settings.costTiers=[parseInt(document.getElementById('cost-tier1').value),parseInt(document.getElementById('cost-tier2').value)]; 
+            appData.settings.customerTiers=[parseInt(document.getElementById('customers-tier1').value),parseInt(document.getElementById('customers-tier2').value)]; 
+            appData.settings.managerSalesTiers=[parseInt(document.getElementById('manager-sales-tier1').value),parseInt(document.getElementById('manager-sales-tier2').value),parseInt(document.getElementById('manager-sales-tier3').value)]; 
+            appData.settings.managerCustomerTiers=[parseInt(document.getElementById('manager-customers-tier1').value),parseInt(document.getElementById('manager-customers-tier2').value)];
+            syncMonthFromSettings(); // مزامنة الشهر من صفحة الإعدادات
+            localStorage.setItem('naifIncentivesSettings',JSON.stringify(appData.settings)); 
+            showSuccess('تم حفظ الإعدادات بنجاح!'); 
+        }
+        function resetSettings() { 
+            appData.settings={ salesTiers:[25,50,100], costTiers:[25,50], customerTiers:[25,50], managerSalesTiers:[25,50,100], managerCustomerTiers:[25,50], reportMonth:1, reportYear:2026 }; 
+            document.getElementById('sales-tier1').value=25; document.getElementById('sales-tier2').value=50; document.getElementById('sales-tier3').value=100; 
+            document.getElementById('cost-tier1').value=25; document.getElementById('cost-tier2').value=50; 
+            document.getElementById('customers-tier1').value=25; document.getElementById('customers-tier2').value=50; 
+            document.getElementById('manager-sales-tier1').value=25; document.getElementById('manager-sales-tier2').value=50; document.getElementById('manager-sales-tier3').value=100; 
+            document.getElementById('manager-customers-tier1').value=25; document.getElementById('manager-customers-tier2').value=50;
+            document.getElementById('report-month').value=1; document.getElementById('report-year').value=2026;
+            document.getElementById('report-month-main').value=1; document.getElementById('report-year-main').value=2026;
+            localStorage.setItem('naifIncentivesSettings',JSON.stringify(appData.settings)); 
+            showSuccess('تم إعادة تعيين الإعدادات'); 
+        }
         function clearAllData() { if(confirm('هل أنت متأكد؟')) { appData.targets=[]; appData.actuals=[]; appData.incentives=[]; appData.branchPerformance={}; appData.managerPerformance={}; updateTargetsTable(); updateActualsTable(); updateIncentivesTable(); updateStatsCards(); document.getElementById('targets-file').value=''; document.getElementById('results-file').value=''; document.getElementById('targets-card').classList.remove('active'); document.getElementById('results-card').classList.remove('active'); document.getElementById('targets-status').textContent='لم يتم تحميل الملف'; document.getElementById('results-status').textContent='لم يتم تحميل الملف'; document.getElementById('targets-status').classList.remove('loaded'); document.getElementById('results-status').classList.remove('loaded'); if(appData.charts.main) appData.charts.main.destroy(); appData.charts.main=null; document.getElementById('manager-summary').style.display='none'; document.getElementById('manager-report-table').style.display='none'; document.getElementById('manager-actions').style.display='none'; localStorage.removeItem('naifIncentivesData'); showSuccess('تم مسح جميع البيانات'); } }
         function saveDataToLocalStorage() { localStorage.setItem('naifIncentivesData', JSON.stringify({ targets:appData.targets, actuals:appData.actuals, incentives:appData.incentives, managerPerformance:appData.managerPerformance })); }
         function updateTargetsTable() { const tbody=document.getElementById('targets-table-body'); tbody.innerHTML=''; appData.targets.forEach((item,i)=>{ const row=tbody.insertRow(); row.insertCell(0).innerText=i+1; row.insertCell(1).innerHTML=`<strong>${item.branch}</strong>`; row.insertCell(2).innerHTML=`<span class="cell-positive">${item.totalSales.toLocaleString()}</span>`; row.insertCell(3).innerText=Math.round(item.costAmount).toLocaleString(); row.insertCell(4).innerText=item.salaries.toLocaleString(); row.insertCell(5).innerText=item.extra.toLocaleString(); row.insertCell(6).innerText=item.avgBillValue.toFixed(3); row.insertCell(7).innerHTML=`<span class="cell-positive">${item.customerCount.toLocaleString()}</span>`; row.insertCell(8).innerHTML=`<span class="cell-negative">${item.complaints}</span>`; }); document.getElementById('targets-count').innerText=appData.targets.length; document.getElementById('targets-search-count').innerText=`${appData.targets.length} نتيجة`; }
@@ -1325,8 +1394,16 @@
         function navigateToPage(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active')); document.getElementById(pageId).classList.add('active'); document.querySelector(`[data-page="${pageId}"]`).classList.add('active'); if(pageId==='charts') updateCurrentChart(); if(pageId==='manager-reports') updateManagerDropdowns(); }
         function switchTab(tabId){ document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); document.getElementById(`${tabId}-tab`).classList.add('active'); document.querySelector(`[data-tab="${tabId}"]`).classList.add('active'); }
         function initApp(){ const savedSettings=localStorage.getItem('naifIncentivesSettings'); if(savedSettings){ const parsedSettings=JSON.parse(savedSettings); appData.settings={...appData.settings,...parsedSettings}; updateSettingsInputs(); } const savedData=localStorage.getItem('naifIncentivesData'); if(savedData){ const parsedData=JSON.parse(savedData); if(parsedData.targets){ appData.targets=parsedData.targets; updateTargetsTable(); setupSearchForTargets(); } if(parsedData.actuals){ appData.actuals=parsedData.actuals; updateActualsTable(); setupSearchForActuals(); } if(parsedData.incentives){ appData.incentives=parsedData.incentives; updateIncentivesTable(); updateStatsCards(); } if(parsedData.managerPerformance) appData.managerPerformance=parsedData.managerPerformance; } setupSearchForBranches(); }
-        function updateSettingsInputs(){ document.getElementById('sales-tier1').value=appData.settings.salesTiers[0]; document.getElementById('sales-tier2').value=appData.settings.salesTiers[1]; document.getElementById('sales-tier3').value=appData.settings.salesTiers[2]; document.getElementById('cost-tier1').value=appData.settings.costTiers[0]; document.getElementById('cost-tier2').value=appData.settings.costTiers[1]; document.getElementById('customers-tier1').value=appData.settings.customerTiers[0]; document.getElementById('customers-tier2').value=appData.settings.customerTiers[1]; document.getElementById('manager-sales-tier1').value=appData.settings.managerSalesTiers[0]; document.getElementById('manager-sales-tier2').value=appData.settings.managerSalesTiers[1]; document.getElementById('manager-sales-tier3').value=appData.settings.managerSalesTiers[2]; document.getElementById('manager-customers-tier1').value=appData.settings.managerCustomerTiers[0]; document.getElementById('manager-customers-tier2').value=appData.settings.managerCustomerTiers[1]; }
-        function setupEventListeners(){ document.querySelectorAll('.nav-link').forEach(link=>{ link.addEventListener('click',function(e){ e.preventDefault(); navigateToPage(this.getAttribute('data-page')); }); }); document.querySelectorAll('.tab').forEach(tab=>{ tab.addEventListener('click',function(){ const tabId=this.getAttribute('data-tab'); if(tabId) switchTab(tabId); }); }); document.getElementById('targets-file').addEventListener('change',handleFileUpload); document.getElementById('results-file').addEventListener('change',handleFileUpload); document.getElementById('process-data').addEventListener('click',processIncentives); document.getElementById('clear-data').addEventListener('click',clearAllData); document.getElementById('export-results').addEventListener('click',exportResultsPDF); document.getElementById('export-incentives-pdf').addEventListener('click',exportResultsPDF); document.getElementById('export-targets-pdf').addEventListener('click',exportTargetsPDF); document.getElementById('export-results-pdf').addEventListener('click',exportActualsPDF); document.getElementById('export-charts-pdf').addEventListener('click',exportChartsPDF); document.getElementById('save-settings').addEventListener('click',saveSettings); document.getElementById('reset-settings').addEventListener('click',resetSettings); document.getElementById('manager-type').addEventListener('change',updateManagerDropdowns); document.getElementById('generate-report').addEventListener('click',generateManagerReport); document.getElementById('export-manager-pdf').addEventListener('click',exportManagerPDF); document.getElementById('export-manager-charts').addEventListener('click',exportChartsPDF); document.getElementById('export-all-managers-pdf').addEventListener('click',exportAllManagersPDF); document.getElementById('prev-chart').addEventListener('click',()=>navigateChart(-1)); document.getElementById('next-chart').addEventListener('click',()=>navigateChart(1)); }
+        function updateSettingsInputs(){ document.getElementById('sales-tier1').value=appData.settings.salesTiers[0]; document.getElementById('sales-tier2').value=appData.settings.salesTiers[1]; document.getElementById('sales-tier3').value=appData.settings.salesTiers[2]; document.getElementById('cost-tier1').value=appData.settings.costTiers[0]; document.getElementById('cost-tier2').value=appData.settings.costTiers[1]; document.getElementById('customers-tier1').value=appData.settings.customerTiers[0]; document.getElementById('customers-tier2').value=appData.settings.customerTiers[1]; document.getElementById('manager-sales-tier1').value=appData.settings.managerSalesTiers[0]; document.getElementById('manager-sales-tier2').value=appData.settings.managerSalesTiers[1]; document.getElementById('manager-sales-tier3').value=appData.settings.managerSalesTiers[2]; document.getElementById('manager-customers-tier1').value=appData.settings.managerCustomerTiers[0]; document.getElementById('manager-customers-tier2').value=appData.settings.managerCustomerTiers[1];
+        document.getElementById('report-month').value=appData.settings.reportMonth; document.getElementById('report-year').value=appData.settings.reportYear;
+        document.getElementById('report-month-main').value=appData.settings.reportMonth; document.getElementById('report-year-main').value=appData.settings.reportYear; }
+        function setupEventListeners(){ document.querySelectorAll('.nav-link').forEach(link=>{ link.addEventListener('click',function(e){ e.preventDefault(); navigateToPage(this.getAttribute('data-page')); }); }); document.querySelectorAll('.tab').forEach(tab=>{ tab.addEventListener('click',function(){ const tabId=this.getAttribute('data-tab'); if(tabId) switchTab(tabId); }); }); document.getElementById('targets-file').addEventListener('change',handleFileUpload); document.getElementById('results-file').addEventListener('change',handleFileUpload); document.getElementById('process-data').addEventListener('click',processIncentives); document.getElementById('clear-data').addEventListener('click',clearAllData); document.getElementById('export-results').addEventListener('click',exportResultsPDF); document.getElementById('export-incentives-pdf').addEventListener('click',exportResultsPDF); document.getElementById('export-targets-pdf').addEventListener('click',exportTargetsPDF); document.getElementById('export-results-pdf').addEventListener('click',exportActualsPDF); document.getElementById('export-charts-pdf').addEventListener('click',exportChartsPDF); document.getElementById('save-settings').addEventListener('click',saveSettings); document.getElementById('reset-settings').addEventListener('click',resetSettings); document.getElementById('manager-type').addEventListener('change',updateManagerDropdowns); document.getElementById('generate-report').addEventListener('click',generateManagerReport); document.getElementById('export-manager-pdf').addEventListener('click',exportManagerPDF); document.getElementById('export-manager-charts').addEventListener('click',exportChartsPDF); document.getElementById('export-all-managers-pdf').addEventListener('click',exportAllManagersPDF); document.getElementById('prev-chart').addEventListener('click',()=>navigateChart(-1)); document.getElementById('next-chart').addEventListener('click',()=>navigateChart(1));
+        // ربط أحداث تغيير الشهر من الصفحة الرئيسية والإعدادات
+        document.getElementById('report-month-main').addEventListener('change',syncMonthFromMain);
+        document.getElementById('report-year-main').addEventListener('change',syncMonthFromMain);
+        document.getElementById('report-month').addEventListener('change',syncMonthFromSettings);
+        document.getElementById('report-year').addEventListener('change',syncMonthFromSettings);
+        }
         
         async function exportResultsPDF() {
             if(appData.incentives.length===0){ alert('لا توجد بيانات'); return; }
@@ -1344,18 +1421,18 @@
                 const firstRows = appData.incentives.slice(0, rowsPerPageFirst);
                 let firstContent = `<div style="margin-bottom:20px;padding:10px;background:#f8f9fa;"><div><strong>عدد الأفرع:</strong> ${appData.incentives.length}</div><div><strong>إجمالي الحوافز:</strong> ${totalInc.toLocaleString()} د.ك</div></div>`;
                 firstContent += generateIncentivesTableHTML(firstRows, 0, totalPages === 1);
-                pdfPages.innerHTML += createPDFPage(`جدول الحوافز - صفحة 1 من ${totalPages}`, firstContent, true);
+                pdfPages.innerHTML += createPDFPage(`جدول الحوافز - شهر ${getReportMonthText()} - صفحة 1 من ${totalPages}`, firstContent, true);
                 start = rowsPerPageFirst;
                 pageNum = 2;
                 while(start < appData.incentives.length){
                     let rows = appData.incentives.slice(start, start + rowsPerPageOther);
                     let isLast = pageNum === totalPages;
                     let tableHtml = generateIncentivesTableHTML(rows, start, isLast);
-                    pdfPages.innerHTML += createPDFPage(`جدول الحوافز - صفحة ${pageNum} من ${totalPages}`, tableHtml, false);
+                    pdfPages.innerHTML += createPDFPage(`جدول الحوافز - شهر ${getReportMonthText()} - صفحة ${pageNum} من ${totalPages}`, tableHtml, false);
                     start += rowsPerPageOther;
                     pageNum++;
                 }
-                await savePDF('تقرير_الحوافز','l');
+                await savePDF(`تقرير_الحوافز_${getReportMonthText().replace(/ /g, '_')}`,'l');
             },500);
         }
         
@@ -1391,136 +1468,126 @@
         
         function createPDFPage(title,content,showHeader=true){ const date=new Date().toLocaleDateString('ar-KW'); const header=showHeader?`<div style="text-align:center;margin-bottom:20px;border-bottom:2px solid #1E3A8A;padding-bottom:10px;"><img src="https://i.postimg.cc/NM2zJWZD/NAIF-LOGO.jpg" style="width:60px;height:60px;border-radius:50%;margin-bottom:10px;"><h2 style="color:#1E3A8A;margin:0;">شركة نايف للأغذية</h2><h3 style="color:#1E3A8A;margin:5px 0 0;">${title}</h3><div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;"><span>تاريخ التقرير: ${date}</span><span>تاريخ الطباعة: ${date}</span></div></div>`:`<div style="text-align:center;margin-bottom:20px;"><h3 style="color:#1E3A8A;">${title}</h3></div>`; return `<div class="pdf-page" style="direction:rtl;font-family:'Segoe UI';padding:20px;background:white;">${header}${content}<div style="margin-top:20px;font-size:10px;text-align:left;border-top:1px solid #ccc;padding-top:5px;">صفحة <span class="pageNumber"></span> من <span class="totalPages"></span></div></div>`; }
         async function savePDF(fileName,orientation='p'){ if(!window.jspdf){ alert('مكتبة PDF غير محملة'); hideLoading(); return; } try{ const element=document.getElementById('pdf-template'); const origDisplay=element.style.display; const origPos=element.style.position; const origLeft=element.style.left; const origTop=element.style.top; const origWidth=element.style.width; const origHeight=element.style.height; const origZ=element.style.zIndex; element.style.display='block'; element.style.position='fixed'; element.style.left='0'; element.style.top='0'; element.style.width=orientation==='l'?'1123px':'794px'; element.style.height=orientation==='l'?'794px':'1123px'; element.style.zIndex='10000'; element.style.background='white'; element.style.padding='0'; element.style.overflow='visible'; const canvas=await html2canvas(element,{scale:2,backgroundColor:'#FFFFFF',width:orientation==='l'?1123:794,height:element.scrollHeight,windowWidth:orientation==='l'?1123:794,windowHeight:element.scrollHeight,scrollY:0}); element.style.display=origDisplay; element.style.position=origPos; element.style.left=origLeft; element.style.top=origTop; element.style.width=origWidth; element.style.height=origHeight; element.style.zIndex=origZ; element.style.overflow='hidden'; const imgData=canvas.toDataURL('image/jpeg',0.95); const pdf=new window.jspdf.jsPDF(orientation,'pt','a4'); const pdfW=pdf.internal.pageSize.getWidth(); const pdfH=pdf.internal.pageSize.getHeight(); const imgH=(canvas.height*pdfW)/canvas.width; let heightLeft=imgH; let pos=0; pdf.addImage(imgData,'JPEG',0,pos,pdfW,imgH); heightLeft-=pdfH; while(heightLeft>=0){ pos=heightLeft-imgH; pdf.addPage(); pdf.addImage(imgData,'JPEG',0,pos,pdfW,imgH); heightLeft-=pdfH; } const clean=fileName.replace(/[^\w\u0600-\u06FF\s]/g,''); pdf.save(`${clean}_${new Date().toISOString().slice(0,10)}.pdf`); hideLoading(); showSuccess('تم إنشاء ملف PDF بنجاح!'); } catch(e){ hideLoading(); alert('خطأ: '+e.message); } }
-        function exportTargetsPDF(){ if(appData.targets.length===0){ alert('لا توجد بيانات'); return; } showLoading('جاري إنشاء PDF...'); setTimeout(async()=>{ const pdfPages=document.getElementById('pdf-pages'); pdfPages.innerHTML=''; const totalSales=appData.targets.reduce((s,i)=>s+(Number(i.totalSales)||0),0); const rowsPerPageFirst = 14, rowsPerPageOther = 22; let start=0,pageNum=1; const totalPages=Math.ceil(Math.max(0,appData.targets.length-rowsPerPageFirst)/rowsPerPageOther)+1; const firstRows=appData.targets.slice(0,rowsPerPageFirst); let firstContent=`<div style="margin-bottom:20px;padding:10px;background:#f8f9fa;"><div><strong>عدد الأفرع:</strong> ${appData.targets.length}</div><div><strong>إجمالي المبيعات المستهدفة:</strong> ${totalSales.toLocaleString()} د.ك</div></div>`; firstContent+=generateTargetsTableHTML(firstRows,0,totalPages===1); pdfPages.innerHTML+=createPDFPage(`جدول الأهداف - صفحة 1 من ${totalPages}`,firstContent,true); start=rowsPerPageFirst; pageNum=2; while(start<appData.targets.length){ let rows=appData.targets.slice(start,start+rowsPerPageOther); let isLast=pageNum===totalPages; let tableHtml=generateTargetsTableHTML(rows,start,isLast); pdfPages.innerHTML+=createPDFPage(`جدول الأهداف - صفحة ${pageNum} من ${totalPages}`,tableHtml,false); start+=rowsPerPageOther; pageNum++; } await savePDF('جدول_الأهداف','l'); },500); }
+        function exportTargetsPDF(){ if(appData.targets.length===0){ alert('لا توجد بيانات'); return; } showLoading('جاري إنشاء PDF...'); setTimeout(async()=>{ const pdfPages=document.getElementById('pdf-pages'); pdfPages.innerHTML=''; const totalSales=appData.targets.reduce((s,i)=>s+(Number(i.totalSales)||0),0); const rowsPerPageFirst = 14, rowsPerPageOther = 22; let start=0,pageNum=1; const totalPages=Math.ceil(Math.max(0,appData.targets.length-rowsPerPageFirst)/rowsPerPageOther)+1; const firstRows=appData.targets.slice(0,rowsPerPageFirst); let firstContent=`<div style="margin-bottom:20px;padding:10px;background:#f8f9fa;"><div><strong>عدد الأفرع:</strong> ${appData.targets.length}</div><div><strong>إجمالي المبيعات المستهدفة:</strong> ${totalSales.toLocaleString()} د.ك</div></div>`; firstContent+=generateTargetsTableHTML(firstRows,0,totalPages===1); pdfPages.innerHTML+=createPDFPage(`جدول الأهداف - شهر ${getReportMonthText()} - صفحة 1 من ${totalPages}`,firstContent,true); start=rowsPerPageFirst; pageNum=2; while(start<appData.targets.length){ let rows=appData.targets.slice(start,start+rowsPerPageOther); let isLast=pageNum===totalPages; let tableHtml=generateTargetsTableHTML(rows,start,isLast); pdfPages.innerHTML+=createPDFPage(`جدول الأهداف - شهر ${getReportMonthText()} - صفحة ${pageNum} من ${totalPages}`,tableHtml,false); start+=rowsPerPageOther; pageNum++; } await savePDF(`جدول_الأهداف_${getReportMonthText().replace(/ /g, '_')}`,'l'); },500); }
         function generateTargetsTableHTML(rows,startIdx,isLastPage){ let html=`<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="background:#1E3A8A;color:white;"><th style="padding:5px 4px;border:1px solid #000;">#</th><th>اسم المطعم</th><th>إجمالي المبيعات</th><th>تكلفة المبيعات</th><th>الرواتب</th><th>الإضافي</th><th>متوسط الفاتورة</th><th>عدد العملاء</th><th>الشكاوى</th></tr></thead><tbody>`; rows.forEach((item,idx)=>{ const rowBg=idx%2===0?'#EFF6FF':'#FFFFFF'; html+=`<tr style="background:${rowBg};"><td style="border:1px solid #000;padding:5px 4px;">${startIdx+idx+1}</td><td style="border:1px solid #000;padding:5px 4px;">${item.branch}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.totalSales)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${Math.round(item.costAmount).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.salaries)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.extra)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.avgBillValue)||0).toFixed(3)}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.customerCount)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${item.complaints}</td></tr>`; }); html+=`</tbody></table>`; if(isLastPage){ const grandTotal=appData.targets.reduce((s,i)=>s+(Number(i.totalSales)||0),0); html+=`<div style="margin-top:10px;text-align:left;font-weight:bold;">إجمالي المبيعات المستهدفة: ${grandTotal.toLocaleString()} د.ك</div>`; } return html; }
-        function exportActualsPDF(){ if(appData.actuals.length===0){ alert('لا توجد بيانات'); return; } showLoading('جاري إنشاء PDF...'); setTimeout(async()=>{ const pdfPages=document.getElementById('pdf-pages'); pdfPages.innerHTML=''; const totalSales=appData.actuals.reduce((s,i)=>s+(Number(i.totalSales)||0),0); const rowsPerPageFirst=14,rowsPerPageOther=22; let start=0,pageNum=1; const totalPages=Math.ceil(Math.max(0,appData.actuals.length-rowsPerPageFirst)/rowsPerPageOther)+1; const firstRows=appData.actuals.slice(0,rowsPerPageFirst); let firstContent=`<div style="margin-bottom:20px;padding:10px;background:#f8f9fa;"><div><strong>عدد الأفرع:</strong> ${appData.actuals.length}</div><div><strong>إجمالي المبيعات الفعلية:</strong> ${totalSales.toLocaleString()} د.ك</div></div>`; firstContent+=generateActualsTableHTML(firstRows,0,totalPages===1); pdfPages.innerHTML+=createPDFPage(`جدول النتائج الفعلية - صفحة 1 من ${totalPages}`,firstContent,true); start=rowsPerPageFirst; pageNum=2; while(start<appData.actuals.length){ let rows=appData.actuals.slice(start,start+rowsPerPageOther); let isLast=pageNum===totalPages; let tableHtml=generateActualsTableHTML(rows,start,isLast); pdfPages.innerHTML+=createPDFPage(`جدول النتائج الفعلية - صفحة ${pageNum} من ${totalPages}`,tableHtml,false); start+=rowsPerPageOther; pageNum++; } await savePDF('جدول_النتائج_الفعلية','l'); },500); }
+        function exportActualsPDF(){ if(appData.actuals.length===0){ alert('لا توجد بيانات'); return; } showLoading('جاري إنشاء PDF...'); setTimeout(async()=>{ const pdfPages=document.getElementById('pdf-pages'); pdfPages.innerHTML=''; const totalSales=appData.actuals.reduce((s,i)=>s+(Number(i.totalSales)||0),0); const rowsPerPageFirst=14,rowsPerPageOther=22; let start=0,pageNum=1; const totalPages=Math.ceil(Math.max(0,appData.actuals.length-rowsPerPageFirst)/rowsPerPageOther)+1; const firstRows=appData.actuals.slice(0,rowsPerPageFirst); let firstContent=`<div style="margin-bottom:20px;padding:10px;background:#f8f9fa;"><div><strong>عدد الأفرع:</strong> ${appData.actuals.length}</div><div><strong>إجمالي المبيعات الفعلية:</strong> ${totalSales.toLocaleString()} د.ك</div></div>`; firstContent+=generateActualsTableHTML(firstRows,0,totalPages===1); pdfPages.innerHTML+=createPDFPage(`جدول النتائج الفعلية - شهر ${getReportMonthText()} - صفحة 1 من ${totalPages}`,firstContent,true); start=rowsPerPageFirst; pageNum=2; while(start<appData.actuals.length){ let rows=appData.actuals.slice(start,start+rowsPerPageOther); let isLast=pageNum===totalPages; let tableHtml=generateActualsTableHTML(rows,start,isLast); pdfPages.innerHTML+=createPDFPage(`جدول النتائج الفعلية - شهر ${getReportMonthText()} - صفحة ${pageNum} من ${totalPages}`,tableHtml,false); start+=rowsPerPageOther; pageNum++; } await savePDF(`جدول_النتائج_الفعلية_${getReportMonthText().replace(/ /g, '_')}`,'l'); },500); }
         function generateActualsTableHTML(rows,startIdx,isLastPage){ let html=`<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="background:#1E3A8A;color:white;"><th style="padding:5px 4px;border:1px solid #000;">#</th><th>اسم المطعم</th><th>إجمالي المبيعات</th><th>تكلفة المبيعات</th><th>الرواتب</th><th>الإضافي</th><th>متوسط الفاتورة</th><th>عدد العملاء</th><th>الشكاوى</th></tr></thead><tbody>`; rows.forEach((item,idx)=>{ const rowBg=idx%2===0?'#EFF6FF':'#FFFFFF'; html+=`<tr style="background:${rowBg};"><td style="border:1px solid #000;padding:5px 4px;">${startIdx+idx+1}</td><td style="border:1px solid #000;padding:5px 4px;">${item.branch}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.totalSales)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${Math.round(item.costAmount).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.salaries)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.extra)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.avgBillValue)||0).toFixed(3)}</td><td style="border:1px solid #000;padding:5px 4px;">${(Number(item.customerCount)||0).toLocaleString()}</td><td style="border:1px solid #000;padding:5px 4px;">${item.complaints}</td></tr>`; }); html+=`</tbody></table>`; if(isLastPage){ const grandTotal=appData.actuals.reduce((s,i)=>s+(Number(i.totalSales)||0),0); html+=`<div style="margin-top:10px;text-align:left;font-weight:bold;">إجمالي المبيعات الفعلية: ${grandTotal.toLocaleString()} د.ك</div>`; } return html; }
-        async function exportChartsPDF() { if(appData.incentives.length===0){ alert('لا توجد بيانات'); return; } showLoading('جاري إنشاء PDF للرسوم...'); try { const pdfPages=document.getElementById('pdf-pages'); pdfPages.innerHTML=''; const chartTitles=['أعلى 10 أفرع في تحقيق مبيعات الهدف','أعلى 10 أفرع في تخفيض نسبة التكلفة','أعلى 10 أفرع في تخفيض الرواتب','أعلى 10 أفرع في تخفيض الإضافي','أعلى 10 أفرع في تخفيض التكاليف مجتمعة','أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة','أعلى 10 أفرع في ارتفاع عدد العملاء','أعلى 10 أفرع في تخفيض عدد الشكاوى']; const originalIndex=appData.currentChartIndex; for(let i=0;i<appData.chartDefinitions.length;i++){ appData.currentChartIndex=i; updateCurrentChart(); await new Promise(r=>setTimeout(r,300)); const canvas=document.getElementById('main-chart'); const chartCanvas=await html2canvas(canvas,{scale:2,backgroundColor:'#FFFFFF'}); const pageContent=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;"><h4 style="color:#1E3A8A;margin-bottom:20px;">${chartTitles[i]}</h4><img src="${chartCanvas.toDataURL('image/jpeg',0.9)}" style="max-width:100%;max-height:500px;object-fit:contain;" /></div>`; pdfPages.innerHTML+=createPDFPage(`الرسم البياني ${i+1} من ${chartTitles.length}`,pageContent,i===0); } appData.currentChartIndex=originalIndex; updateCurrentChart(); await savePDF('الرسوم_البيانية','l'); } catch(e){ hideLoading(); alert('خطأ: '+e.message); } }
+        async function exportChartsPDF() { if(appData.incentives.length===0){ alert('لا توجد بيانات'); return; } showLoading('جاري إنشاء PDF للرسوم...'); try { const pdfPages=document.getElementById('pdf-pages'); pdfPages.innerHTML=''; const chartTitles=['أعلى 10 أفرع في تحقيق مبيعات الهدف','أعلى 10 أفرع في تخفيض نسبة التكلفة','أعلى 10 أفرع في تخفيض الرواتب','أعلى 10 أفرع في تخفيض الإضافي','أعلى 10 أفرع في تخفيض التكاليف مجتمعة','أعلى 10 أفرع في ارتفاع متوسط قيمة الفاتورة','أعلى 10 أفرع في ارتفاع عدد العملاء','أعلى 10 أفرع في تخفيض عدد الشكاوى']; const originalIndex=appData.currentChartIndex; for(let i=0;i<appData.chartDefinitions.length;i++){ appData.currentChartIndex=i; updateCurrentChart(); await new Promise(r=>setTimeout(r,300)); const canvas=document.getElementById('main-chart'); const chartCanvas=await html2canvas(canvas,{scale:2,backgroundColor:'#FFFFFF'}); const pageContent=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;"><h4 style="color:#1E3A8A;margin-bottom:20px;">${chartTitles[i]} - شهر ${getReportMonthText()}</h4><img src="${chartCanvas.toDataURL('image/jpeg',0.9)}" style="max-width:100%;max-height:500px;object-fit:contain;" /></div>`; pdfPages.innerHTML+=createPDFPage(`الرسم البياني ${i+1} من ${chartTitles.length}`,pageContent,i===0); } appData.currentChartIndex=originalIndex; updateCurrentChart(); await savePDF(`الرسوم_البيانية_${getReportMonthText().replace(/ /g, '_')}`,'l'); } catch(e){ hideLoading(); alert('خطأ: '+e.message); } }
         
-        
-// Improved exportSingleManagerPDF to return Promise ********************************************************************************************************
         function exportSingleManagerPDF(managerName, managerType) {
-    return new Promise(async (resolve, reject) => {
-        if (!appData.managerPerformance[managerName] && managerType === 'area') {
-            alert('لا توجد بيانات أداء');
-            reject('No data');
-            return;
-        }
-        showLoading('جاري إنشاء PDF للمدير...');
-        try {
-            const pdfPages = document.getElementById('pdf-pages');
-            pdfPages.innerHTML = '';
-            let filtered = appData.incentives.filter(i => managerType === 'area' ? i.areaManager === managerName : i.operationManager === managerName);
-            if (filtered.length === 0) {
-                alert('لا توجد بيانات');
-                hideLoading();
-                reject('No data');
-                return;
-            }
-            let totalInc = 0;
-            filtered.forEach(i => { if (typeof i.totalIncentive === 'number') totalInc += i.totalIncentive; });
-            let mgrInc = 0, avgSales = 0, avgBill = 0, avgCust = 0;
-            if (managerType === 'area' && appData.managerPerformance[managerName]) {
-                const mp = appData.managerPerformance[managerName];
-                avgSales = mp.avgSalesPct;
-                avgBill = mp.avgBillInc;
-                avgCust = mp.avgCustInc;
-                mgrInc = mp.managerTotalIncentive || 0;
-            } else {
-                let s = 0, b = 0, c = 0, cnt = 0;
-                filtered.forEach(i => {
-                    if (typeof i.salesPercentage === 'number') {
-                        s += i.salesPercentage;
-                        b += i.billIncrease;
-                        c += i.customerIncrease;
-                        cnt++;
+            return new Promise(async (resolve, reject) => {
+                if (!appData.managerPerformance[managerName] && managerType === 'area') {
+                    alert('لا توجد بيانات أداء');
+                    reject('No data');
+                    return;
+                }
+                showLoading('جاري إنشاء PDF للمدير...');
+                try {
+                    const pdfPages = document.getElementById('pdf-pages');
+                    pdfPages.innerHTML = '';
+                    let filtered = appData.incentives.filter(i => managerType === 'area' ? i.areaManager === managerName : i.operationManager === managerName);
+                    if (filtered.length === 0) {
+                        alert('لا توجد بيانات');
+                        hideLoading();
+                        reject('No data');
+                        return;
                     }
-                });
-                if (cnt) {
-                    avgSales = s / cnt;
-                    avgBill = b / cnt;
-                    avgCust = c / cnt;
+                    let totalInc = 0;
+                    filtered.forEach(i => { if (typeof i.totalIncentive === 'number') totalInc += i.totalIncentive; });
+                    let mgrInc = 0, avgSales = 0, avgBill = 0, avgCust = 0;
+                    if (managerType === 'area' && appData.managerPerformance[managerName]) {
+                        const mp = appData.managerPerformance[managerName];
+                        avgSales = mp.avgSalesPct;
+                        avgBill = mp.avgBillInc;
+                        avgCust = mp.avgCustInc;
+                        mgrInc = mp.managerTotalIncentive || 0;
+                    } else {
+                        let s = 0, b = 0, c = 0, cnt = 0;
+                        filtered.forEach(i => {
+                            if (typeof i.salesPercentage === 'number') {
+                                s += i.salesPercentage;
+                                b += i.billIncrease;
+                                c += i.customerIncrease;
+                                cnt++;
+                            }
+                        });
+                        if (cnt) {
+                            avgSales = s / cnt;
+                            avgBill = b / cnt;
+                            avgCust = c / cnt;
+                        }
+                    }
+                    const colWidths = [3, 15, 7, 6, 38, 6, 11, 7, 7];
+                    colWidths[4] = colWidths[4] * 1.15;
+                    const total = colWidths.reduce((a, b) => a + b, 0);
+                    const colgroup = colWidths.map(w => `<col style="width: ${(w / total) * 100}%;">`).join('');
+                    let contentHtml = `<div style="margin-bottom:20px;padding:15px;background:#f8f9fa;">
+                                        <div><strong>اسم المدير:</strong> ${managerName}</div>
+                                        <div><strong>نوع المدير:</strong> ${managerType === 'area' ? 'مدير منطقة' : 'مدير تشغيل'}</div>
+                                        <div><strong>عدد المطاعم:</strong> ${filtered.length}</div>
+                                        <div><strong>إجمالي حوافز المطاعم:</strong> ${totalInc.toLocaleString()} د.ك</div>
+                                        <div><strong>متوسط نسبة المبيعات:</strong> ${avgSales.toFixed(2)}%</div>
+                                        <div><strong>متوسط زيادة الفاتورة:</strong> ${avgBill.toFixed(3)}</div>
+                                        <div style="background:#e8f5e9;padding:8px;"><strong>حافز المشرف:</strong> ${mgrInc.toLocaleString()} د.ك</div>
+                                      </div>`;
+                    contentHtml += `<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:15px;">
+                                        <colgroup>${colgroup}</colgroup>
+                                        <thead>
+                                            <tr style="background:#1E3A8A;color:white;">
+                                                <th style="padding:5px 4px;border:1px solid #000;">#</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">المطعم</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">نسبة المبيعات</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">حافز المبيعات</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">تخفيض التكاليف</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">حافز التخفيض</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">زيادة القيمة/العملاء</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">حافز الزيادة</th>
+                                                <th style="padding:5px 4px;border:1px solid #000;">إجمالي الحافز</th>
+                                              </tr>
+                                        </thead>
+                                        <tbody>`;
+                    filtered.forEach((item, idx) => {
+                        let salesPctTxt = (typeof item.salesPercentage === 'number') ? item.salesPercentage.toFixed(2) + '%' : '-';
+                        let salesIncTxt = (item.salesIncentive !== '-') ? roundToNearest(item.salesIncentive) : '-';
+                        let costIncTxt = (item.costIncentive !== '-') ? roundToNearest(item.costIncentive) : '-';
+                        let custIncTxt = (item.customerIncentive !== '-') ? roundToNearest(item.customerIncentive) : '-';
+                        let totalIncTxt = (item.totalIncentive !== '-') ? roundToNearest(item.totalIncentive) : '-';
+                        let reductionTxt = '-';
+                        if (typeof item.costReductionPercent === 'number') {
+                            reductionTxt = formatReductionText(item.costReductionPercent, item.salariesReductionPercent, item.extraReductionPercent, item.costReduction);
+                        }
+                        let billCustTxt = '-';
+                        if (typeof item.billIncrease === 'number') {
+                            const billSign = item.billIncrease >= 0 ? '+' : '';
+                            const custSign = item.customerIncrease >= 0 ? '+' : '';
+                            billCustTxt = `${billSign}${item.billIncrease.toFixed(3)} / ${custSign}${item.customerIncrease}`;
+                        }
+                        contentHtml += `<tr>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${idx + 1}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${item.branch}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${salesPctTxt}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${salesIncTxt}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${reductionTxt}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${costIncTxt}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${billCustTxt}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;">${custIncTxt}</td>
+                                            <td style="border:1px solid #000;padding:5px 4px;font-weight:bold;">${totalIncTxt}</td>
+                                          </tr>`;
+                    });
+                    contentHtml += `</tbody>
+                                  </table>
+                                <div style="margin-top:10px;text-align:left;font-weight:bold;">إجمالي حوافز المطاعم: ${totalInc.toLocaleString()} د.ك</div>`;
+                    pdfPages.innerHTML = createPDFPage(`تقرير أداء المدير: ${managerName} - شهر ${getReportMonthText()}`, contentHtml, true);
+                    await savePDF(`تقرير_المدير_${managerName.replace(/[^\w\u0600-\u06FF]/g, '_')}_${getReportMonthText().replace(/ /g, '_')}`, 'l');
+                    resolve();
+                } catch (e) {
+                    hideLoading();
+                    alert('خطأ: ' + e.message);
+                    reject(e);
                 }
-            }
-
-            // --- إضافة colgroup لتحديد عرض الأعمدة ---
-            // عدد الأعمدة = 9 (من # إلى إجمالي الحافز)
-            // نعطي عرضاً أكبر لعمود "تخفيض التكاليف" (العمود الخامس)
-            const colWidths = [3, 15, 7, 6, 38, 6, 11, 7, 7];  // النسب المئوية التقريبية
-            // زيادة عرض عمود تخفيض التكاليف (العمود رقم 5 فهرسه 4) بنسبة 15%
-            colWidths[4] = colWidths[4] * 1.15;
-            // إعادة توزيع المجموع ليكون 100%
-            const total = colWidths.reduce((a, b) => a + b, 0);
-            const colgroup = colWidths.map(w => `<col style="width: ${(w / total) * 100}%;">`).join('');
-
-            let contentHtml = `<div style="margin-bottom:20px;padding:15px;background:#f8f9fa;">
-                                <div><strong>اسم المدير:</strong> ${managerName}</div>
-                                <div><strong>نوع المدير:</strong> ${managerType === 'area' ? 'مدير منطقة' : 'مدير تشغيل'}</div>
-                                <div><strong>عدد المطاعم:</strong> ${filtered.length}</div>
-                                <div><strong>إجمالي حوافز المطاعم:</strong> ${totalInc.toLocaleString()} د.ك</div>
-                                <div><strong>متوسط نسبة المبيعات:</strong> ${avgSales.toFixed(2)}%</div>
-                                <div><strong>متوسط زيادة الفاتورة:</strong> ${avgBill.toFixed(3)}</div>
-                                <div style="background:#e8f5e9;padding:8px;"><strong>حافز المشرف:</strong> ${mgrInc.toLocaleString()} د.ك</div>
-                              </div>`;
-            contentHtml += `<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:15px;">
-                                <colgroup>${colgroup}</colgroup>
-                                <thead>
-                                    <tr style="background:#1E3A8A;color:white;">
-                                        <th style="padding:5px 4px;border:1px solid #000;">#</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">المطعم</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">نسبة المبيعات</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">حافز المبيعات</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">تخفيض التكاليف</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">حافز التخفيض</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">زيادة القيمة/العملاء</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">حافز الزيادة</th>
-                                        <th style="padding:5px 4px;border:1px solid #000;">إجمالي الحافز</th>
-                                    </tr>
-                                </thead>
-                                <tbody>`;
-            filtered.forEach((item, idx) => {
-                let salesPctTxt = (typeof item.salesPercentage === 'number') ? item.salesPercentage.toFixed(2) + '%' : '-';
-                let salesIncTxt = (item.salesIncentive !== '-') ? roundToNearest(item.salesIncentive) : '-';
-                let costIncTxt = (item.costIncentive !== '-') ? roundToNearest(item.costIncentive) : '-';
-                let custIncTxt = (item.customerIncentive !== '-') ? roundToNearest(item.customerIncentive) : '-';
-                let totalIncTxt = (item.totalIncentive !== '-') ? roundToNearest(item.totalIncentive) : '-';
-                let reductionTxt = '-';
-                if (typeof item.costReductionPercent === 'number') {
-                    reductionTxt = formatReductionText(item.costReductionPercent, item.salariesReductionPercent, item.extraReductionPercent, item.costReduction);
-                }
-                let billCustTxt = '-';
-                if (typeof item.billIncrease === 'number') {
-                    const billSign = item.billIncrease >= 0 ? '+' : '';
-                    const custSign = item.customerIncrease >= 0 ? '+' : '';
-                    billCustTxt = `${billSign}${item.billIncrease.toFixed(3)} / ${custSign}${item.customerIncrease}`;
-                }
-                contentHtml += `<tr>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${idx + 1}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${item.branch}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${salesPctTxt}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${salesIncTxt}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${reductionTxt}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${costIncTxt}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${billCustTxt}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;">${custIncTxt}</td>
-                                    <td style="border:1px solid #000;padding:5px 4px;font-weight:bold;">${totalIncTxt}</td>
-                                </tr>`;
             });
-            contentHtml += `</tbody>
-                            </table>
-                            <div style="margin-top:10px;text-align:left;font-weight:bold;">إجمالي حوافز المطاعم: ${totalInc.toLocaleString()} د.ك</div>`;
-            pdfPages.innerHTML = createPDFPage(`تقرير أداء المدير: ${managerName}`, contentHtml, true);
-            await savePDF(`تقرير_المدير_${managerName.replace(/[^\w\u0600-\u06FF]/g, '_')}`, 'l');
-            resolve();
-        } catch (e) {
-            hideLoading();
-            alert('خطأ: ' + e.message);
-            reject(e);
         }
-    });
-}
-
-        //*********************************************************************************************************************************
+        
         async function exportAllManagersPDF() {
             if(appData.incentives.length===0){ alert('لا توجد بيانات'); return; }
             if(Object.keys(appData.managerPerformance).length===0){ alert('لا توجد بيانات أداء'); return; }
@@ -1530,7 +1597,6 @@
                 const m = managers[i];
                 const mp = appData.managerPerformance[m];
                 await exportSingleManagerPDF(m, mp.type);
-                // تأخير بسيط بين كل ملف لتجنب تعارض العمليات
                 await new Promise(r => setTimeout(r, 1500));
             }
             hideLoading();
